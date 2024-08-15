@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Google from "../../assets/icons/social/google.webp";
 import Kakao from "../../assets/icons/social/kakao.webp";
 import Naver from "../../assets/icons/social/naver.webp";
@@ -14,6 +14,16 @@ function SideBar() {
   const handleClose = () => {
     setIsPopupOpen(false);
   };
+
+  useEffect(() => {
+    if (isPopupOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+      document.documentElement.style.overflow = "unset";
+    }
+  }, [isPopupOpen]);
 
   return (
     <S.SideBar>

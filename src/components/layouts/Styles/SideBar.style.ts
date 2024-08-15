@@ -6,18 +6,30 @@ export const SideBar = styled.div`
     height: 100%;
     background: #0a0a0a;
     display: flex;
-    flex-direction: column; /* 세로 방향으로 정렬 */
-    justify-content: space-between; /* 상단과 하단에 요소 배치 */
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 5;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        height: 450px;
+        position:relative;
+    }
 `;
 
 export const Logo = styled.div`
     width: 100%;
     height: 100px;
+
+    @media (max-width:768px){
+        padding:50px 0;
+    }
 `;
 
 export const Menu = styled.div`
     width: 100%;
     flex-grow: 0.8; /* 남은 공간을 차지 */
+
 `;
 
 
@@ -35,9 +47,13 @@ export const Menus = styled.ul`
 
     li {
         position:relative;
-        height:12%;
+        height:10%;
         cursor:pointer;
         transition: color 0.3s ease;
+
+        @media (max-width:768px) {
+            height:25%;
+        }
     }
 
     li:before {
@@ -55,27 +71,35 @@ export const Menus = styled.ul`
 
     li:hover::before {
         border-left:5px solid #d9d9d9;
-
     }
 `
 
 export const Sign = styled.div`
     width: 100%;
     height: 250px;
+
+    @media (max-width:768px){
+        height:100px;
+    }
 `;
 
 export const SignUl = styled.ul`
     width:100%;
-    height:100%;
     text-decoration:none;
     text-align:center;
     position:relative;
+    top:50%;
     padding: 0;
     margin: 0;
     color:#fff;
 
+
+    @media (max-width:768px){
+        top:25px;
+    }
+
+
     li {
-        margin:145px 0;
         position:relative;
         cursor:pointer;
         transition: color 0.3s ease;
@@ -123,17 +147,18 @@ export const Popup = styled.div`
     justify-content: center;
     width:100%;
     height: 100%;
-    z-index:1;
+    z-index:10;
+
     background: rgba(8, 8, 8, 0.8);
+    
 `
 
 export const DelBtn = styled.button`
-    width:8%;
+    width:10%;
     height:40px;
     position:absolute;
     text-align:center;
-    z-index: 1;
-    right:20px;
+    right:15px;
     border: none;
     border-radius: 5px;
     background: none;
@@ -152,11 +177,10 @@ export const DelBtn = styled.button`
 export const SignForm = styled.div`
     position:relative;
     margin:0 auto;
-    width:25%;
-    height:61%;
+    width:20%;
+    height:51%;
     background:#191919;
-    z-index:1;
-    padding:20px 30px;
+    padding:15px 30px;
     border-radius:15px;
     color:#fff;
 
@@ -171,6 +195,12 @@ export const SignForm = styled.div`
         margin:15px 0;
         font-size:20px;
     }
+
+
+    @media (max-width:768px){
+        width:61%;
+        height:55%;
+    }
 `
 
 export const Signup = styled.div`
@@ -180,22 +210,26 @@ export const Signup = styled.div`
 `
 
 export const Signdown = styled.div`
-    margin:30px 0;
     width:100%;
     height:45%;
+    padding:30px 0;
+    display:flex;
+    justify-content:center;
+    gap:10px; /* 버튼 사이의 간격 조절 */
 `
 
 export const SocialBtn = styled.div`
-    margin:0 6px;
     width:30%;
-    height:30%;
+    height:40%;
     float:left;
     display:flex;
     align-items:center;
     justify-content:center;
-    border-radius:5px;
+
+    border-radius:10px;
     border:1px solid #333;
     cursor:pointer;
+    
 
 
     img {
@@ -205,6 +239,4 @@ export const SocialBtn = styled.div`
     &:hover {
         background:#1f1f1f;
     }
-
-
 `

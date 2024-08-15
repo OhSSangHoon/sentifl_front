@@ -10,6 +10,21 @@ const GlobalStyle = createGlobalStyle`
   *{
     margin: 0;
     box-sizing: border-box;
+    overflow-x:hidden;
+  }
+
+  /* 스크롤바 숨기기 */
+  body::-webkit-scrollbar {
+    width: 0.4em;
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    outline: none;
+  }
+
+  body::-webkit-scrollbar {
+    display: none; /* 스크롤바 숨기기 */
   }
 `
 export default GlobalStyle;

@@ -1,44 +1,32 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 
 function Home() {
   return (
     <Background>
-      <RotatingContainer>
+      <CircleContainer>
         <Circle
-          color="rgba(255, 0, 0, 0.2)"
-          size="800px"
-          top="0"
-          left="50%"
-          translateX="-50%"
-        />
-        <Circle
-          color="rgba(0, 255, 0, 0.2)"
-          size="800px"
-          top="50%"
-          left="25%"
+          size="1000px" // 크기를 더 크게
+          top="70%" // 화면 상단에 위치
+          left="35%" // 왼쪽으로 비스듬히 배치
           translateX="-50%"
           translateY="-50%"
+          gradient="linear-gradient(135deg, #F12FBB 0%, #B2EA6A 100%)" // 그라데이션 적용
         />
         <Circle
-          color="rgba(0, 0, 255, 0.2)"
-          size="800px"
-          top="50%"
-          left="75%"
+          size="1000px" // 크기를 더 크게
+          top="50%" // 화면 상단에 위치
+          left="80%" // 오른쪽으로 비스듬히 배치
           translateX="-50%"
           translateY="-50%"
+          gradient="linear-gradient(135deg, #2B8DBE 0%, #C06AEA 100%)" // 기존 그라데이션
         />
-      </RotatingContainer>
+      </CircleContainer>
     </Background>
   );
 }
 
 export default Home;
-
-const rotate = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
 
 const Background = styled.div`
   height: 100vh;
@@ -50,26 +38,25 @@ const Background = styled.div`
   align-items: center;
 `;
 
-const RotatingContainer = styled.div`
+const CircleContainer = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: ${rotate} 120s infinite linear;
 `;
 
 const Circle = styled.div<{
-  color: string;
   size: string;
   top?: string;
   left?: string;
   translateX?: string;
   translateY?: string;
+  gradient: string;
 }>`
   position: absolute;
-  background-color: ${(props) => props.color};
+  background: ${(props) => props.gradient}; // 그라데이션 적용
   width: ${(props) => props.size};
   height: ${(props) => props.size};
   border-radius: 50%;

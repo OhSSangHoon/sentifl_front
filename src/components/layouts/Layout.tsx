@@ -7,13 +7,13 @@ import * as S from "./Styles/Layout.style";
 function Layout() {
   return (
     <>
-      <S.MainContent>
+      <S.LayoutContainer>
         <Header />
-        <S.Content>
+        {/* <SideBar /> */}
+        <S.MainContent>
           <Outlet />
-          {/* <SideBar /> */}
-        </S.Content>
-      </S.MainContent>
+        </S.MainContent>
+      </S.LayoutContainer>
       <Footer />
     </>
   );
