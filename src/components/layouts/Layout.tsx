@@ -5,18 +5,18 @@ import SideBar from "./SideBar";
 import * as S from "./Styles/Layout.style";
 
 function Layout() {
-    return (
-        <>
-            <Header />
-            <S.LayoutContainer>
-                <SideBar />
-                <S.MainContent>
-                    <Outlet />
-                </S.MainContent>
-            </S.LayoutContainer>
-            <Footer />
-        </>
-    );
+  return (
+    <>
+      <S.LayoutContainer>
+        <Header />
+        {/* <SideBar /> */}
+        <S.MainContent>
+          <Outlet />
+        </S.MainContent>
+      </S.LayoutContainer>
+      <Footer />
+    </>
+  );
 }
 
 export default Layout;
