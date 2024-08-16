@@ -148,7 +148,8 @@ function Main () {
                 <S.BlogContent>5</S.BlogContent>
                 <S.BlogContent>6</S.BlogContent>
             </S.BlogForm>
-            <S.container></S.container>
+            <S.container>
+            </S.container>
         </S.Main>
     )
 }

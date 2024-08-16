@@ -89,8 +89,11 @@ export const BlogContent = styled.div`
     height:100%;
     background-color: #080808;
     border: 1px solid white;
-    text-align: center;
+    display:flex;
     font-size: 2em;
+    justify-content: center;
+    align-items:center;
+    color:#fff;
 `;
 
 export const container = styled.div`

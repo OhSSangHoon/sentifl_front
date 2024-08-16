@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Google from "../../assets/icons/social/google.webp";
 import Kakao from "../../assets/icons/social/kakao.webp";
 import Naver from "../../assets/icons/social/naver.webp";
@@ -7,6 +8,7 @@ import * as S from "./Styles/SideBar.style";
 
 function SideBar () {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const navigate = useNavigate();
 
     const handleSignInPopUp = () => {
         setIsPopupOpen(true);
@@ -25,6 +27,14 @@ function SideBar () {
             document.documentElement.style.overflow = 'unset';
         }
     }, [isPopupOpen]);
+
+    const handleHome = () => {
+        navigate("/");
+    }
+
+    const handleCreate = () => {
+        navigate("/Create");
+    }
 
     return(
         <S.SideBar>
@@ -54,9 +64,9 @@ function SideBar () {
             <S.Menu>
                 <S.Menus>
                     {/* 나중에 link로 바꿈 */}
-                    <li>Home</li>
+                    <li onClick={handleHome}>Home</li>
                     {/* Login 하면 생김 */}
-                    <li>Create</li>
+                    <li onClick={handleCreate}>Create</li>
                     <li>Blog</li>
                     <li>Playlist</li>
                 </S.Menus>
