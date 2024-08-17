@@ -1,118 +1,85 @@
+import AWS from 'aws-sdk';
 import React, { useEffect, useState } from 'react';
 import ReactMde, { Command } from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 import * as Showdown from 'showdown';
-import * as S from "./Styles/Editor.style";
+import { uploadToS3 } from '../services/s3Service';
+import * as S from './Styles/Editor.style';
+
+AWS.config.update({
+    region: 'ap-northeast-2',
+    accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
+});
 
 const MarkdownEditor: React.FC = () => {
-    const [value, setValue] = useState('');
-    const [images, setImages] = useState<{ [key: string]: string }>({});
-
-    useEffect(() => {
-        // 임시 저장된 데이터를 로드
-        const savedData = JSON.parse(localStorage.getItem('tempContent') || '{}');
-        if (savedData.content) setValue(savedData.content);
-        if (savedData.images) setImages(savedData.images);
-    }, []);
+    const [value, setValue] = useState<string>('');
+    const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write"); // 현재 선택된 탭 상태 관리
+    const [imageSrc, setImageSrc] = useState<string | null>(null);
 
     const converter = new Showdown.Converter({
         tables: true,
         simplifiedAutoLink: true,
         strikethrough: true,
-        tasklists: true
+        tasklists: true,
     });
 
-    const convertFileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = error => reject(error);
-        });
+    useEffect(() => {
+        const savedContent = localStorage.getItem('markdownContent');
+        if (savedContent) {
+            setValue(savedContent);
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('markdownContent', value);
+    }, [value]);
+
+    const handleImageUpload = async (file: File) => {
+        const imageUrl = await uploadToS3(file);
+        setValue((prevValue) => `${prevValue}\n![Image description](${imageUrl})`);
+        setImageSrc(imageUrl);
     };
 
     const insertImageCommand: Command = {
-        buttonProps: { "aria-label": "Insert image" },
-        icon: () => <span>📁</span>,
-        execute: async ({ initialState, textApi }) => {
+        buttonProps: { 'aria-label': 'Insert image' },
+        icon: () => <span role="img" aria-label="insert image">📁</span>,
+        execute: ({ textApi }) => {
             const fileInput = document.createElement('input');
             fileInput.type = 'file';
             fileInput.accept = 'image/*';
             fileInput.onchange = async () => {
                 if (fileInput.files && fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    const base64 = await convertFileToBase64(file);
-
-                    const imageKey = `image-${Date.now()}`;
-
-                    setImages(prevImages => ({
-                        ...prevImages,
-                        [imageKey]: base64
-                    }));
-
-                    textApi.replaceSelection(`![Image description](${imageKey})`);
+                    try {
+                        handleImageUpload(file);
+                    } catch (error) {
+                        console.error('Error uploading image:', error);
+                    }
                 }
             };
             fileInput.click();
         }
     };
 
-    const getUpdatedMarkdown = (markdown: string) => {
-        return markdown.replace(/!\[Image description]\((.*?)\)/g, (match, key) => {
-            const imageBase64 = images[key];
-            return imageBase64 ? `![Image description](${imageBase64})` : match;
-        });
-    };
-
-    const handleSave = () => {
-        // 현재 에디터 상태를 로컬 스토리지에 임시 저장
-        const tempData = {
-            content: value,
-            images: images
-        };
-        localStorage.setItem('tempContent', JSON.stringify(tempData));
-        alert("임시 저장되었습니다!");
-    };
-
-    const handleClear = () => {
-        // 로컬 스토리지에서 임시 저장된 데이터 삭제
-        localStorage.removeItem('tempContent');
-        setValue('');
-        setImages({});
-        alert("임시 저장된 데이터가 삭제되었습니다!");
-    };
-
     return (
         <S.EditorWrapper>
             <S.EditorContainer>
-                <div style={{ display: 'flex', width: '100%' }}>
-                    <div style={{ flex: 1, marginRight: '10px' }}>
-                        <ReactMde
-                            value={value}
-                            onChange={setValue}
-                            generateMarkdownPreview={() => Promise.resolve(converter.makeHtml(getUpdatedMarkdown(value)))}
-                            childProps={{
-                                writeButton: {
-                                    tabIndex: -1
-                                }
-                            }}
-                            commands={{
-                                image: insertImageCommand
-                            }}
-                            toolbarCommands={[["bold", "italic", "header", "image"]]}
-                        />
-                    </div>
-                    <div style={{ flex: 1, padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
-                        <div dangerouslySetInnerHTML={{ __html: converter.makeHtml(getUpdatedMarkdown(value)) }} />
-                    </div>
-                </div>
-                <S.SaveButton onClick={handleSave}>
-                    임시 저장
-                </S.SaveButton>
-                <S.SaveButton onClick={handleClear}>
-                    임시 저장 삭제
-                </S.SaveButton>
+                <ReactMde
+                    value={value}
+                    onChange={setValue}
+                    selectedTab={selectedTab} // 현재 선택된 탭 전달
+                    onTabChange={setSelectedTab} // 탭 변경 시 호출되는 핸들러 전달
+                    generateMarkdownPreview={(markdown) =>
+                        Promise.resolve(converter.makeHtml(markdown))
+                    }
+                    commands={{ image: insertImageCommand }}
+                    toolbarCommands={[['bold', 'italic', 'header', 'image']]}
+                />
             </S.EditorContainer>
+            <S.PreviewContainer>
+                <div dangerouslySetInnerHTML={{ __html: converter.makeHtml(value) }} />
+            </S.PreviewContainer>
         </S.EditorWrapper>
     );
 };
