@@ -7,7 +7,6 @@ export const EditorWrapper = styled.div`
     height: 90%;
 `;
 
-
 export const EditorContainer = styled.div`
     width: 50%;
     margin: 0 auto;
@@ -45,4 +44,4 @@ export const PreviewContainer = styled.div`
         height:100%;
         box-sizing: border-box;
     }
-`
+`;
