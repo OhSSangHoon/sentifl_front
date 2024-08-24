@@ -17,8 +17,9 @@ const PostList = () => {
               </PostMeta>
             </PostHeader>
             <PostDescription>
-              작성한 글이 여기에다가 나옵니다. 두줄 정도 글이 미리보기로
-              나오는게 좋을것 같습니다...
+              The weather's been all over the place lately—sunny one minute,
+              pouring rain the next. It's like you can't leave the house without
+              an umbrella just in case.
             </PostDescription>
           </PostInfo>
           <PostImage src="path_to_image" alt="Post Visual" />
@@ -103,6 +104,7 @@ const PostDescription = styled.p`
   font-size: 14px;
   color: #b5b5b5;
   line-height: 1.5;
+  flex-wrap: wrap;
 `;
 
 const PostImage = styled.img`

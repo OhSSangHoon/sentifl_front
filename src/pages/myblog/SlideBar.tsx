@@ -9,18 +9,18 @@ import {
   FaCalendarAlt,
   FaParking,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // react-router-dom에서 useNavigate 가져오기
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const [isClicked, setIsClicked] = useState(false);
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
 
   const handlePostItemClick = () => {
     setIsClicked(!isClicked);
   };
 
   const handlePenClick = () => {
-    navigate("/Create"); // '/Create' 경로로 이동
+    navigate("/Create");
   };
 
   return (
@@ -44,15 +44,15 @@ const Sidebar = () => {
           <ProfileName>닉네임</ProfileName>
           <ProfileStats>
             <ProfileStatItem>
-              follow
+              <small>follow</small>
               <br />
-              count
+              <strong>0</strong>
             </ProfileStatItem>
             <Separator>|</Separator>
             <ProfileStatItem>
-              following
+              <small>following</small>
               <br />
-              count
+              <strong>0</strong>
             </ProfileStatItem>
           </ProfileStats>
         </ProfileInfo>
@@ -68,13 +68,11 @@ const Sidebar = () => {
         </CategoryList>
       </Menu>
       <Divider />
-      {/* 글 목록 추가 */}
       <PostListContainer>
         <PostListHeader>
           글 목록
           <Icons>
-            <FaPen onClick={handlePenClick} />{" "}
-            {/* 클릭 시 handlePenClick 호출 */}
+            <FaPen onClick={handlePenClick} />
             <FaCalendarAlt />
           </Icons>
         </PostListHeader>
@@ -151,13 +149,18 @@ const Profile = styled.div`
 const ProfileImageWrapper = styled.div`
   flex-shrink: 0;
   margin-right: 15px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: white;
 `;
 
 const ProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  border-radius: 50%;
 `;
 
 const ProfileInfo = styled.div`
@@ -192,6 +195,16 @@ const ProfileStats = styled.div`
 const ProfileStatItem = styled.div`
   font-size: 14px;
   line-height: 1.2;
+
+  small {
+    font-size: 12px;
+    color: #b5b5b5;
+  }
+
+  strong {
+    font-size: 18px;
+    color: #ffffff;
+  }
 `;
 
 const Separator = styled.span`
@@ -254,7 +267,7 @@ const Icons = styled.div`
     margin-left: 10px;
     color: #ffffff;
     font-size: 16px;
-    cursor: pointer; /* 커서를 포인터로 변경 */
+    cursor: pointer;
   }
 `;
 

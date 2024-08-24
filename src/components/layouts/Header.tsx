@@ -30,7 +30,7 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background: transparent; /* 헤더 배경 투명 */
+  background: transparent;
 `;
 
 const Logo = styled.div`
