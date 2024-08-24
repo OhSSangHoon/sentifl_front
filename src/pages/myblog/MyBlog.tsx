@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Sidebar from "./SlideBar";
+import Sidebar from "./SideBar";
 import PostList from "./PostList";
 
 const MyBlog = () => {
