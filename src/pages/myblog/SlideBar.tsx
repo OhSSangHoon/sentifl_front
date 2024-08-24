@@ -9,11 +9,18 @@ import {
   FaCalendarAlt,
   FaParking,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; // react-router-dom에서 useNavigate 가져오기
 
 const Sidebar = () => {
   const [isClicked, setIsClicked] = useState(false);
+  const navigate = useNavigate(); // useNavigate 훅 사용
+
   const handlePostItemClick = () => {
     setIsClicked(!isClicked);
+  };
+
+  const handlePenClick = () => {
+    navigate("/Create"); // '/Create' 경로로 이동
   };
 
   return (
@@ -66,7 +73,8 @@ const Sidebar = () => {
         <PostListHeader>
           글 목록
           <Icons>
-            <FaPen />
+            <FaPen onClick={handlePenClick} />{" "}
+            {/* 클릭 시 handlePenClick 호출 */}
             <FaCalendarAlt />
           </Icons>
         </PostListHeader>
@@ -246,6 +254,7 @@ const Icons = styled.div`
     margin-left: 10px;
     color: #ffffff;
     font-size: 16px;
+    cursor: pointer; /* 커서를 포인터로 변경 */
   }
 `;
 

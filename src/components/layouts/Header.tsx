@@ -9,9 +9,8 @@ function Header() {
         <img src="/path" alt="logo" />
       </Logo>
       <Nav>
-        <StyledNavLink to="/Create">Create</StyledNavLink>
+        <StyledNavLink to="/myblog">Create</StyledNavLink>
         <StyledNavLink to="/">Home</StyledNavLink>
-        <StyledNavLink to="/myblog">임시버튼</StyledNavLink>
       </Nav>
       <SearchContainer>
         <SearchInput placeholder="Search..." />
