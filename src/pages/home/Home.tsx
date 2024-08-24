@@ -5,20 +5,20 @@ function Home() {
     <Background>
       <CircleContainer>
         <Circle
-          size="1000px" // 크기를 더 크게
-          top="70%" // 화면 상단에 위치
-          left="35%" // 왼쪽으로 비스듬히 배치
+          size="1000px"
+          top="70%"
+          left="35%"
           translateX="-50%"
           translateY="-50%"
-          gradient="linear-gradient(135deg, #F12FBB 0%, #B2EA6A 100%)" // 그라데이션 적용
+          gradient="linear-gradient(135deg, #F12FBB 0%, #B2EA6A 100%)"
         />
         <Circle
-          size="1000px" // 크기를 더 크게
-          top="50%" // 화면 상단에 위치
-          left="80%" // 오른쪽으로 비스듬히 배치
+          size="1000px"
+          top="50%"
+          left="80%"
           translateX="-50%"
           translateY="-50%"
-          gradient="linear-gradient(135deg, #2B8DBE 0%, #C06AEA 100%)" // 기존 그라데이션
+          gradient="linear-gradient(135deg, #2B8DBE 0%, #C06AEA 100%)"
         />
       </CircleContainer>
     </Background>
