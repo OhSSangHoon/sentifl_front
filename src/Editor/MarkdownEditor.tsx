@@ -1,205 +1,146 @@
 import AWS from 'aws-sdk';
 import JSZip from 'jszip';
-import { marked } from 'marked';
-import 'quill/dist/quill.bubble.css';
-// import 'quill/dist/quill.snow.css';
 import Quill from 'quill';
-import { ImageResize } from "quill-image-resize-module-ts";
-import React, { useEffect, useRef, useState } from 'react';
-import TurndownService from 'turndown';
-import { deleteFromS3, downloadFromS3, uploadTempZipToS3, uploadToS3 } from '../services/s3Service';
+import 'quill/dist/quill.bubble.css';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { uploadTempZipToS3, uploadToS3 } from '../services/s3Service';
 import * as S from './Styles/Editor.style';
-
-Quill.register('modules/imageResize', ImageResize);
 
 
 AWS.config.update({
-    region: 'ap-northeast-2',
+    region: process.env.REACT_APP_AWS_REGION,
     accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
 });
 
-const MarkdownEditor: React.FC<{ loadFromTempSave: boolean }> = ({ loadFromTempSave }) => {
-    const [title, setTitle] = useState<string>('');
-    const [images, setImages] = useState<Array<{ src: string }>>([]);
+interface MarkdownEditorProps {
+    loadFromTempSave: boolean;
+    initialDelta?: any;
+    title: string;
+    setTitle: (title: string) => void;
+    images: Array<{ imageName: string; imageUrl: string }>;
+}
+
+const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ loadFromTempSave, initialDelta, title, setTitle, images }) => {
     const quillRef = useRef<Quill | null>(null);
-    const turndownService = new TurndownService();
 
+    const imageHandler = async () => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
 
-    useEffect(() => {
-
-        const quill = new Quill('#editor', {
-            theme: 'bubble',
-            modules: {
-                toolbar: [
-                    [{ 'header': 2}],
-                    [{ 'header': 3}],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    ['link', 'image'],
-                    ['clean']
-                ],
-                imageResize: true
-            }
-        });
-        quillRef.current = quill;
-
-    }, [loadFromTempSave]);
-
-    
-    const handleImageInsert = async () => {
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
-        fileInput.onchange = async () => {
-            if (fileInput.files && fileInput.files.length > 0) {
-                const file = fileInput.files[0];
+        input.onchange = async () => {
+            const file = input.files ? input.files[0] : null;
+            if (file) {
                 try {
-                    const imgUrl = await handleImageUpload(file);  // imgUrl을 비동기적으로 처리
-                    const quill = quillRef.current;
-                    if (quill) {
-                        const range = quill.getSelection(true);
-                        quill.insertEmbed(range.index, 'image', imgUrl);
+                    const s3Url = await uploadToS3(file);
+                    const editor = quillRef.current;
+                    if (editor) {
+                        const range = editor.getSelection(true);
+                        if (range) {
+                            editor.insertEmbed(range.index, 'image', s3Url); // S3 URL 삽입
+                        }
+                    } else {
+                        console.error('Quill editor is not initialized');
                     }
                 } catch (error) {
                     console.error('Error uploading image:', error);
                 }
             }
         };
-        fileInput.click();
     };
 
-    const handleImageUpload = async (file: File): Promise<string> => {
-        const img = new Image();
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-            img.src = e.target?.result as string;
-        };
-
-        return new Promise<string>((resolve, reject) => {
-            reader.onloadend = async () => {
-                try {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 300;
-                    canvas.height = 300;
-                    const ctx = canvas.getContext('2d');
-                    
-                    if (ctx) {
-                        ctx.drawImage(img, 0, 0, 300, 300);
-                        canvas.toBlob(async (blob) => {
-                            if (blob) {
-                                const resizedFile = new File([blob], file.name, { type: file.type });
-                                const imageUrl = await uploadToS3(resizedFile);
-                                setImages(prevImages => [...prevImages, { src: imageUrl }]);
-                                resolve(imageUrl);
-                            }
-                        }, 'image/jpeg');
-                    }
-                } catch (error) {
-                    reject(error);
+    const modules = useMemo(() => {
+        return {
+            toolbar: {
+                container: [
+                    [{ 'header': 2 }],
+                    [{ 'header': 3 }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['link', 'image'],
+                    ['clean']
+                ],
+                handlers: {
+                    image: imageHandler
                 }
-            };
-            reader.readAsDataURL(file);
-        });
-    };
-
-    const handleSave = async () => {
-        try {
-            const quill = quillRef.current;
-            if (!quill) return;
-
-            const htmlContent = quill.root.innerHTML;
-            const markdownContent = turndownService.turndown(htmlContent);
-
-            const zip = new JSZip();
-            zip.file("text.md", `# ${title}\n\n${markdownContent}`);
-
-            for (let i = 0; i < images.length; i++) {
-                const blob = await fetch(images[i].src).then(res => res.blob());
-                zip.file(`image-${i + 1}.jpg`, blob);
-            }
-
-            const safeTitle = title.replace(/[^a-zA-Z0-9-_ ]/g, '');
-            const zipBlob = await zip.generateAsync({ type: "blob" });
-            const zipFile = new File([zipBlob], `${safeTitle}.zip`, { type: "application/zip" });
-
-            await uploadToS3(zipFile);
-
-            alert('저장 완료');
-            setImages([]);
-            setTimeout(() => window.location.href = '/', 500);
-        } catch (error) {
-            console.error('저장 중 오류 발생:', error);
-            alert('저장 중 오류 발생');
-        }
-    };
+            },
+            imageResize: {
+                displayStyles: {
+                    backgroundColor: 'black',
+                    border: 'none',
+                    color: 'white'
+                },
+                modules: ['Resize', 'DisplaySize']
+            },
+            history: {
+                delay: 500,
+                maxStack: 100,
+                userOnly: true,
+            },
+        };
+    }, [imageHandler]);
 
     const handleTemporarySave = async () => {
-        try {
-            const quill = quillRef.current;
-            if (!quill) return;
+        if (!quillRef.current) return;
 
-            const htmlContent = quill.root.innerHTML;
-            const markdownContent = turndownService.turndown(htmlContent);
+        const editorContent = quillRef.current.getContents(); // Delta 형식으로 콘텐츠 가져오기
+        const editorDelta = JSON.stringify(editorContent); // Delta 형식을 JSON으로 변환
+        const zip = new JSZip();
+        let imageCounter = 1;
 
-            const zip = new JSZip();
-            zip.file("text.md", `# ${title}\n\n${markdownContent}`);
+        const jsonContent = {
+            title: title,
+            content: editorDelta,  // Delta 형식의 콘텐츠 포함
+        };
 
-            for (let i = 0; i < images.length; i++) {
-                const blob = await fetch(images[i].src).then(res => res.blob());
-                zip.file(`image-${i + 1}.jpg`, blob);
+        // JSON 형식으로 저장
+        zip.file("content.json", JSON.stringify(jsonContent, null, 2));
+
+        // 콘텐츠를 이미지 처리
+        const imagePromises = editorContent.ops.map(async (op: any) => {
+            if (op.insert && op.insert.image) {
+                const imageUrl = op.insert.image;
+                const imageExtension = imageUrl.split('.').pop();
+                const imageName = `image${imageCounter++}.${imageExtension}`;  // 고유한 이미지 이름 생성
+
+                // 이미지 URL에서 파일 데이터를 가져와 압축 파일에 추가
+                const response = await fetch(imageUrl);
+                const blob = await response.blob();
+                zip.file(imageName, blob);
             }
+        });
 
-            const zipBlob = await zip.generateAsync({ type: "blob" });
-            const zipFile = new File([zipBlob], `tempSaved.zip`, { type: "application/zip" });
+        await Promise.all(imagePromises);
 
-            await uploadTempZipToS3(zipFile);
-            alert('임시 저장 완료');
-            setTimeout(() => window.location.href = '/', 500);
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+
+        try {
+            const s3Url = await uploadTempZipToS3(new File([zipBlob], 'tempSaved.zip'));
+            console.log('File uploaded to S3:', s3Url);
         } catch (error) {
-            console.error('임시 저장 중 오류 발생:', error);
-            alert('임시 저장 중 오류 발생');
+            console.error('Error uploading zip file to S3:', error);
         }
     };
 
-    const handleLoadFromS3 = async () => {
-        try {
-            const zipBlob = await downloadFromS3('images/tempSaved.zip');
-            if (zipBlob) {
-                const zip = await JSZip.loadAsync(zipBlob);
-                const markdownContent = await zip.file("text.md")?.async("string");
-                const imageFiles: Array<{ src: string }> = [];
+    useEffect(() => {
+        const quill = new Quill('#editor', {
+            theme: 'bubble',
+            modules: modules,
+        });
 
-                await Promise.all(Object.keys(zip.files).map(async (relativePath) => {
-                    const file = zip.file(relativePath);
-                    if (file && relativePath.startsWith("image-")) {
-                        const blob = await file.async("blob");
-                        const imageUrl = URL.createObjectURL(blob);
-                        imageFiles.push({ src: imageUrl });
-                    }
-                }));
+        quillRef.current = quill;
 
-                if (markdownContent) {
-                    const htmlContent = await marked(markdownContent); // await을 사용하여 Promise 해결
-                    const quill = quillRef.current;
-                    if (quill) {
-                        quill.clipboard.dangerouslyPasteHTML(htmlContent); // 변환된 HTML을 Quill 에디터에 로드
-                    }
-                }
-
-                setImages(imageFiles);
-                await deleteFromS3('images/tempSaved.zip');
-            } else {
-                console.warn('No tempSaved.zip file found in S3.');
-            }
-        } catch (error) {
-            console.log('S3 파일을 불러오거나 삭제하는 중 오류 발생:', error);
-            alert('파일을 불러오거나 삭제하는 중 오류 발생');
+        if (initialDelta && quill) {
+            quill.setContents(initialDelta); // Delta 형식을 Quill 에디터에 적용
         }
-    };
+    }, [modules, initialDelta]);
 
     return (
         <S.EditorWrapper>
+            <S.SaveBtn>
+                <button onClick={handleTemporarySave}>임시저장</button>
+            </S.SaveBtn>
             <S.Title
                 type="text"
                 placeholder="제목을 작성해주세요."
@@ -207,12 +148,9 @@ const MarkdownEditor: React.FC<{ loadFromTempSave: boolean }> = ({ loadFromTempS
                 onChange={(e) => setTitle(e.target.value)}
             />
             <S.EditorContainer>
-                <S.Editor/>
+                <S.Editor id="editor" />
             </S.EditorContainer>
-            <S.SaveBtn>
-                <button onClick={handleSave}>저장</button>
-                <button onClick={handleTemporarySave}>임시저장</button>
-            </S.SaveBtn>
+
         </S.EditorWrapper>
     );
 };

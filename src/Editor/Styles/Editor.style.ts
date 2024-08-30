@@ -20,7 +20,7 @@ export const Title = styled.input`
     font-size: 2.5em;
     font-weight:bold;
     color: #fff;
-    background: #121212;
+    background: #333;
     border: none;
     box-sizing: border-box;
 
@@ -92,14 +92,20 @@ export const Editor = styled.div.attrs({
 
 
 export const SaveBtn = styled.div`
-    position:fixed;
-    right:75px;
+    height:10%;
+    position:relative;
+    
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
 
     button{
+        position:absolute;
+        right:10px;
         width:100px;
         height:45px;
         border-radius:30px;
-        margin:25px 5px;
         border:none;
         background:#1E1E1E;
         color:#fff;
