@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import {
-  FaStar,
   FaBell,
   FaCog,
   FaAngleDown,
@@ -76,10 +75,20 @@ const Sidebar = () => {
             <FaCalendarAlt />
           </Icons>
         </PostListHeader>
-        <PostItem onClick={handlePostItemClick} isClicked={isClicked}>
-          <PostTitle>제목</PostTitle>
-          <PostDate>날짜</PostDate>
-        </PostItem>
+        <PostList>
+          <PostItem isClicked={isClicked}>
+            <PostTitle>제목 1</PostTitle>
+            <PostDate>날짜</PostDate>
+          </PostItem>
+          <PostItem isClicked={isClicked}>
+            <PostTitle>제목 2</PostTitle>
+            <PostDate>날짜</PostDate>
+          </PostItem>
+          <PostItem isClicked={isClicked}>
+            <PostTitle>제목 3</PostTitle>
+            <PostDate>날짜</PostDate>
+          </PostItem>
+        </PostList>
       </PostListContainer>
     </SidebarContainer>
   );
@@ -89,12 +98,13 @@ export default Sidebar;
 
 const SidebarContainer = styled.aside`
   width: 300px;
-  height: 600px;
+  height: auto;
   background-color: #1e1e1e;
   padding: 20px;
   display: flex;
   flex-direction: column;
   margin-right: 20px;
+  overflow: hidden;
 `;
 
 const SidebarTopBar = styled.div`
@@ -195,6 +205,7 @@ const ProfileStats = styled.div`
 const ProfileStatItem = styled.div`
   font-size: 14px;
   line-height: 1.2;
+  text-align: center;
 
   small {
     font-size: 12px;
@@ -249,6 +260,8 @@ const PostListContainer = styled.div`
   background-color: #282828;
   padding: 10px;
   border-radius: 10px;
+  overflow: hidden;
+  height: auto;
 `;
 
 const PostListHeader = styled.div`
@@ -271,16 +284,22 @@ const Icons = styled.div`
   }
 `;
 
+const PostList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
 const PostItem = styled.div<{ isClicked: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: ${({ isClicked }) =>
     `rgba(217, 217, 217, ${isClicked ? 0.4 : 0.2})`};
-  padding: 5px 10px;
+  padding: 10px;
   border-radius: 5px;
-  margin-bottom: 5px;
   cursor: pointer;
+  min-height: 50px;
 `;
 
 const PostTitle = styled.span`

@@ -10,10 +10,10 @@ const PostList = () => {
             <PostHeader>
               <PostTitle>작성한 제목 입력</PostTitle>
               <PostMeta>
-                <PostDate>2024.08.10</PostDate>
+                <PostDate>yyyy.mm.dd</PostDate>
                 <ActionButton>추가</ActionButton>
                 <ActionButton>삭제</ActionButton>
-                <HeartIcon>❤ 34</HeartIcon>
+                <HeartIcon>❤ count</HeartIcon>
               </PostMeta>
             </PostHeader>
             <PostDescription>
@@ -61,7 +61,7 @@ const PostHeader = styled.div`
 
 const PostTitle = styled.h2`
   font-size: 24px;
-  margin-right: 10px;
+  margin-right: 15px;
   color: #ffffff;
 `;
 
@@ -72,7 +72,7 @@ const PostMeta = styled.div`
   color: #b5b5b5;
 
   & > *:not(:last-child) {
-    margin-right: 10px;
+    margin-right: 15px;
   }
 `;
 
@@ -95,7 +95,7 @@ const ActionButton = styled.button`
 `;
 
 const HeartIcon = styled.span`
-  font-size: 14px;
+  font-size: 16px;
   color: #b5b5b5;
   margin-left: 10px;
 `;
@@ -108,7 +108,7 @@ const PostDescription = styled.p`
 `;
 
 const PostImage = styled.img`
-  width: 240px;
+  width: 300px;
   height: 200px;
   border-radius: 20px;
   object-fit: cover;

@@ -30,7 +30,12 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background: transparent;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 `;
 
 const Logo = styled.div`

@@ -21,4 +21,5 @@ const Container = styled.div`
   height: 100vh;
   font-family: Arial, sans-serif;
   padding: 20px;
+  margin-top: 50px; // 헤더 겹치지 않게
 `;

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import DotNav from "../../components/DotNav";
 
 function Home() {
   return (
@@ -21,6 +22,9 @@ function Home() {
           gradient="linear-gradient(135deg, #2B8DBE 0%, #C06AEA 100%)"
         />
       </CircleContainer>
+      <DotNavWrapper>
+        <DotNav />
+      </DotNavWrapper>
     </Background>
   );
 }
@@ -55,7 +59,7 @@ const Circle = styled.div<{
   gradient: string;
 }>`
   position: absolute;
-  background: ${(props) => props.gradient}; // 그라데이션 적용
+  background: ${(props) => props.gradient};
   width: ${(props) => props.size};
   height: ${(props) => props.size};
   border-radius: 50%;
@@ -64,4 +68,10 @@ const Circle = styled.div<{
   transform: translateX(${(props) => props.translateX || "0"})
     translateY(${(props) => props.translateY || "0"});
   filter: blur(100px);
+`;
+
+const DotNavWrapper = styled.div`
+  position: absolute;
+  right: 80px;
+  bottom: 100px;
 `;
