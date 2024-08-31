@@ -18,7 +18,7 @@ function Header() {
           <FaSearch />
         </SearchIcon>
       </SearchContainer>
-      <LoginLink>Log in</LoginLink>
+      <LoginLink to="/login">Log in</LoginLink>
     </HeaderContainer>
   );
 }
@@ -96,10 +96,18 @@ const SearchIcon = styled.div`
   color: rgba(255, 255, 255, 0.7);
 `;
 
-const LoginLink = styled.a`
+const LoginLink = styled(RouterNavLink)`
   flex: 1;
   text-align: right;
   color: white;
   font-size: 18px;
   text-decoration: none;
+
+  &:hover {
+    color: #d3d3d3;
+  }
+
+  &.active {
+    color: #d3d3d3;
+  }
 `;

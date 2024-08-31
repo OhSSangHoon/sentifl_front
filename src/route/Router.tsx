@@ -6,12 +6,14 @@ import MyBlog from "../pages/myblog/MyBlog";
 
 import NeighborBlog from "../pages/NeighborBlog/NeighborBlog";
 import MusicRecommend from "../pages/musicRecommend/MusicRecommend";
+import Login from "../pages/Login/Login";
 
 function Router() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/Create" element={<Create />} />
         <Route path="/myblog" element={<MyBlog />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
