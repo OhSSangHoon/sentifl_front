@@ -1,4 +1,4 @@
-import ReactDOM from "react-dom";
+import ReactDOM from 'react-dom';
 import { BrowserRouter } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 import "./index.css";
@@ -33,7 +33,7 @@ ReactDOM.render(
     <GlobalStyle />
     <Router />
   </BrowserRouter>,
-  document.getElementById("root")
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

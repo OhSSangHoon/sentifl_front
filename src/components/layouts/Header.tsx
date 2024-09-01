@@ -1,6 +1,6 @@
+import { FaSearch } from "react-icons/fa";
 import { NavLink as RouterNavLink } from "react-router-dom";
 import styled from "styled-components";
-import { FaSearch } from "react-icons/fa";
 
 function Header() {
   return (

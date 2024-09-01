@@ -1,48 +1,123 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-/* MarkdownEditor.css */
 export const EditorWrapper = styled.div`
     display: flex;
+    flex-direction: column;
     width: 100%;
     height: 90%;
-`;
 
-
-export const EditorContainer = styled.div`
-    width: 50%;
-    margin: 0 auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-`;
-
-export const SaveButton = styled.button`
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &:hover {
-        background-color: #0056b3;
+    /* 스크롤바 숨기기 */
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
     }
 `;
 
-export const PreviewContainer = styled.div`
-    flex: 1;
-    padding: 20px;
-    background:#fff;
-    overflow-y: auto;
+export const Title = styled.input`
+    height:300px;
+    padding:100px;
+    padding-bottom:0;
+    font-size: 2.5em;
+    font-weight:bold;
+    color: #fff;
+    background: #333;
+    border: none;
     box-sizing: border-box;
 
-    & > div {
-        width:100%;
-        height:100%;
+    &:focus {
+        outline: none;
+    }
+`;
+
+export const EditorContainer = styled.div`
+    width: 100%;
+    height: 100vh;
+    background: #080808;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: scroll;
+
+    /* 스크롤바 숨기기 */
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+
+    scrollbar-width: none; /* 파이어폭스에서 스크롤바를 숨기기 */
+    -ms-overflow-style: none;  /* IE와 Edge에서 스크롤바를 숨기기 */
+`;
+
+export const Editor = styled.div.attrs({
+    id: 'editor',
+})`
+    height: 92%;
+    display: flex;
+
+    .ql-align-center{
+        display:none;
+    }
+
+    .quill-editor {
+        p {
+            overflow-y: scroll;
+        }
+    }
+
+    .ql-snow{
+        border:1px solid red;
+    }
+
+    .ql-editor {
+        color:#fff;
+        overflow-y: scroll;
+        width: 100%;
+        height: 100%;
+        padding:20px 100px;
         box-sizing: border-box;
+        font-size:1.5em;
+
+        /* 스크롤바 숨기기 */
+        &::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        scrollbar-width: none; /* 파이어폭스에서 스크롤바를 숨기기 */
+        -ms-overflow-style: none;  /* IE와 Edge에서 스크롤바를 숨기기 */
+    }
+
+    input {
+        display: none;
+    }
+`;
+
+
+export const SaveBtn = styled.div`
+    height:10%;
+    position:relative;
+    
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+
+    button{
+        position:absolute;
+        right:10px;
+        width:100px;
+        height:45px;
+        border-radius:30px;
+        border:none;
+        background:#1E1E1E;
+        color:#fff;
+        font-size:1em;
+        cursor:pointer;
+        transition: 0.1s ease-in-out 0.1s;
+
+    }:hover{
+        background:#363636;
+    }
+
+    button:nth-child(2){
+        width:150px;
     }
 `

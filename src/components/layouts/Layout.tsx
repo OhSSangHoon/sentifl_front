@@ -27,8 +27,8 @@ function Layout() {
             </CSSTransition>
           </TransitionGroup>
         </S.MainContent>
+        <Footer />
       </S.LayoutContainer>
-      <Footer />
     </>
   );
 }
