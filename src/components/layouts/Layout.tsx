@@ -8,7 +8,6 @@ function Layout() {
     <>
       <S.LayoutContainer>
         <Header />
-        {/* <SideBar /> */}
         <S.MainContent>
           <Outlet />
         </S.MainContent>

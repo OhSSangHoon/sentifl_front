@@ -31,7 +31,7 @@ export const LayoutContainer = styled.div`
   height: 100%;
   margin: 0;
   flex-direction: column;
-  background: #080808;
+  background: #0d0d0e;
 `;
 
 export const MainContent = styled.div`

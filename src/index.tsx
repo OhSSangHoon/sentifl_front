@@ -1,10 +1,9 @@
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import './index.css';
-import reportWebVitals from './reportWebVitals';
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
 import Router from "./route/Router";
-
 
 const GlobalStyle = createGlobalStyle`
   *{
@@ -26,9 +25,8 @@ const GlobalStyle = createGlobalStyle`
   body::-webkit-scrollbar {
     display: none; /* 스크롤바 숨기기 */
   }
-`
+`;
 export default GlobalStyle;
-
 
 
 ReactDOM.render(
