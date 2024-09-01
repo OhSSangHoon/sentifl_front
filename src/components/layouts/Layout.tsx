@@ -11,8 +11,8 @@ function Layout() {
         <S.MainContent>
           <Outlet />
         </S.MainContent>
+        <Footer />
       </S.LayoutContainer>
-      <Footer />
     </>
   );
 }
