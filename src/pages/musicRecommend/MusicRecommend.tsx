@@ -1,3 +1,5 @@
+// 메인- 다른 사람 노래 추천
+
 import React from "react";
 import styled from "styled-components";
 import DotNav from "../../components/DotNav";
@@ -8,6 +10,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 50px;
 `;
 
 function Recommend() {

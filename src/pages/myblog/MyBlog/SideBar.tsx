@@ -7,16 +7,13 @@ import {
   FaPen,
   FaCalendarAlt,
   FaParking,
+  FaStar,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
-  const [isClicked, setIsClicked] = useState(false);
   const navigate = useNavigate();
-
-  const handlePostItemClick = () => {
-    setIsClicked(!isClicked);
-  };
+  const location = useLocation();
 
   const handlePenClick = () => {
     navigate("/Create");
@@ -24,38 +21,52 @@ const Sidebar = () => {
 
   return (
     <SidebarContainer>
-      <SidebarTopBar>
-        <LeftIcons>
-          <FaParking />
-          <PointText>0p</PointText>
-        </LeftIcons>
-        <RightIcons>
-          <FaBell />
-          <FaCog />
-        </RightIcons>
-      </SidebarTopBar>
-      <Profile>
-        <ProfileImageWrapper>
-          <ProfileImage src="path_to_profile_image" alt="Profile" />
-        </ProfileImageWrapper>
-        <ProfileInfo>
-          <PlaylistBadge>My Playlist</PlaylistBadge>
-          <ProfileName>닉네임</ProfileName>
-          <ProfileStats>
-            <ProfileStatItem>
-              <small>follow</small>
-              <br />
-              <strong>0</strong>
-            </ProfileStatItem>
-            <Separator>|</Separator>
-            <ProfileStatItem>
-              <small>following</small>
-              <br />
-              <strong>0</strong>
-            </ProfileStatItem>
-          </ProfileStats>
-        </ProfileInfo>
-      </Profile>
+      {location.pathname === "/myblog" ? (
+        <>
+          <SidebarTopBar>
+            <LeftIcons>
+              <FaParking />
+              <PointText>0p</PointText>
+            </LeftIcons>
+            <RightIcons>
+              <FaBell />
+              <FaCog />
+            </RightIcons>
+          </SidebarTopBar>
+          <Profile>
+            <ProfileImageWrapper>
+              <ProfileImage src="path_to_profile_image" alt="Profile" />
+            </ProfileImageWrapper>
+            <ProfileInfo>
+              <PlaylistBadge>My Playlist</PlaylistBadge>
+              <ProfileName>닉네임</ProfileName>
+              <ProfileStats>
+                <ProfileStatItem>
+                  <small>follow</small>
+                  <br />
+                  <strong>0</strong>
+                </ProfileStatItem>
+                <Separator>|</Separator>
+                <ProfileStatItem>
+                  <small>following</small>
+                  <br />
+                  <strong>0</strong>
+                </ProfileStatItem>
+              </ProfileStats>
+            </ProfileInfo>
+          </Profile>
+        </>
+      ) : (
+        location.pathname === "/blogpost" && (
+          <>
+            <BlogPostProfile>
+              <ProfileName>닉네임</ProfileName>
+              <PlaylistBadge>My Playlist</PlaylistBadge>
+              <FaStar />
+            </BlogPostProfile>
+          </>
+        )
+      )}
       <Divider />
       <Menu>
         <CategoryTitle>
@@ -76,15 +87,15 @@ const Sidebar = () => {
           </Icons>
         </PostListHeader>
         <PostList>
-          <PostItem isClicked={isClicked}>
+          <PostItem>
             <PostTitle>제목 1</PostTitle>
             <PostDate>날짜</PostDate>
           </PostItem>
-          <PostItem isClicked={isClicked}>
+          <PostItem>
             <PostTitle>제목 2</PostTitle>
             <PostDate>날짜</PostDate>
           </PostItem>
-          <PostItem isClicked={isClicked}>
+          <PostItem>
             <PostTitle>제목 3</PostTitle>
             <PostDate>날짜</PostDate>
           </PostItem>
@@ -98,13 +109,12 @@ export default Sidebar;
 
 const SidebarContainer = styled.aside`
   width: 300px;
-  height: auto;
+  height: 100vh;
   background-color: #1e1e1e;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  margin-right: 20px;
-  overflow: hidden;
+  overflow-y: auto;
 `;
 
 const SidebarTopBar = styled.div`
@@ -290,12 +300,11 @@ const PostList = styled.div`
   gap: 10px;
 `;
 
-const PostItem = styled.div<{ isClicked: boolean }>`
+const PostItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: ${({ isClicked }) =>
-    `rgba(217, 217, 217, ${isClicked ? 0.4 : 0.2})`};
+  background-color: rgba(217, 217, 217, 0.2);
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
@@ -310,4 +319,32 @@ const PostTitle = styled.span`
 const PostDate = styled.span`
   font-size: 14px;
   color: #ffffff;
+`;
+
+const BlogPostProfile = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0;
+
+  h2 {
+    font-size: 18px;
+    margin-right: 10px;
+  }
+
+  div {
+    background-color: #3f3f3f;
+    color: #ffffff;
+    font-size: 12px;
+    padding: 2px 5px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    margin-right: auto;
+  }
+
+  svg {
+    color: #ffffff;
+    font-size: 18px;
+  }
 `;

@@ -5,10 +5,8 @@ import { useNavigate } from "react-router-dom";
 const DotNavigation = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = (path: any) => {
-    setTimeout(() => {
-      navigate(path);
-    }, 300);
+  const handleNavigate = (path: string) => {
+    navigate(path, { state: { withSlide: true } });
   };
 
   return (

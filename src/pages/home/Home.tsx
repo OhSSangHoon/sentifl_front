@@ -1,3 +1,5 @@
+// 메인 홈
+
 import styled from "styled-components";
 import DotNav from "../../components/DotNav";
 
@@ -6,7 +8,7 @@ function Home() {
     <Background>
       <CircleContainer>
         <Circle
-          size="1000px"
+          size="800px"
           top="70%"
           left="35%"
           translateX="-50%"
@@ -14,7 +16,7 @@ function Home() {
           gradient="linear-gradient(135deg, #F12FBB 0%, #B2EA6A 100%)"
         />
         <Circle
-          size="1000px"
+          size="800px"
           top="50%"
           left="80%"
           translateX="-50%"
