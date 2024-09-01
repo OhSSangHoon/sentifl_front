@@ -1,11 +1,15 @@
 import AWS from 'aws-sdk';
 import JSZip from 'jszip';
 import Quill from 'quill';
+import ImageReisze from 'quill-image-resize';
 import 'quill/dist/quill.bubble.css';
 import React, { useEffect, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { uploadTempZipToS3, uploadToS3 } from '../services/s3Service';
 import * as S from './Styles/Editor.style';
 
+
+Quill.register('modules/imageResize', ImageReisze);
 
 AWS.config.update({
     region: process.env.REACT_APP_AWS_REGION,
@@ -23,6 +27,8 @@ interface MarkdownEditorProps {
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ loadFromTempSave, initialDelta, title, setTitle, images }) => {
     const quillRef = useRef<Quill | null>(null);
+    const navigate = useNavigate(); // useNavigate 훅 사용
+
 
     const imageHandler = async () => {
         const input = document.createElement('input');
@@ -118,6 +124,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ loadFromTempSave, initi
         try {
             const s3Url = await uploadTempZipToS3(new File([zipBlob], 'tempSaved.zip'));
             console.log('File uploaded to S3:', s3Url);
+
+            localStorage.clear();
+
+            navigate('/');
         } catch (error) {
             console.error('Error uploading zip file to S3:', error);
         }
