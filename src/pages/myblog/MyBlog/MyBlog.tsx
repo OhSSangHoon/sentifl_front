@@ -1,3 +1,5 @@
+// 내 블로그
+
 import React from "react";
 import styled from "styled-components";
 import Sidebar from "./SideBar";

@@ -4,15 +4,6 @@ import React from "react";
 import styled from "styled-components";
 import DotNav from "../../components/DotNav";
 
-const Container = styled.div`
-  background-color: gray;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 50px;
-`;
-
 function Recommend() {
   return (
     <Container>
@@ -25,6 +16,14 @@ function Recommend() {
 }
 
 export default Recommend;
+
+const Container = styled.div`
+  background-color: gray;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const DotNavWrapper = styled.div`
   position: absolute;
