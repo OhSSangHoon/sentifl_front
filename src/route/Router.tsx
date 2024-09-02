@@ -7,6 +7,7 @@ import NeighborBlog from "../pages/NeighborBlog/NeighborBlog";
 import MusicRecommend from "../pages/musicRecommend/MusicRecommend";
 import Login from "../pages/Login/Login";
 import BlogPost from "../pages/myblog/BlogPost/BlogPost";
+import NicknameSetup from "../pages/Login/NicknameSetup";
 
 function Router() {
   return (
@@ -14,6 +15,7 @@ function Router() {
       <Route path="/" element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/nicknamesetup" element={<NicknameSetup />} />
         <Route path="/Create" element={<Create />} />
         <Route path="/myblog" element={<MyBlog />} />
         <Route path="/blogpost" element={<BlogPost />} />
