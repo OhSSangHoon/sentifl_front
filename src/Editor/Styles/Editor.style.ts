@@ -101,7 +101,6 @@ export const SaveBtn = styled.div`
     }
 
     button{
-        position:absolute;
         right:10px;
         width:100px;
         height:45px;
