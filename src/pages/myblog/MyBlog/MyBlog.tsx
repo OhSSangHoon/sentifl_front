@@ -1,3 +1,5 @@
+// 내 블로그
+
 import React from "react";
 import styled from "styled-components";
 import Sidebar from "./SideBar";
@@ -21,4 +23,5 @@ const Container = styled.div`
   height: 100vh;
   font-family: Arial, sans-serif;
   padding: 20px;
+  margin-top: 50px;
 `;
