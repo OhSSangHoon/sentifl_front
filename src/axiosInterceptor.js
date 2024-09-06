@@ -12,7 +12,7 @@ axiosInstance.interceptors.request.use(
         const token = localStorage.getItem('accessToken'); // 엑세스 토큰을 로컬 스토리지에서 가져옴
         
         if (token) {
-            config.headers['Authorization-Access'] = `Bearer ${token}`; // 엑세스 토큰을 헤더에 추가
+            config.headers['Authorization'] = `Bearer ${token}`; // 엑세스 토큰을 헤더에 추가
             console.log('엑세스 토큰이 요청에 포함됩니다:', token);  // 엑세스 토큰 콘솔 출력
         } else {
             console.log('엑세스 토큰이 없습니다.');
