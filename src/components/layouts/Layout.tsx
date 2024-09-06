@@ -1,6 +1,5 @@
-import React from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { useLocation, Outlet } from "react-router-dom";
 import Footer from "./Footer";
 import Header from "./Header";
 import * as S from "./Styles/Layout.style";

@@ -7,6 +7,7 @@ export const Main = styled.div`
   z-index: 1;
   flex-direction: column;
   background: #080808;
+  margin:100px 0;
 
   @media (max-width: 768px) {
     width: 100%;

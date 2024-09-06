@@ -51,28 +51,29 @@ export const Circle = styled.div<CircleProps>`
 
 export const SignInBox = styled.div`
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
   text-align: left;
   color: white;
 `;
 
 export const Title = styled.h1`
-  margin-bottom: 20px;
+  margin-left:50px;
+  margin-bottom: 10px;
   font-size: 30px;
   font-weight: bold;
 `;
 
 export const SubTitle = styled.p`
+  margin-left:50px;
   margin-bottom: 40px;
-  color: #aaaaaa;
+  color: #d9d9d9;
   font-size: 20px;
   font-weight: bold;
 `;
 
 export const Button = styled.button`
-  width: 100%;
+  width: 300px;
   padding: 10px;
-  margin-bottom: 10px;
   background-color: #333;
   color: white;
   border: 1px solid #444;
@@ -81,11 +82,18 @@ export const Button = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin:0 auto;
+  margin-bottom: 15px;
 
   img {
     width: 20px;
     height: 20px;
-    margin-right: 10px;
+    margin-right:10px;
+  }
+
+    span {
+    flex: 0.9;
+    text-align: center;
   }
 
   &:hover {
@@ -93,9 +101,15 @@ export const Button = styled.button`
   }
 `;
 
+export const Line = styled.div`
+  width:400px;
+  border:1px solid #474747;
+  margin-right:50px;
+  margin:70px 0;
+`
+
 export const Footer = styled.p`
-  margin-top: 140px;
   font-size: 0.875rem;
-  color: #666;
+  color: #818391;
   text-align: center;
 `;

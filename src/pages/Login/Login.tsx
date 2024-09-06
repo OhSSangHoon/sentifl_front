@@ -1,7 +1,16 @@
-import React from "react";
+import Google from "../../assets/icons/social/google.webp";
+import Kakao from "../../assets/icons/social/kakao.webp";
+import Naver from "../../assets/icons/social/naver.webp";
 import * as S from "./Styles/Login.styles";
 
+
 function Login() {
+  const handleNaverLogin = async () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+  }
+
+
+
   return (
     <S.Container>
       <S.LeftPanel>
@@ -18,18 +27,19 @@ function Login() {
         <S.SignInBox>
           <S.Title>Sign In</S.Title>
           <S.SubTitle>Create your account</S.SubTitle>
-          <S.Button>
-            <img src="path-to-naver-logo" alt="Naver Logo" />
-            네이버 아이디로 로그인
+          <S.Button onClick={handleNaverLogin}>
+            <img src={Naver} alt="Naver Icon" />
+            <span>네이버 아이디로 로그인</span>
           </S.Button>
           <S.Button>
-            <img src="path-to-google-logo" alt="Google Logo" />
-            구글 아이디로 로그인
+            <img src={Google} alt="Google Icon" />
+            <span>구글 아이디로 로그인</span>
           </S.Button>
           <S.Button>
-            <img src="path-to-kakao-logo" alt="Kakao Logo" />
-            카카오 아이디로 로그인
+            <img src={Kakao} alt="Kakao Logo" />
+            <span>카카오 아이디로 로그인</span>
           </S.Button>
+          <S.Line/>
           <S.Footer>*비밀번호를 잊으셨나요?</S.Footer>
         </S.SignInBox>
       </S.RightPanel>
