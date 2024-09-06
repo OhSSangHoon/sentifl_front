@@ -49,7 +49,8 @@ export const EditorContainer = styled.div`
 export const Editor = styled.div.attrs({
     id: 'editor',
 })`
-    height: 92%;
+    border:1px solid red;
+    height: 100%;
     display: flex;
 
     .ql-align-center{

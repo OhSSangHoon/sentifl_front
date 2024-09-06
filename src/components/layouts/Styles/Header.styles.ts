@@ -1,6 +1,6 @@
 // Header.styles.js
-import styled from "styled-components";
 import { NavLink as RouterNavLink } from "react-router-dom";
+import styled from "styled-components";
 
 export const HeaderContainer = styled.header`
   display: flex;
