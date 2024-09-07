@@ -6,6 +6,14 @@ export const Container = styled.div`
   background-color: #0d0d0e;
 `;
 
+export const Uid = styled.div`
+  width:100%;
+  text-align:center;
+  border:1px solid red;
+  margin-top:100px;
+  color:#fff;
+`
+
 export const LeftPanel = styled.div`
   flex: 6;
   display: flex;
