@@ -20,7 +20,7 @@ const Container = styled.div`
   display: flex;
   background: #0d0d0e;
   color: #ffffff;
-  height: 100vh;
+  height: auto;
   font-family: Arial, sans-serif;
   padding: 20px;
   margin-top: 50px;

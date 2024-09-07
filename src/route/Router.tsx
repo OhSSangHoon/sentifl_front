@@ -9,6 +9,7 @@ import MusicRecommend from "../pages/musicRecommend/MusicRecommend";
 import BlogPost from "../pages/myblog/BlogPost/BlogPost";
 import MyBlog from "../pages/myblog/MyBlog/MyBlog";
 import NeighborBlog from "../pages/NeighborBlog/NeighborBlog";
+import CreateSong from "../pages/SongCreator/CreateSong";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
         <Route path="/blogpost" element={<BlogPost />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
         <Route path="/neighborblog" element={<NeighborBlog />} />
+        <Route path="/createsong" element={<CreateSong />} />
       </Route>
     </Routes>
   );

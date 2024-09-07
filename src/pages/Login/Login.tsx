@@ -3,13 +3,10 @@ import Kakao from "../../assets/icons/social/kakao.webp";
 import Naver from "../../assets/icons/social/naver.webp";
 import * as S from "./Styles/Login.styles";
 
-
 function Login() {
   const handleNaverLogin = async () => {
     window.location.href = "http://localhost:8080/oauth2/authorization/naver";
-  }
-
-
+  };
 
   return (
     <S.Container>
@@ -39,7 +36,7 @@ function Login() {
             <img src={Kakao} alt="Kakao Logo" />
             <span>카카오 아이디로 로그인</span>
           </S.Button>
-          <S.Line/>
+          <S.Line />
           <S.Footer>*비밀번호를 잊으셨나요?</S.Footer>
         </S.SignInBox>
       </S.RightPanel>

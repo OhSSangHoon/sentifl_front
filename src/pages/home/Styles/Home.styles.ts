@@ -30,6 +30,10 @@ export const Background = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const CircleContainer = styled.div`

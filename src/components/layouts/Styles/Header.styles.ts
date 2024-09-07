@@ -1,13 +1,19 @@
-// Header.styles.js
+// Header.style.ts
+
 import { NavLink as RouterNavLink } from "react-router-dom";
 import styled from "styled-components";
 
-export const HeaderContainer = styled.header`
+export interface HeaderProps {
+  scrolled: boolean;
+}
+
+export const HeaderContainer = styled.header<HeaderProps>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  background-color: rgba(0, 0, 0, 0);
+  padding: 0 40px;
+  background-color: ${(props) =>
+    props.scrolled ? "#000000" : "rgba(0, 0, 0, 0)"};
   z-index: 10;
   position: fixed;
   top: 0;
@@ -18,6 +24,7 @@ export const HeaderContainer = styled.header`
 
 export const Logo = styled(RouterNavLink)`
   flex: 1;
+
   img {
     height: 40px;
   }
@@ -25,30 +32,35 @@ export const Logo = styled(RouterNavLink)`
 
 export const Nav = styled.nav`
   display: flex;
-  flex: 2;
   justify-content: center;
-  gap: 20px;
+  gap: 50px;
+  margin-left: 220px; /* 버튼들을 오른쪽으로 이동 */
+  flex-grow: 1; /* 중앙에 배치하기 위해 flex-grow */
 `;
 
 export const StyledNavLink = styled(RouterNavLink)`
   color: white;
   font-size: 18px;
-  font-weight: thin;
   text-decoration: none;
+  text-transform: uppercase;
+  opacity: 0.6;
 
   &:hover {
-    color: #d3d3d3;
+    color: #ffffff;
+    opacity: 1;
   }
 
   &.active {
-    color: #d3d3d3;
+    color: #ffffff;
+    opacity: 1;
+    border-bottom: 2px solid white; /* 선택된 항목에 밑줄 */
   }
 `;
 
 export const SearchContainer = styled.div`
-  flex: 2;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  flex-grow: 1; /* 오른쪽 정렬을 위한 flex-grow */
   position: relative;
 `;
 
@@ -69,17 +81,18 @@ export const SearchInput = styled.input`
 export const SearchIcon = styled.div`
   position: absolute;
   top: 50%;
-  right: 165px;
+  right: 15px;
   transform: translateY(-50%);
   color: rgba(255, 255, 255, 0.7);
 `;
 
 export const LoginLink = styled(RouterNavLink)`
-  flex: 1;
+  flex-basis: 100px;
   text-align: right;
   color: white;
   font-size: 18px;
   text-decoration: none;
+  margin-left: 20px;
 
   &:hover {
     color: #d3d3d3;
