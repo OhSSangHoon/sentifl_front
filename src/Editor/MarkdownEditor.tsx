@@ -46,6 +46,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ loadFromTempSave, initi
                         const range = editor.getSelection(true);
                         if (range) {
                             editor.insertEmbed(range.index, 'image', s3Url); // S3 URL 삽입
+                            editor.format('image', {width: '100%'});
                         }
                     } else {
                         console.error('Quill editor is not initialized');
@@ -88,8 +89,16 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ loadFromTempSave, initi
     }, [imageHandler]);
 
     const handleTemporarySave = async () => {
-        if (!quillRef.current) return;
+        if(!quillRef.current){
+            console.log("Quill editor is not initialized.");
+            return;
+        }
 
+        if (!title || (quillRef.current?.getLength() || 0) <= 1) {
+            alert("제목과 내용을 모두 입력해주세요.");  // 경고 메시지 출력
+            return;
+        }
+        
         const editorContent = quillRef.current.getContents(); // Delta 형식으로 콘텐츠 가져오기
         const editorDelta = JSON.stringify(editorContent); // Delta 형식을 JSON으로 변환
         const zip = new JSZip();
@@ -135,7 +144,15 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ loadFromTempSave, initi
 
 
     const handleSave = async () => {
-        if(!quillRef.current) return;  //quillRef.current의 값이 null일 수 있으므로 미리 방지
+        if(!quillRef.current){
+            console.log("Quill editor is not initialized.");
+            return;
+        }
+
+        if (!title || (quillRef.current?.getLength() || 0) <= 1) {
+            alert("제목과 내용을 모두 입력해주세요.");  // 경고 메시지 출력
+            return;
+        }
         
         //제목과 시간을 파일 이름으로 사용
         const fileTitle = title ? title.replace(/[^a-z0-9]/gi, '_').toLowerCase() : 'untitled';

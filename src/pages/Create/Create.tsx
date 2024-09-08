@@ -11,6 +11,7 @@ function Create() {
     const [initialDelta, setInitialDelta] = useState<any>(null);
     const [images, setImages] = useState<Array<{ imageName: string; imageUrl: string }>>([]);
 
+
     useEffect(() => {
         const checkForTempSave = async () => {
             try {
