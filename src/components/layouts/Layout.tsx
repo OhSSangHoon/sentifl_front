@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import * as S from "./Styles/Layout.style";
 import { SlideInDiv } from "./Styles/Transition.style";
+import UserPanel from "./UserPanel";
 
 function Layout() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function Layout() {
               </SlideInDiv>
             </CSSTransition>
           </TransitionGroup>
+          <UserPanel />
         </S.MainContent>
         <Footer />
       </S.LayoutContainer>

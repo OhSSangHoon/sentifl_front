@@ -8,9 +8,6 @@ import { Link } from "react-router-dom";
 function Home() {
   return (
     <S.Background>
-      <S.TopLeftLink>
-        <Link to="/myblog">내 블로그 이동</Link>
-      </S.TopLeftLink>
       <S.CircleContainer>
         <S.Circle
           size="800px"
