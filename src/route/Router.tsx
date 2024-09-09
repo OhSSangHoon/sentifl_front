@@ -4,7 +4,7 @@ import Create from "../pages/Create/Create";
 import Home from "../pages/home/Home";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
-import LoginRedirect from "../pages/Login/LoginRedirect";
+import Success from "../pages/Login/SuccessPage";
 import MusicRecommend from "../pages/musicRecommend/MusicRecommend";
 import BlogPost from "../pages/myblog/BlogPost/BlogPost";
 import MyBlog from "../pages/myblog/MyBlog/MyBlog";
@@ -18,7 +18,7 @@ function Router() {
       <Route path="/" element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/login-success" element={<LoginRedirect />} />
+        <Route path="/auth/success" element={<Success />} />
         <Route path="/auth/add-info" element={<AddInfo />} />
         <Route path="/Create" element={<Create />} />
         <Route path="/myblog" element={<MyBlog />} />
