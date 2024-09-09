@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axiosInstance from '../../axiosInterceptor';
 import * as S from "./Styles/Login.styles";
 
 const AddInfo = () => {
     const [uid, setUid] = useState('');
     const [nickname, setNickname] = useState('');
+    const [profile, setProfile] = useState(''); // profile 변수 선언
     const location = useLocation();
-    const navigate = useNavigate();
 
     useEffect(() => {
         const query = new URLSearchParams(location.search);
         const accessToken = query.get('accessToken');
+        const userProfile = 'https://ssl.pstatic.net/static/pwe/address/img_profile.png';
+        setProfile(userProfile);  // profile 값 설정
 
         // 토큰을 쿠키에 저장
         if (accessToken) {
@@ -28,7 +30,8 @@ const AddInfo = () => {
         axiosInstance.post('/auth/add-info', { uid, nickName: nickname })
             .then(() => {
                 alert('추가 정보가 성공적으로 입력되었습니다.');
-                navigate('/auth/success');  // 성공적으로 입력 후 success 페이지로 리디렉션
+                // 리디렉션을 프론트엔드에서 수행
+                window.location.href = `/auth/success?uid=${uid}&nickName=${nickname}&profile=${profile}`;
             })
             .catch((error) => {
                 console.error('추가 정보 입력 실패:', error.response?.data || error);
@@ -36,9 +39,9 @@ const AddInfo = () => {
                     alert('UID가 이미 존재합니다. 다른 UID를 입력해주세요.');
                 } else {
                     alert('추가 정보 입력 중 오류가 발생했습니다.');
-                    console.error(error);
                 }
             });
+
     };
 
     return (

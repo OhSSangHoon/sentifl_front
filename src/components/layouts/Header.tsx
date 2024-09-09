@@ -2,6 +2,7 @@ import { FaSearch } from "react-icons/fa";
 import * as S from "./Styles/Header.styles";
 
 function Header() {
+
   return (
     <S.HeaderContainer>
       <S.Logo to="/">

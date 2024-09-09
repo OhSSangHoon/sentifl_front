@@ -1,40 +1,42 @@
+import queryString from 'query-string';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SuccessPage = () => {
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const params = queryString.parse(window.location.search);
+    useEffect(() => {
+        const params = queryString.parse(window.location.search);
 
-    //     const accessToken = Array.isArray(params.accessToken) ? params.accessToken[0] : params.accessToken;
-    //     const refreshToken = Array.isArray(params.refreshToken) ? params.refreshToken[0] : params.refreshToken;
+        const accessToken = Array.isArray(params.accessToken) ? params.accessToken[0] : params.accessToken;
+        const refreshToken = Array.isArray(params.refreshToken) ? params.refreshToken[0] : params.refreshToken;
 
-    //     console.log('Query params:', params);
+        console.log('Query params:', params);
     
-    //     const uid = Array.isArray(params.uid) ? params.uid[0] : params.uid;
+        const uid = Array.isArray(params.uid) ? params.uid[0] : params.uid;
 
-    //     const nickName = Array.isArray(params.nickName)
-    //         ? decodeURIComponent(params.nickName[0] || '')
-    //         : decodeURIComponent(params.nickName || '');
-    //     const profile = Array.isArray(params.profile)
-    //         ? decodeURIComponent(params.profile[0] || '')
-    //         : decodeURIComponent(params.profile || '');
+        const nickName = Array.isArray(params.nickName)
+            ? decodeURIComponent(params.nickName[0] || '')
+            : decodeURIComponent(params.nickName || '');
+        const profile = Array.isArray(params.profile)
+            ? decodeURIComponent(params.profile[0] || '')
+            : decodeURIComponent(params.profile || '');
     
-    //     console.log('UID:', uid);
-    //     console.log('Nickname (Decoded):', nickName);
-    //     console.log('Profile (Decoded):', profile);
+        console.log('UID:', uid);
+        console.log('Nickname (Decoded):', nickName);
+        console.log('Profile (Decoded):', profile);
 
-    //     if(accessToken && refreshToken){
-    //         localStorage.setItem('accessToken', accessToken);
-    //         localStorage.setItem('refreshToken', refreshToken);
-    //     }
+        if(accessToken && refreshToken){
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+        }
     
-    //     if (uid && nickName && profile) {
-    //         navigate('/');
-    //     } else {
-    //         console.error('Missing parameters');
-    //     }
-    // }, [navigate]);
+        if (uid && nickName && profile) {
+            navigate('/');
+        } else {
+            console.error('Missing parameters');
+        }
+    }, [navigate]);
     
 
     return (
