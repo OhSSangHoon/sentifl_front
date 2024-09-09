@@ -64,3 +64,15 @@ export const DotNavWrapper = styled.div`
   right: 80px;
   bottom: 100px;
 `;
+
+export const TopLeftLink = styled.div`
+  position: absolute;
+  top: 200px;
+  left: 20px;
+
+  a {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+  }
+`;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import * as S from "./Styles/PostList.styles";
+import * as S from "./Styles/PostList.style";
 import axios from "axios";
 
 interface Post {
@@ -69,29 +69,21 @@ const PostList = () => {
 
   return (
     <>
-      <S.Content>
-        {posts.map((post) => (
-          <S.Post key={post.postId}>
-            <S.PostContentWrapper>
-              <S.PostInfo>
-                <S.PostHeader>
-                  <S.PostTitle>{post.title}</S.PostTitle>
-                  <S.PostMeta>
-                    <S.PostDate>
-                      {new Date(post.time).toLocaleDateString()}
-                    </S.PostDate>
-                    <S.ActionButton>추가</S.ActionButton>
-                    <S.ActionButton>삭제</S.ActionButton>
-                    <S.HeartIcon>❤ count</S.HeartIcon>
-                  </S.PostMeta>
-                </S.PostHeader>
-                <S.PostDescription>{post.content}</S.PostDescription>
-              </S.PostInfo>
-              <S.PostImage src="path_to_image" alt="Post Visual" />
-            </S.PostContentWrapper>
-          </S.Post>
-        ))}
-      </S.Content>
+      <S.MainContent>
+        <S.Title>노래로 제작할 블로그 글을 선택해 주세요.</S.Title>
+        <S.Subtitle>센티플이 어울리는 음악을 만들어 드릴게요.</S.Subtitle>
+        <S.BlogList>
+          {posts.map((post) => (
+            <S.BlogItem key={post.postId}>
+              <S.BlogTitle>{post.title}</S.BlogTitle>
+              <S.BlogDate>
+                {new Date(post.time).toLocaleDateString()}
+              </S.BlogDate>
+              <S.CheckBox type="checkbox" />
+            </S.BlogItem>
+          ))}
+        </S.BlogList>
+      </S.MainContent>
 
       {/* 페이지네이션 버튼 */}
       <S.PaginationWrapper>

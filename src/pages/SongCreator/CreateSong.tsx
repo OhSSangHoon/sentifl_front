@@ -3,6 +3,7 @@
 import React from "react";
 import * as S from "./Styles/CreateSong.style";
 import { FaCheck, FaPlay, FaParking } from "react-icons/fa";
+import PostList from "./PostList";
 
 const CreateSong = () => {
   return (
@@ -14,37 +15,7 @@ const CreateSong = () => {
           <FaParking style={{ marginRight: "5px" }} /> 0p
         </S.Points>
       </S.Sidebar>
-      <S.MainContent>
-        <S.Title>노래로 제작할 블로그 글을 선택해 주세요.</S.Title>
-        <S.Subtitle>센티플이 어울리는 음악을 만들어 드릴게요.</S.Subtitle>
-        <S.BlogList>
-          <S.BlogItem>
-            <S.BlogTitle>블로그 제목이 표시됩니다.</S.BlogTitle>
-            <S.BlogDate>yyyy.mm.dd</S.BlogDate>
-            <S.CheckBox type="checkbox" />
-          </S.BlogItem>
-          <S.BlogItem>
-            <S.BlogTitle>블로그 제목이 표시됩니다.</S.BlogTitle>
-            <S.BlogDate>yyyy.mm.dd</S.BlogDate>
-            <S.CheckBox type="checkbox" />
-          </S.BlogItem>
-          <S.BlogItem>
-            <S.BlogTitle>블로그 제목이 표시됩니다.</S.BlogTitle>
-            <S.BlogDate>yyyy.mm.dd</S.BlogDate>
-            <S.CheckBox type="checkbox" />
-          </S.BlogItem>
-          <S.BlogItem>
-            <S.BlogTitle>블로그 제목이 표시됩니다.</S.BlogTitle>
-            <S.BlogDate>yyyy.mm.dd</S.BlogDate>
-            <S.CheckBox type="checkbox" />
-          </S.BlogItem>
-          <S.BlogItem>
-            <S.BlogTitle>블로그 제목이 표시됩니다.</S.BlogTitle>
-            <S.BlogDate>yyyy.mm.dd</S.BlogDate>
-            <S.CheckBox type="checkbox" />
-          </S.BlogItem>
-        </S.BlogList>
-      </S.MainContent>
+      <PostList />
       <S.PlaySection>
         <S.PlayButton>
           <FaPlay />

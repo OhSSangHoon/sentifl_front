@@ -27,7 +27,7 @@ function Header() {
         <img src="/path" alt="logo" />
       </S.Logo>
       <S.Nav>
-        <S.StyledNavLink to="/create">Create</S.StyledNavLink>
+        <S.StyledNavLink to="/createsong">Create</S.StyledNavLink>
         <S.StyledNavLink to="/">Home</S.StyledNavLink>
       </S.Nav>
       <S.SearchContainer>

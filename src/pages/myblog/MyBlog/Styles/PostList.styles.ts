@@ -83,3 +83,31 @@ export const PostImage = styled.img`
   object-fit: cover;
   background: white;
 `;
+
+export const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+`;
+
+export const PageButton = styled.button`
+  padding: 10px 15px;
+  margin: 0 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+export const PageNumber = styled.span`
+  font-size: 16px;
+  margin: 0 10px;
+`;

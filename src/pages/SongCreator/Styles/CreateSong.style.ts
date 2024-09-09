@@ -18,6 +18,10 @@ export const Sidebar = styled.div`
   border-top-right-radius: 50px;
   border-bottom-right-radius: 50px;
   margin-left: 30px;
+  position: fixed; /* 고정된 위치 */
+  top: 100px; /* 헤더 아래에 위치 */
+  left: 0;
+  height: calc(100vh - 100px);
 `;
 
 export const ProfileImage = styled.img`
@@ -41,12 +45,12 @@ export const Points = styled.p`
 `;
 
 export const MainContent = styled.div`
+  margin-left: 350px;
   flex-grow: 1;
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 20px;
 `;
 
 export const Title = styled.h1`
