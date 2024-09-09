@@ -10,7 +10,6 @@ function Login() {
   }
 
 
-
   return (
     <S.Container>
       <S.LeftPanel>
