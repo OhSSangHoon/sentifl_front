@@ -8,6 +8,14 @@ function Login() {
     window.location.href = "http://localhost:8080/oauth2/authorization/naver";
   };
 
+  const handleGoogleLogin = async () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  };
+
+  const handleKakaoLogin = async () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+  };
+
   return (
     <S.Container>
       <S.LeftPanel>
@@ -28,11 +36,11 @@ function Login() {
             <img src={Naver} alt="Naver Icon" />
             <span>네이버 아이디로 로그인</span>
           </S.Button>
-          <S.Button>
+          <S.Button onClick={handleGoogleLogin}>
             <img src={Google} alt="Google Icon" />
             <span>구글 아이디로 로그인</span>
           </S.Button>
-          <S.Button>
+          <S.Button onClick={handleKakaoLogin}>
             <img src={Kakao} alt="Kakao Logo" />
             <span>카카오 아이디로 로그인</span>
           </S.Button>

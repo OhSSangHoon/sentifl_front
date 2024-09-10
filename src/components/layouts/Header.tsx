@@ -38,7 +38,7 @@ function Header({ toggleUserPanel, isUserPanelVisible }: HeaderProps) {
             <FaSearch size={18} />
           </S.SearchIcon>
         </S.SearchContainer>
-
+        {/* 로그인 시 보이는 요소 */}
         <S.IconContainer onClick={toggleUserPanel}>
           <FaUser size={24} />
         </S.IconContainer>
