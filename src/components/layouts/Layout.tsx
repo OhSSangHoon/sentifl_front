@@ -5,15 +5,25 @@ import Header from "./Header";
 import * as S from "./Styles/Layout.style";
 import { SlideInDiv } from "./Styles/Transition.style";
 import UserPanel from "./UserPanel";
+import { useState } from "react";
 
 function Layout() {
   const location = useLocation();
   const withSlide = location.state?.withSlide || false;
 
+  const [isUserPanelVisible, setUserPanelVisible] = useState(false);
+
+  const toggleUserPanel = () => {
+    setUserPanelVisible((prevState) => !prevState);
+  };
+
   return (
     <>
       <S.LayoutContainer>
-        <Header />
+        <Header
+          toggleUserPanel={toggleUserPanel}
+          isUserPanelVisible={isUserPanelVisible}
+        />
         <S.MainContent>
           <TransitionGroup>
             <CSSTransition
@@ -26,7 +36,7 @@ function Layout() {
               </SlideInDiv>
             </CSSTransition>
           </TransitionGroup>
-          <UserPanel />
+          {isUserPanelVisible && <UserPanel />}
         </S.MainContent>
         <Footer />
       </S.LayoutContainer>

@@ -53,7 +53,7 @@ export const StyledNavLink = styled(RouterNavLink)`
   &.active {
     color: #ffffff;
     opacity: 1;
-    border-bottom: 2px solid white; /* 선택된 항목에 밑줄 */
+    border-bottom: 2px solid white;
   }
 `;
 
@@ -101,4 +101,12 @@ export const LoginLink = styled(RouterNavLink)`
   &.active {
     color: #d3d3d3;
   }
+`;
+
+export const IconContainer = styled.div`
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: white;
 `;

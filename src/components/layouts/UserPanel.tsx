@@ -1,15 +1,27 @@
 import React from "react";
 import { FaCog } from "react-icons/fa";
 import * as S from "./Styles/UserPanel.style";
+import { useNavigate } from "react-router-dom";
 
 function UserPanel() {
+  const navigate = useNavigate();
+
+  const goToMyBlog = () => {
+    navigate("/myblog");
+  };
+
+  const goToPlaylist = () => {
+    navigate("/playlist");
+  };
+
   return (
     <S.MypageContainer>
       <S.UserProfile>
         <S.UserInfo>
           <S.UserNameAndPlaylist>
             <S.UserName>닉네임</S.UserName>
-            <S.UserPlaylist>My Playlist</S.UserPlaylist>
+            {/* onClick으로 /playlist 경로로 이동 */}
+            <S.UserPlaylist onClick={goToPlaylist}>My Playlist</S.UserPlaylist>
           </S.UserNameAndPlaylist>
           <S.UserStats>
             <S.FollowStat>
@@ -30,11 +42,11 @@ function UserPanel() {
         </S.ProfileImageContainer>
       </S.UserProfile>
       <S.Tabs>
-        <S.TabItem>my blog</S.TabItem>
+        <S.TabItem onClick={goToMyBlog}>my blog</S.TabItem>
         <S.Divider />
         <S.TabItem>이웃</S.TabItem>
       </S.Tabs>
-      <S.NewPost>new post</S.NewPost>
+      {/* <S.NewPost>new post</S.NewPost>
       <S.PostList>
         <S.PostItem>
           <S.PostAvatar />
@@ -50,7 +62,7 @@ function UserPanel() {
             <S.PostTitle>포스트 제목</S.PostTitle>
           </S.PostDetails>
         </S.PostItem>
-      </S.PostList>
+      </S.PostList> */}
     </S.MypageContainer>
   );
 }

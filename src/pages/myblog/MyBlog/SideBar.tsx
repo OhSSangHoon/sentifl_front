@@ -21,6 +21,11 @@ const Sidebar = () => {
     navigate("/Create");
   };
 
+  const goToPlaylist = () => {
+    navigate("/playlist");
+  };
+
+  // 내 블로그 페이지의 사이드바와 블로그 특정글 페이지의 사이드바를 location.pathname을 통해 어떤걸 보여줄지 정함
   return (
     <S.SidebarContainer>
       {location.pathname === "/myblog" ? (
@@ -40,7 +45,9 @@ const Sidebar = () => {
               <S.ProfileImage src="path_to_profile_image" alt="Profile" />
             </S.ProfileImageWrapper>
             <S.ProfileInfo>
-              <S.PlaylistBadge>My Playlist</S.PlaylistBadge>
+              <S.PlaylistBadge onClick={goToPlaylist}>
+                My Playlist
+              </S.PlaylistBadge>
               <S.ProfileName>닉네임</S.ProfileName>
               <S.ProfileStats>
                 <S.ProfileStatItem>
@@ -63,7 +70,9 @@ const Sidebar = () => {
           <>
             <S.BlogPostProfile>
               <S.ProfileName>닉네임</S.ProfileName>
-              <S.PlaylistBadge>My Playlist</S.PlaylistBadge>
+              <S.PlaylistBadge onClick={goToPlaylist}>
+                My Playlist
+              </S.PlaylistBadge>
               <FaStar />
             </S.BlogPostProfile>
           </>
@@ -80,7 +89,7 @@ const Sidebar = () => {
         </S.CategoryList>
       </S.Menu>
       <S.Divider />
-      <S.PostListContainer>
+      {/* <S.PostListContainer>
         <S.PostListHeader>
           글 목록
           <S.Icons>
@@ -102,7 +111,11 @@ const Sidebar = () => {
             <S.PostDate>날짜</S.PostDate>
           </S.PostItem>
         </S.PostList>
-      </S.PostListContainer>
+      </S.PostListContainer> */}
+      <S.Icons>
+        <FaPen onClick={handlePenClick} />
+        <FaCalendarAlt />
+      </S.Icons>
     </S.SidebarContainer>
   );
 };
