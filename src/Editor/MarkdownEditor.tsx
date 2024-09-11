@@ -232,7 +232,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ loadFromTempSave, initi
                 content: editorHtml,
             };
     
-            const response = await axiosInstance.post('/post', postData);
+            const response = await axiosInstance.post('/post', postData, {
+                
+            });
             
             if (response.status === 200) {
                 alert("게시물이 성공적으로 저장되었습니다.");
