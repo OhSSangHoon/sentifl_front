@@ -1,16 +1,58 @@
 import styled from "styled-components";
 
-export const MypageContainer = styled.div`
+export const PopupOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+`;
+
+export const PopupContainer = styled.div`
   position: absolute;
   top: 80px;
   right: 60px;
-  width: 300px;
-  height: 400px;
+  width: 340px;
+  height: 430px;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 10px;
   padding: 40px 20px;
   color: white;
   overflow: hidden;
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+`;
+
+export const ProfileImage = styled.img`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+`;
+
+export const ProfileInfo = styled.div`
+  h2 {
+    margin: 10px 0;
+    color: white;
+  }
+  p {
+    margin: 5px 0;
+    color: rgba(255, 255, 255, 0.8);
+  }
 `;
 
 export const UserProfile = styled.div`
@@ -29,12 +71,18 @@ export const UserNameAndPlaylist = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  width: 100%;
+  overflow: hidden;
 `;
 
 export const UserName = styled.div`
   font-size: 16px;
   font-weight: bold;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
 `;
 
 export const UserPlaylist = styled.div`
@@ -43,6 +91,8 @@ export const UserPlaylist = styled.div`
   padding: 2px 5px;
   border-radius: 5px;
   font-size: 12px;
+  white-space: nowrap;
+  width: auto;
 `;
 
 export const UserStats = styled.div`
@@ -59,11 +109,13 @@ export const FollowStat = styled.div`
 export const StatNumber = styled.div`
   font-size: 20px;
   font-weight: bold;
+  color: white;
 `;
 
 export const StatLabel = styled.div`
   font-size: 12px;
   margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.7);
 `;
 
 export const ProfileImageContainer = styled.div`
@@ -74,7 +126,7 @@ export const ProfileImageContainer = styled.div`
   overflow: hidden;
 `;
 
-export const ProfileImage = styled.div`
+export const ProfileImageStyled = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -85,12 +137,12 @@ export const ProfileImage = styled.div`
 
 export const SettingsIcon = styled.div`
   position: absolute;
-  bottom: -10px;
+  bottom: -5px;
   right: -5px;
-  font-size: 25px;
+  font-size: 20px;
   padding: 5px;
   border-radius: 50%;
-  color: gray;
+  color: white;
   cursor: pointer;
 `;
 
@@ -107,11 +159,15 @@ export const Tabs = styled.div`
 export const TabItem = styled.div`
   cursor: pointer;
   padding: 5px 35px;
-  color: rgba(255, 255, 255, 0.6);
+  color: white;
   font-size: 14px;
   font-weight: normal;
   background-color: transparent;
   border-radius: 5px;
+
+  &:hover {
+    font-weight: bold;
+  }
 `;
 
 export const Divider = styled.div`
@@ -132,7 +188,7 @@ export const PostList = styled.div`
 export const PostItem = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   padding-bottom: 10px;
 `;
@@ -151,9 +207,29 @@ export const PostDetails = styled.div`
 export const PostName = styled.div`
   font-size: 14px;
   font-weight: bold;
+  color: white;
+  margin-bottom: 5px;
 `;
 
 export const PostTitle = styled.div`
   font-size: 12px;
   color: grey;
+`;
+
+export const LogoutButton = styled.button`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 30px;
+  padding: 10px 20px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
 `;

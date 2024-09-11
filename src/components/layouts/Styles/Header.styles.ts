@@ -90,7 +90,11 @@ export const LoginLink = styled(RouterNavLink)`
   }
 `;
 
-export const ProfileLink = styled.div``;
+export const ProfileLink = styled.div`
+  flex: 1; /* 오른쪽에 위치하게 설정 */
+  display: flex;
+  justify-content: flex-end;
+`;
 
 export const PopupOverlay = styled.div`
   position: fixed;
@@ -138,5 +142,3 @@ export const ProfileInfo = styled.div`
     margin: 5px 0;
   }
 `;
-
-export const LogoutButton = styled.button``;

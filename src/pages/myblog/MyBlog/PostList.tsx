@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as S from "./Styles/PostList.styles";
 import axios from "axios";
+import { useAuth } from "../../../AuthProvider";
 
 interface Post {
   postId: number;
@@ -18,15 +19,10 @@ const PostList = () => {
   const [last, setLast] = useState(false); // 마지막 페이지 여부
   const pageSize = 10; // 페이지당 게시물 수
 
+  const { nickname, uid } = useAuth();
+  const profileImage = localStorage.getItem("profileImage");
+
   useEffect(() => {
-    // 로컬 스토리지에서 uid 값 가져오기
-    const uid = localStorage.getItem("uid");
-
-    if (!uid) {
-      console.log("uid가 로컬 스토리지에 없습니다.");
-      return;
-    }
-
     const fetchPosts = async () => {
       try {
         const response = await axios.get(`/api/v1/post/${uid}`, {

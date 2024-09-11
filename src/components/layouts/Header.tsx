@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../AuthProvider"; // useAuth 사용
 import * as S from "./Styles/Header.styles";
+import UserPanel from "./UserPanel";
 
 function Header() {
   const { isLoggedIn, nickname, logout } = useAuth();
@@ -37,41 +38,11 @@ function Header() {
         <S.LoginLink to="/login">Log in</S.LoginLink>
       )}
       {isPopupOpen && (
-        <ProfilePopup onClose={togglePopup} onLogout={handleLogout} />
-      )}{" "}
+        <UserPanel onClose={togglePopup} onLogout={handleLogout} />
+      )}
       {/* 팝업 컴포넌트 호출 */}
     </S.HeaderContainer>
   );
 }
 
 export default Header;
-
-// ProfilePopup 컴포넌트
-interface ProfilePopupProps {
-  onClose: () => void;
-  onLogout: () => void;
-}
-
-const ProfilePopup: React.FC<ProfilePopupProps> = ({ onClose, onLogout }) => {
-  const { nickname, uid } = useAuth();
-  const profileImage = localStorage.getItem("profileImage");
-
-  return (
-    <S.PopupOverlay>
-      <S.PopupContainer>
-        <S.CloseButton onClick={onClose}>X</S.CloseButton>
-        <S.ProfileImage
-          src={profileImage || "/default-profile.png"}
-          alt={nickname}
-        />
-        <S.ProfileInfo>
-          <h2>{nickname}</h2>
-          <p>UID: {uid}</p>
-          <p>Follow: 23 | Following: 25</p>
-        </S.ProfileInfo>
-        <S.LogoutButton onClick={onLogout}>Log out</S.LogoutButton>{" "}
-        {/* Logout button */}
-      </S.PopupContainer>
-    </S.PopupOverlay>
-  );
-};
