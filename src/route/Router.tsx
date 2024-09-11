@@ -9,6 +9,7 @@ import MusicRecommend from "../pages/musicRecommend/MusicRecommend";
 import BlogPost from "../pages/myblog/BlogPost/BlogPost";
 import MyBlog from "../pages/myblog/MyBlog/MyBlog";
 import NeighborBlog from "../pages/NeighborBlog/NeighborBlog";
+import ProtectedRoute from "./ProtectedRoute";
 
 function Router() {
   return (
@@ -19,7 +20,7 @@ function Router() {
         <Route path="/auth/success" element={<Success />} />
         <Route path="/auth/add-info" element={<AddInfo />} />
         <Route path="/Create" element={<Create />} />
-        <Route path="/myblog" element={<MyBlog />} />
+        <Route path="/myblog" element={<ProtectedRoute><MyBlog /></ProtectedRoute>} />
         <Route path="/blogpost" element={<BlogPost />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
         <Route path="/neighborblog" element={<NeighborBlog />} />

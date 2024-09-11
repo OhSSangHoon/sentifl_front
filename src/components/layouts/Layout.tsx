@@ -7,23 +7,28 @@ import { SlideInDiv } from "./Styles/Transition.style";
 
 function Layout() {
   const location = useLocation();
-  const withSlide = location.state?.withSlide || false;
+  const withSlide = location.state?.withSlide ?? false;
 
   return (
     <>
       <S.LayoutContainer>
         <Header />
         <S.MainContent>
-          <TransitionGroup>
-            <CSSTransition
-              key={location.key}
-              timeout={500}
-              classNames={withSlide ? "slide" : ""}
-            >
-              <SlideInDiv>
-                <Outlet />
-              </SlideInDiv>
-            </CSSTransition>
+          <TransitionGroup component={null}>
+            {withSlide ? (
+              <CSSTransition
+                key={location.key}
+                timeout={500}
+                classNames="slide"
+              >
+                <SlideInDiv>
+                  <Outlet />
+                </SlideInDiv>
+              </CSSTransition>
+            ) : (
+              // 애니메이션이 필요 없는 경우 단순히 Outlet을 렌더링
+              <Outlet />
+            )}
           </TransitionGroup>
         </S.MainContent>
         <Footer />

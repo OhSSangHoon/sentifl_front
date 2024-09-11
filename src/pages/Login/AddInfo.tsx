@@ -12,14 +12,21 @@ const AddInfo = () => {
     useEffect(() => {
         const query = new URLSearchParams(location.search);
         const accessToken = query.get('accessToken');
+        const refreshToken = query.get('refreshToken');
         const userProfile = 'https://ssl.pstatic.net/static/pwe/address/img_profile.png';
         setProfile(userProfile);  // profile 값 설정
 
-        // 토큰을 쿠키에 저장
+        // 토큰을 로컬스토리지와 쿠키에 저장
         if (accessToken) {
-            document.cookie = `Authorization-Access=${accessToken};`;
+            localStorage.setItem('accessToken', accessToken);
         } else {
-            console.error('토큰이 없습니다.');
+            console.error('액세스 토큰이 없습니다.');
+        }
+
+        if (refreshToken) {
+            document.cookie = `Authorization-Refresh=${refreshToken}; path=/; secure; samesite=strict`;
+        } else {
+            console.error('리프레시 토큰이 없습니다.');
         }
     }, [location]);
 
@@ -41,7 +48,6 @@ const AddInfo = () => {
                     alert('추가 정보 입력 중 오류가 발생했습니다.');
                 }
             });
-
     };
 
     return (

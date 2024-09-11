@@ -1,21 +1,21 @@
 // 내 블로그- 사이드바
-
-import React from "react";
-import * as S from "./Styles/Sidebar.styles";
 import {
-  FaBell,
-  FaCog,
   FaAngleDown,
-  FaPen,
+  FaBell,
   FaCalendarAlt,
+  FaCog,
   FaParking,
+  FaPen,
   FaStar,
 } from "react-icons/fa";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../AuthProvider";
+import * as S from "./Styles/Sidebar.styles";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { nickname, uid, profileImage } = useAuth();
 
   const handlePenClick = () => {
     navigate("/Create");
@@ -37,11 +37,11 @@ const Sidebar = () => {
           </S.SidebarTopBar>
           <S.Profile>
             <S.ProfileImageWrapper>
-              <S.ProfileImage src="path_to_profile_image" alt="Profile" />
+              <S.ProfileImage src={profileImage || 'path_to_profile_image'} alt="Profile" />
             </S.ProfileImageWrapper>
             <S.ProfileInfo>
               <S.PlaylistBadge>My Playlist</S.PlaylistBadge>
-              <S.ProfileName>닉네임</S.ProfileName>
+              <S.ProfileName>{nickname}</S.ProfileName>
               <S.ProfileStats>
                 <S.ProfileStatItem>
                   <small>follow</small>

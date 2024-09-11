@@ -89,3 +89,57 @@ export const LoginLink = styled(RouterNavLink)`
     color: #d3d3d3;
   }
 `;
+
+export const ProfileLink = styled.div`
+`
+
+export const PopupOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const PopupContainer = styled.div`
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+`;
+
+export const ProfileImage = styled.img`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+`;
+
+export const ProfileInfo = styled.div`
+  h2 {
+    margin: 10px 0;
+  }
+  p {
+    margin: 5px 0;
+  }
+`;
+
+export const LogoutButton = styled.button`
+
+`

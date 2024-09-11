@@ -1,9 +1,7 @@
 // 내 블로그
-
-import React from "react";
 import styled from "styled-components";
-import Sidebar from "./SideBar";
 import PostList from "./PostList";
+import Sidebar from "./SideBar";
 
 const MyBlog = () => {
   return (
