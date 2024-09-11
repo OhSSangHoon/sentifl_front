@@ -12,6 +12,7 @@ import NeighborBlog from "../pages/NeighborBlog/NeighborBlog";
 import CreateSong from "../pages/SongCreator/CreateSong";
 import SongResult from "../pages/SongCreator/SongResult";
 import Playlist from "../pages/Playlist/Playlist";
+import ProtectedRoute from "./ProtectedRoute";
 
 function Router() {
   return (
@@ -22,7 +23,14 @@ function Router() {
         <Route path="/auth/success" element={<Success />} />
         <Route path="/auth/add-info" element={<AddInfo />} />
         <Route path="/Create" element={<Create />} />
-        <Route path="/myblog" element={<MyBlog />} />
+        <Route
+          path="/myblog"
+          element={
+            <ProtectedRoute>
+              <MyBlog />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/blogpost" element={<BlogPost />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
         <Route path="/neighborblog" element={<NeighborBlog />} />

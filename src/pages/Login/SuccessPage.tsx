@@ -1,9 +1,17 @@
 import queryString from "query-string";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../AuthProvider";
 
 const SuccessPage = () => {
   const navigate = useNavigate();
+  const {
+    setIsLoggedIn,
+    setAccessToken,
+    setNickname,
+    setUid,
+    setProfileImage,
+  } = useAuth();
 
   useEffect(() => {
     const params = queryString.parse(window.location.search);
@@ -14,11 +22,7 @@ const SuccessPage = () => {
     const refreshToken = Array.isArray(params.refreshToken)
       ? params.refreshToken[0]
       : params.refreshToken;
-
-    console.log("Query params:", params);
-
     const uid = Array.isArray(params.uid) ? params.uid[0] : params.uid;
-
     const nickName = Array.isArray(params.nickName)
       ? decodeURIComponent(params.nickName[0] || "")
       : decodeURIComponent(params.nickName || "");
@@ -26,21 +30,24 @@ const SuccessPage = () => {
       ? decodeURIComponent(params.profile[0] || "")
       : decodeURIComponent(params.profile || "");
 
-    console.log("UID:", uid);
-    console.log("Nickname (Decoded):", nickName);
-    console.log("Profile (Decoded):", profile);
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken); // 로컬 스토리지에 저장
+    }
 
-    if (accessToken && refreshToken) {
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+    if (refreshToken) {
+      document.cookie = `Authorization-Refresh=${refreshToken}; path=/; secure; HttpOnly; SameSite=Strict`; // 쿠키에 저장
     }
 
     if (uid && nickName && profile) {
-      navigate("/");
+      setIsLoggedIn(true);
+      setUid(uid);
+      setNickname(nickName);
+      setProfileImage(profile);
+      navigate("/"); // 리디렉션
     } else {
       console.error("Missing parameters");
     }
-  }, [navigate]);
+  }, [navigate, setIsLoggedIn, setAccessToken, setNickname]);
 
   return (
     <div>

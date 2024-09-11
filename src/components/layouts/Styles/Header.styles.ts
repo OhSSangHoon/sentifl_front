@@ -1,19 +1,13 @@
-// Header.style.ts
-
+// Header.styles.js
 import { NavLink as RouterNavLink } from "react-router-dom";
 import styled from "styled-components";
 
-export interface HeaderProps {
-  scrolled: boolean;
-}
-
-export const HeaderContainer = styled.header<HeaderProps>`
+export const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 40px;
-  background-color: ${(props) =>
-    props.scrolled ? "#000000" : "rgba(0, 0, 0, 0)"};
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0);
   z-index: 10;
   position: fixed;
   top: 0;
@@ -24,7 +18,6 @@ export const HeaderContainer = styled.header<HeaderProps>`
 
 export const Logo = styled(RouterNavLink)`
   flex: 1;
-
   img {
     height: 40px;
   }
@@ -32,35 +25,30 @@ export const Logo = styled(RouterNavLink)`
 
 export const Nav = styled.nav`
   display: flex;
+  flex: 2;
   justify-content: center;
-  gap: 50px;
-  margin-left: 220px; /* 버튼들을 오른쪽으로 이동 */
-  flex-grow: 1; /* 중앙에 배치하기 위해 flex-grow */
+  gap: 20px;
 `;
 
 export const StyledNavLink = styled(RouterNavLink)`
   color: white;
   font-size: 18px;
+  font-weight: thin;
   text-decoration: none;
-  text-transform: uppercase;
-  opacity: 0.6;
 
   &:hover {
-    color: #ffffff;
-    opacity: 1;
+    color: #d3d3d3;
   }
 
   &.active {
-    color: #ffffff;
-    opacity: 1;
-    border-bottom: 2px solid white;
+    color: #d3d3d3;
   }
 `;
 
 export const SearchContainer = styled.div`
+  flex: 2;
   display: flex;
-  justify-content: flex-end;
-  flex-grow: 1; /* 오른쪽 정렬을 위한 flex-grow */
+  justify-content: center;
   position: relative;
 `;
 
@@ -81,18 +69,17 @@ export const SearchInput = styled.input`
 export const SearchIcon = styled.div`
   position: absolute;
   top: 50%;
-  right: 15px;
+  right: 165px;
   transform: translateY(-50%);
   color: rgba(255, 255, 255, 0.7);
 `;
 
 export const LoginLink = styled(RouterNavLink)`
-  flex-basis: 100px;
+  flex: 1;
   text-align: right;
   color: white;
   font-size: 18px;
   text-decoration: none;
-  margin-left: 20px;
 
   &:hover {
     color: #d3d3d3;
@@ -103,10 +90,53 @@ export const LoginLink = styled(RouterNavLink)`
   }
 `;
 
-export const IconContainer = styled.div`
-  margin-right: 10px;
+export const ProfileLink = styled.div``;
+
+export const PopupOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
+  justify-content: center;
   align-items: center;
-  cursor: pointer;
-  color: white;
 `;
+
+export const PopupContainer = styled.div`
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+`;
+
+export const ProfileImage = styled.img`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+`;
+
+export const ProfileInfo = styled.div`
+  h2 {
+    margin: 10px 0;
+  }
+  p {
+    margin: 5px 0;
+  }
+`;
+
+export const LogoutButton = styled.button``;

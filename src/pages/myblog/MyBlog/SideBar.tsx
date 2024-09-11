@@ -1,21 +1,21 @@
 // 내 블로그- 사이드바
-
-import React from "react";
-import * as S from "./Styles/Sidebar.styles";
 import {
-  FaBell,
-  FaCog,
   FaAngleDown,
-  FaPen,
+  FaBell,
   FaCalendarAlt,
+  FaCog,
   FaParking,
+  FaPen,
   FaStar,
 } from "react-icons/fa";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../AuthProvider";
+import * as S from "./Styles/Sidebar.styles";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { nickname, uid, profileImage } = useAuth();
 
   const handlePenClick = () => {
     navigate("/Create");
@@ -42,13 +42,14 @@ const Sidebar = () => {
           </S.SidebarTopBar>
           <S.Profile>
             <S.ProfileImageWrapper>
-              <S.ProfileImage src="path_to_profile_image" alt="Profile" />
+              <S.ProfileImage
+                src={profileImage || "path_to_profile_image"}
+                alt="Profile"
+              />
             </S.ProfileImageWrapper>
             <S.ProfileInfo>
-              <S.PlaylistBadge onClick={goToPlaylist}>
-                My Playlist
-              </S.PlaylistBadge>
-              <S.ProfileName>닉네임</S.ProfileName>
+              <S.PlaylistBadge>My Playlist</S.PlaylistBadge>
+              <S.ProfileName>{nickname}</S.ProfileName>
               <S.ProfileStats>
                 <S.ProfileStatItem>
                   <small>follow</small>
@@ -89,29 +90,7 @@ const Sidebar = () => {
         </S.CategoryList>
       </S.Menu>
       <S.Divider />
-      {/* <S.PostListContainer>
-        <S.PostListHeader>
-          글 목록
-          <S.Icons>
-            <FaPen onClick={handlePenClick} />
-            <FaCalendarAlt />
-          </S.Icons>
-        </S.PostListHeader>
-        <S.PostList>
-          <S.PostItem>
-            <S.PostTitle>제목 1</S.PostTitle>
-            <S.PostDate>날짜</S.PostDate>
-          </S.PostItem>
-          <S.PostItem>
-            <S.PostTitle>제목 2</S.PostTitle>
-            <S.PostDate>날짜</S.PostDate>
-          </S.PostItem>
-          <S.PostItem>
-            <S.PostTitle>제목 3</S.PostTitle>
-            <S.PostDate>날짜</S.PostDate>
-          </S.PostItem>
-        </S.PostList>
-      </S.PostListContainer> */}
+
       <S.Icons>
         <FaPen onClick={handlePenClick} />
         <FaCalendarAlt />

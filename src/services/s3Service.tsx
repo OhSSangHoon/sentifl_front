@@ -1,15 +1,15 @@
 import AWS from 'aws-sdk';
 
-export const uploadToS3 = async (file: File): Promise<string> => {
+export const uploadToS3 = async (file: File, uid: string): Promise<string> => {
     const s3 = new AWS.S3();
     const fileFormat = file.name.split('.').pop();
     const upload = new AWS.S3.ManagedUpload({
         params: {
             Bucket: 'sentifiimages',
-            Key: `images/${Date.now()}.${fileFormat}`, //추후에 images/닉네임/post/imageName으로 분류
+            Key: `images/${uid}/post/${Date.now()}.${fileFormat}`,
             Body: file,
             ContentType: file.type,
-            // ACL: 'public-read', // 파일을 공개적으로 읽을 수 있도록 설정
+            //ACL: 'public-read', // 파일을 공개적으로 읽을 수 있도록 설정
         },
     });
 
@@ -22,12 +22,12 @@ export const uploadToS3 = async (file: File): Promise<string> => {
     }
 };
 
-export const uploadTempZipToS3 = async (file: File): Promise<string> => {
+export const uploadTempZipToS3 = async (file: File, uid: string): Promise<string> => {
     const s3 = new AWS.S3();
     const upload = new AWS.S3.ManagedUpload({
         params: {
             Bucket: 'sentifiimages',
-            Key: `images/tempSaved.zip`, // 임시 저장 파일 경로
+            Key: `images/${uid}/tempSaved/tempSaved.zip`, // 임시 저장 파일 경로
             Body: file,
             ContentType: file.type,
         },
@@ -43,7 +43,7 @@ export const uploadTempZipToS3 = async (file: File): Promise<string> => {
 };
 
 
-export const downloadFromS3 = async (key: string): Promise<Blob | null> => {
+export const downloadFromS3 = async (key: string, uid: string): Promise<Blob | null> => {
     const s3 = new AWS.S3();
     const params = {
         Bucket: 'sentifiimages',
@@ -78,7 +78,6 @@ export const deleteFromS3 = async (key: string): Promise<void> => {
 
     try {
         await s3.deleteObject(params).promise();
-        console.log(`File ${key} deleted successfully`);
     }catch(err){
         console.log('Error deleting file from S3', err);
         throw err;

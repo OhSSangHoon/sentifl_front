@@ -17,15 +17,11 @@ const api = axios.create({
 // 요청 인터셉터 추가
 api.interceptors.request.use(
     (config) => {
-        // 우선 쿠키에서 토큰을 가져옴
-        const accessToken = getCookie('Authorization-Access') || localStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
-
+        // 로컬스토리지에서 토큰을 가져옴
+        const accessToken = localStorage.getItem('accessToken');
+        
         if (accessToken) {
             config.headers['Authorization-Access'] = `Bearer ${accessToken}`;
-        }
-        if (refreshToken) {
-            config.headers['Authorization-Refresh'] = `Bearer ${refreshToken}`;
         }
 
         return config;
@@ -35,9 +31,19 @@ api.interceptors.request.use(
     }
 );
 
-// 응답 인터셉터 추가
+// 쿠키에 리프레시 토큰을 저장하는 함수
+function saveRefreshTokenToCookie(refreshToken) {
+    document.cookie = `Authorization-Refresh=${refreshToken}; path=/; secure; samesite=strict`;
+}
+
+// 응답 인터셉터
 api.interceptors.response.use(
     (response) => {
+        // 응답 헤더에서 리프레시 토큰을 가져와서 쿠키에 저장
+        const refreshToken = response.headers['Authorization-Refresh'];
+        if (refreshToken) {
+            saveRefreshTokenToCookie(refreshToken);
+        }
         return response;
     },
     async (error) => {
@@ -46,43 +52,40 @@ api.interceptors.response.use(
         if (error.response) {
             // 토큰 만료 처리
             if (error.response.status === 401 && error.response.data.code === 'SAT8') {
+                const refreshToken = getCookie('Authorization-Refresh');
                 try {
-                    // 토큰 재발급 엔드포인트 호출
                     const response = await axios.post(
                         'http://localhost:8080/auth/reissue',
                         {},
                         {
                             headers: {
                                 'Content-Type': 'application/json',
+                                'Authorization-Refresh': `Bearer ${refreshToken}`,
                             },
                         }
                     );
 
                     if (response.status === 200) {
-                        // 새로 발급받은 토큰을 로컬 스토리지에 저장
-                        const newAccessToken = response.headers['authorization-access'].split(' ')[1];
-                        const newRefreshToken = response.headers['authorization-refresh'].split(' ')[1];
-
+                        const newAccessToken = response.headers['Authorization-Access'].split(' ')[1];
                         localStorage.setItem('accessToken', newAccessToken);
-                        localStorage.setItem('refreshToken', newRefreshToken);
 
-                        // 원래 요청의 헤더를 새 토큰으로 업데이트
+                        // 새로 발급받은 리프레시 토큰을 쿠키에 저장
+                        const newRefreshToken = response.headers['Authorization-Refresh'];
+                        if (newRefreshToken) {
+                            saveRefreshTokenToCookie(newRefreshToken);
+                        }
+
                         originalRequest.headers['Authorization-Access'] = `Bearer ${newAccessToken}`;
-                        originalRequest.headers['Authorization-Refresh'] = `Bearer ${newRefreshToken}`;
-
-                        // 원래 요청 재시도
                         return api(originalRequest);
                     }
                 } catch (error) {
                     console.error('토큰 갱신 오류', error);
-                    // 인증 오류가 발생하면 로그아웃 처리
                     localStorage.removeItem('accessToken');
-                    localStorage.removeItem('refreshToken');
+                    document.cookie = 'Authorization-Refresh=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; // Clear the refresh token
                     window.location.href = '/login';
                 }
             }
         }
-
         return Promise.reject(error);
     }
 );

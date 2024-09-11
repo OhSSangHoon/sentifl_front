@@ -4,39 +4,32 @@ import Footer from "./Footer";
 import Header from "./Header";
 import * as S from "./Styles/Layout.style";
 import { SlideInDiv } from "./Styles/Transition.style";
-import UserPanel from "./UserPanel";
-import { useState } from "react";
 
 function Layout() {
   const location = useLocation();
-  const withSlide = location.state?.withSlide || false;
-
-  const [isUserPanelVisible, setUserPanelVisible] = useState(false);
-
-  const toggleUserPanel = () => {
-    setUserPanelVisible((prevState) => !prevState);
-  };
+  const withSlide = location.state?.withSlide ?? false;
 
   return (
     <>
       <S.LayoutContainer>
-        <Header
-          toggleUserPanel={toggleUserPanel}
-          isUserPanelVisible={isUserPanelVisible}
-        />
+        <Header />
         <S.MainContent>
-          <TransitionGroup>
-            <CSSTransition
-              key={location.key}
-              timeout={500}
-              classNames={withSlide ? "slide" : ""}
-            >
-              <SlideInDiv>
-                <Outlet />
-              </SlideInDiv>
-            </CSSTransition>
+          <TransitionGroup component={null}>
+            {withSlide ? (
+              <CSSTransition
+                key={location.key}
+                timeout={500}
+                classNames="slide"
+              >
+                <SlideInDiv>
+                  <Outlet />
+                </SlideInDiv>
+              </CSSTransition>
+            ) : (
+              // 애니메이션이 필요 없는 경우 단순히 Outlet을 렌더링
+              <Outlet />
+            )}
           </TransitionGroup>
-          {isUserPanelVisible && <UserPanel />}
         </S.MainContent>
         <Footer />
       </S.LayoutContainer>

@@ -2,9 +2,11 @@ import isPropValid from '@emotion/is-prop-valid';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from "react-router-dom";
 import { createGlobalStyle, StyleSheetManager } from "styled-components";
+import { AuthProvider } from "./AuthProvider";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import Router from "./route/Router";
+
 
 const GlobalStyle = createGlobalStyle`
   *{
@@ -30,12 +32,14 @@ const GlobalStyle = createGlobalStyle`
 export default GlobalStyle;
 
 ReactDOM.render(
-  <StyleSheetManager shouldForwardProp={(prop) => isPropValid(prop)}>
-  <BrowserRouter>
-    <GlobalStyle />
-    <Router />
-  </BrowserRouter>
-  </StyleSheetManager>,
+  <AuthProvider>
+    <StyleSheetManager shouldForwardProp={(prop) => isPropValid(prop)}>
+        <BrowserRouter>
+          <GlobalStyle />
+            <Router />
+        </BrowserRouter>
+    </StyleSheetManager>
+  </AuthProvider>,
   document.getElementById('root')
 );
 
