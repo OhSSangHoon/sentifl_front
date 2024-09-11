@@ -6,7 +6,7 @@ import Sidebar from "./SideBar";
 const MyBlog = () => {
   return (
     <Container>
-      <Sidebar />
+      <Sidebar/>
       <PostList />
     </Container>
   );
