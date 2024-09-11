@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as S from "./Styles/PostList.styles";
 import axios from "axios";
 import { useAuth } from "../../../AuthProvider";
+import axiosInstance from "../../../axiosInterceptor";
 
 interface Post {
   postId: number;
@@ -17,7 +18,7 @@ const PostList = () => {
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
   const [first, setFirst] = useState(true); // 첫 페이지 여부
   const [last, setLast] = useState(false); // 마지막 페이지 여부
-  const pageSize = 10; // 페이지당 게시물 수
+  const pageSize = 3; // 페이지당 게시물 수
 
   const { nickname, uid } = useAuth();
   const profileImage = localStorage.getItem("profileImage");
@@ -25,7 +26,7 @@ const PostList = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`/api/v1/post/${uid}`, {
+        const response = await axiosInstance.get(`/post/${uid}`, {
           params: {
             page: page, // 현재 페이지 번호
             size: pageSize, // 페이지당 게시물 수
@@ -81,7 +82,9 @@ const PostList = () => {
                     <S.HeartIcon>❤ count</S.HeartIcon>
                   </S.PostMeta>
                 </S.PostHeader>
-                <S.PostDescription>{post.content}</S.PostDescription>
+                <S.PostDescription
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
               </S.PostInfo>
               <S.PostImage src="path_to_image" alt="Post Visual" />
             </S.PostContentWrapper>
