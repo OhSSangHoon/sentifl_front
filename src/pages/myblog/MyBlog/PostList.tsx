@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as S from "./Styles/PostList.styles";
-import axios from "axios";
-import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
+import { useAuth } from "../../../AuthProvider";
 
 interface Post {
   postId: number;
@@ -18,10 +17,23 @@ const PostList = () => {
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
   const [first, setFirst] = useState(true); // 첫 페이지 여부
   const [last, setLast] = useState(false); // 마지막 페이지 여부
+  const [selectedImage, setSelectedImage] = useState<string | null>(null); // 클릭된 이미지 URL
   const pageSize = 3; // 페이지당 게시물 수
 
-  const { nickname, uid } = useAuth();
-  const profileImage = localStorage.getItem("profileImage");
+  const { uid } = useAuth();
+
+  // HTML에서 이미지와 텍스트를 분리하는 함수
+  const extractImageAndText = (htmlContent: string) => {
+    const imageRegex = /<img[^>]+src="([^">]+)"/g;
+    const images: string[] = [];
+    let match;
+    while ((match = imageRegex.exec(htmlContent)) !== null) {
+      images.push(match[1]); // src 속성의 값을 추출
+    }
+    // 이미지 태그를 제거한 텍스트 내용 추출
+    const textContent = htmlContent.replace(/<img[^>]*>/g, "");
+    return { images, textContent };
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -60,6 +72,14 @@ const PostList = () => {
     }
   };
 
+  const openImageOverlay = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+  };
+
+  const closeImageOverlay = () => {
+    setSelectedImage(null);
+  };
+
   if (loading) {
     return <p>로딩 중...</p>;
   }
@@ -67,30 +87,50 @@ const PostList = () => {
   return (
     <>
       <S.Content>
-        {posts.map((post) => (
-          <S.Post key={post.postId}>
-            <S.PostContentWrapper>
-              <S.PostInfo>
-                <S.PostHeader>
-                  <S.PostTitle>{post.title}</S.PostTitle>
-                  <S.PostMeta>
-                    <S.PostDate>
-                      {new Date(post.time).toLocaleDateString()}
-                    </S.PostDate>
-                    <S.ActionButton>추가</S.ActionButton>
-                    <S.ActionButton>삭제</S.ActionButton>
-                    <S.HeartIcon>❤ count</S.HeartIcon>
-                  </S.PostMeta>
-                </S.PostHeader>
-                <S.PostDescription
-                  dangerouslySetInnerHTML={{ __html: post.content }}
-                />
-              </S.PostInfo>
-              <S.PostImage src="path_to_image" alt="Post Visual" />
-            </S.PostContentWrapper>
-          </S.Post>
-        ))}
+        {posts.map((post, postIndex) => {
+          const { images, textContent } = extractImageAndText(post.content); // 이미지와 텍스트 분리
+
+          return (
+            <S.Post key={post.postId}>
+              <S.PostContentWrapper>
+                <S.PostInfo>
+                  <S.PostHeader>
+                    <S.PostTitle>{post.title}</S.PostTitle>
+                    <S.PostMeta>
+                      <S.PostDate>
+                        {new Date(post.time).toLocaleDateString()}
+                      </S.PostDate>
+                      <S.ActionButton>추가</S.ActionButton>
+                      <S.ActionButton>삭제</S.ActionButton>
+                      <S.HeartIcon>❤ count</S.HeartIcon>
+                    </S.PostMeta>
+                  </S.PostHeader>
+                  {/* 분리된 텍스트 내용 렌더링 */}
+                  <S.PostDescription
+                    dangerouslySetInnerHTML={{ __html: textContent }}
+                  />
+                </S.PostInfo>
+                {/* 분리된 이미지들을 렌더링 */}
+                {images.map((src, index) => (
+                  <S.PostImage
+                    key={index}
+                    src={src}
+                    alt={`Post Image ${index}`}
+                    onClick={() => openImageOverlay(src)}
+                  />
+                ))}
+              </S.PostContentWrapper>
+            </S.Post>
+          );
+        })}
       </S.Content>
+
+      {/* 이미지 클릭 시 오버레이 */}
+      {selectedImage && (
+        <S.Overlay onClick={closeImageOverlay}>
+          <S.OverlayImage src={selectedImage} alt="Selected" />
+        </S.Overlay>
+      )}
 
       {/* 페이지네이션 버튼 */}
       <S.PaginationWrapper>
