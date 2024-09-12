@@ -73,6 +73,12 @@ export const ActionButton = styled.button`
   &:hover {
     color: #ffffff;
   }
+
+  &:active,
+  &:focus {
+    font-weight: bold;
+    color: #ffffff;
+  }
 `;
 
 export const HeartIcon = styled.span`

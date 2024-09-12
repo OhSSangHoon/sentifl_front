@@ -22,15 +22,13 @@ const PostList = () => {
 
   const { uid } = useAuth();
 
-  // HTML에서 이미지와 텍스트를 분리하는 함수
   const extractImageAndText = (htmlContent: string) => {
     const imageRegex = /<img[^>]+src="([^">]+)"/g;
     const images: string[] = [];
     let match;
     while ((match = imageRegex.exec(htmlContent)) !== null) {
-      images.push(match[1]); // src 속성의 값을 추출
+      images.push(match[1]);
     }
-    // 이미지 태그를 제거한 텍스트 내용 추출
     const textContent = htmlContent.replace(/<img[^>]*>/g, "");
     return { images, textContent };
   };
@@ -40,16 +38,16 @@ const PostList = () => {
       try {
         const response = await axiosInstance.get(`/post/${uid}`, {
           params: {
-            page: page, // 현재 페이지 번호
-            size: pageSize, // 페이지당 게시물 수
+            page: page,
+            size: pageSize,
           },
         });
 
         const { content, totalPages, first, last } = response.data;
         setPosts(content);
-        setTotalPages(totalPages); // 전체 페이지 수 설정
-        setFirst(first); // 첫 페이지 여부 설정
-        setLast(last); // 마지막 페이지 여부 설정
+        setTotalPages(totalPages);
+        setFirst(first);
+        setLast(last);
         setLoading(false);
       } catch (err) {
         console.log("게시물을 불러오는 중 오류 발생:", err);
@@ -58,7 +56,7 @@ const PostList = () => {
     };
 
     fetchPosts();
-  }, [page]); // page 상태가 변경될 때마다 새로 호출
+  }, [page]);
 
   const handlePrevPage = () => {
     if (!first) {
@@ -80,6 +78,35 @@ const PostList = () => {
     setSelectedImage(null);
   };
 
+  const deletePost = async (postId: number) => {
+    if (window.confirm("정말로 이 게시물을 삭제하시겠습니까?")) {
+      try {
+        await axiosInstance.delete(`/post/${postId}`);
+        const updatedPosts = posts.filter((post) => post.postId !== postId);
+
+        // 남아있는 게시물의 수가 페이지 크기보다 적으면 다음 페이지 게시물 가져오기
+        if (updatedPosts.length < pageSize && !last) {
+          const response = await axiosInstance.get(`/post/${uid}`, {
+            params: {
+              page: page + 1,
+              size: pageSize - updatedPosts.length, // 부족한 게시물 수만큼 가져오기
+            },
+          });
+
+          const { content } = response.data;
+          setPosts([...updatedPosts, ...content]); // 기존 게시물과 새로운 게시물 결합
+        } else {
+          setPosts(updatedPosts); // 부족하지 않으면 기존 업데이트
+        }
+
+        alert("게시물이 삭제되었습니다.");
+      } catch (err) {
+        console.error("게시물을 삭제하는 중 오류 발생:", err);
+        alert("게시물 삭제에 실패했습니다.");
+      }
+    }
+  };
+
   if (loading) {
     return <p>로딩 중...</p>;
   }
@@ -88,7 +115,7 @@ const PostList = () => {
     <>
       <S.Content>
         {posts.map((post, postIndex) => {
-          const { images, textContent } = extractImageAndText(post.content); // 이미지와 텍스트 분리
+          const { images, textContent } = extractImageAndText(post.content);
 
           return (
             <S.Post key={post.postId}>
@@ -100,17 +127,17 @@ const PostList = () => {
                       <S.PostDate>
                         {new Date(post.time).toLocaleDateString()}
                       </S.PostDate>
-                      <S.ActionButton>추가</S.ActionButton>
-                      <S.ActionButton>삭제</S.ActionButton>
+                      <S.ActionButton>수정</S.ActionButton>
+                      <S.ActionButton onClick={() => deletePost(post.postId)}>
+                        삭제
+                      </S.ActionButton>
                       <S.HeartIcon>❤ count</S.HeartIcon>
                     </S.PostMeta>
                   </S.PostHeader>
-                  {/* 분리된 텍스트 내용 렌더링 */}
                   <S.PostDescription
                     dangerouslySetInnerHTML={{ __html: textContent }}
                   />
                 </S.PostInfo>
-                {/* 분리된 이미지들을 렌더링 */}
                 {images.map((src, index) => (
                   <S.PostImage
                     key={index}
@@ -125,14 +152,12 @@ const PostList = () => {
         })}
       </S.Content>
 
-      {/* 이미지 클릭 시 오버레이 */}
       {selectedImage && (
         <S.Overlay onClick={closeImageOverlay}>
           <S.OverlayImage src={selectedImage} alt="Selected" />
         </S.Overlay>
       )}
 
-      {/* 페이지네이션 버튼 */}
       <S.PaginationWrapper>
         <S.PageButton onClick={handlePrevPage} disabled={first}>
           이전
