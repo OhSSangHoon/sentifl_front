@@ -39,8 +39,11 @@ const AddInfo = () => {
       .post("/auth/add-info", { uid, nickName: nickname })
       .then(() => {
         alert("추가 정보가 성공적으로 입력되었습니다.");
+
+        const encodedNickname = encodeURIComponent(nickname);
+
         // 리디렉션을 프론트엔드에서 수행
-        window.location.href = `/auth/success?uid=${uid}&nickName=${nickname}&profile=${profile}`;
+        window.location.href = `/auth/success?uid=${uid}&nickName=${encodedNickname}&profile=${profile}`;
       })
       .catch((error) => {
         console.error("추가 정보 입력 실패:", error.response?.data || error);
