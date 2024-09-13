@@ -106,6 +106,8 @@ export const ProfileStats = styled.div`
 `;
 
 export const ProfileStatItem = styled.div`
+  overflow: hidden; /* 부모 요소에서 스크롤이 생기는 것 방지 */
+  white-space: nowrap;
   font-size: 14px;
   line-height: 1.2;
   text-align: center;

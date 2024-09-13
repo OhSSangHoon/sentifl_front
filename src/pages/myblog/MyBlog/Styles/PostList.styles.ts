@@ -14,12 +14,24 @@ export const Post = styled.div`
 
 export const PostContentWrapper = styled.div`
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  border-bottom: 1px solid #333;
+  gap: 20px;
 `;
 
 export const PostInfo = styled.div`
   flex: 2;
-  padding-right: 15px;
+`;
+
+export const PostImage = styled.img`
+  flex: 1;
+  max-width: 400px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  cursor: pointer;
 `;
 
 export const PostHeader = styled.div`
@@ -61,6 +73,12 @@ export const ActionButton = styled.button`
   &:hover {
     color: #ffffff;
   }
+
+  &:active,
+  &:focus {
+    font-weight: bold;
+    color: #ffffff;
+  }
 `;
 
 export const HeartIcon = styled.span`
@@ -76,14 +94,6 @@ export const PostDescription = styled.p`
   flex-wrap: wrap;
 `;
 
-export const PostImage = styled.img`
-  width: 300px;
-  height: 200px;
-  border-radius: 20px;
-  object-fit: cover;
-  background: white;
-`;
-
 export const PaginationWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -92,17 +102,20 @@ export const PaginationWrapper = styled.div`
 `;
 
 export const PageButton = styled.button`
-  padding: 10px 15px;
+  padding: 12px 20px;
   margin: 0 5px;
-  background-color: #007bff;
-  color: white;
-  border: none;
+  background-color: transparent;
+  color: #ccc;
+  border: 2px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: bold;
 
   &:disabled {
-    background-color: #ccc;
+    background-color: transparent;
+    color: rgba(204, 204, 204, 0.5);
+    border-color: rgba(204, 204, 204, 0.5);
     cursor: not-allowed;
   }
 `;
@@ -110,4 +123,23 @@ export const PageButton = styled.button`
 export const PageNumber = styled.span`
   font-size: 16px;
   margin: 0 10px;
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+export const OverlayImage = styled.img`
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
 `;
