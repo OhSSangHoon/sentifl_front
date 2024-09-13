@@ -28,14 +28,16 @@ export const BackgroundImage = styled.img`
 `;
 
 export const Overlay = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
+  z-index: 1000;
 `;
 
 export const TopRightContent = styled.div`

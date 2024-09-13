@@ -8,7 +8,7 @@ import Success from "../pages/Login/SuccessPage";
 import MusicRecommend from "../pages/musicRecommend/MusicRecommend";
 import BlogPost from "../pages/myblog/BlogPost/BlogPost";
 import MyBlog from "../pages/myblog/MyBlog/MyBlog";
-import NeighborBlog from "../pages/NeighborBlog/NeighborBlog";
+import NeighborBlogList from "../pages/NeighborBlog/NeighborBlogList";
 import CreateSong from "../pages/SongCreator/CreateSong";
 import SongResult from "../pages/SongCreator/SongResult";
 import Playlist from "../pages/Playlist/Playlist";
@@ -33,7 +33,7 @@ function Router() {
         />
         <Route path="/blogpost" element={<BlogPost />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
-        <Route path="/neighborblog" element={<NeighborBlog />} />
+        <Route path="/neighborbloglist" element={<NeighborBlogList />} />
         <Route path="/createsong" element={<CreateSong />} />
         <Route path="/songresult" element={<SongResult />} />
         <Route path="/playlist" element={<Playlist />} />
