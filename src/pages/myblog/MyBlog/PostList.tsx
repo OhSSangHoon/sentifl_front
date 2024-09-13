@@ -43,11 +43,15 @@ const PostList = () => {
           },
         });
 
-        const { content, totalPages, first, last } = response.data;
-        setPosts(content);
-        setTotalPages(totalPages);
-        setFirst(first);
-        setLast(last);
+        if (response.status === 200) {
+          const { content, totalPages, first, last } = response.data;
+          setPosts(content);
+          setTotalPages(totalPages);
+          setFirst(first);
+          setLast(last);
+        } else {
+          console.log("게시물을 불러올 수 없습니다.");
+        }
         setLoading(false);
       } catch (err) {
         console.log("게시물을 불러오는 중 오류 발생:", err);

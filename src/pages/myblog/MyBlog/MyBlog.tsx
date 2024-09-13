@@ -1,43 +1,84 @@
-// 내 블로그
-import styled from "styled-components";
+// 내 블로그-메인
+
+import React, { useState } from "react";
+import * as s from "./Styles/MyBlog.style";
 import PostList from "./PostList";
 import Sidebar from "./SideBar";
 
 const MyBlog = () => {
+  const [showFollowPopup, setShowFollowPopup] = useState(false);
+  const [showFollowingPopup, setShowFollowingPopup] = useState(false);
+
+  const toggleFollowPopup = () => {
+    setShowFollowPopup(true);
+    setShowFollowingPopup(false);
+  };
+
+  const toggleFollowingPopup = () => {
+    setShowFollowingPopup(true);
+    setShowFollowPopup(false);
+  };
+
+  const closePopup = () => {
+    setShowFollowPopup(false);
+    setShowFollowingPopup(false);
+  };
+
   return (
-    <Container>
-      <Sidebar />
-      <PostListWrapper>
+    <s.Container>
+      <Sidebar
+        toggleFollowPopup={toggleFollowPopup}
+        toggleFollowingPopup={toggleFollowingPopup}
+      />
+      <s.PostListWrapper>
         <PostList />
-      </PostListWrapper>
-    </Container>
+      </s.PostListWrapper>
+
+      {showFollowPopup && (
+        <s.Overlay>
+          <s.Popup>
+            <s.CloseButton onClick={closePopup}>×</s.CloseButton>
+            <s.PopupHeader>
+              <s.Tab active={true} onClick={toggleFollowPopup}>
+                follow
+              </s.Tab>
+              <s.Tab active={false} onClick={toggleFollowingPopup}>
+                following
+              </s.Tab>
+            </s.PopupHeader>
+            <s.PopupContent>
+              <s.FollowItem>
+                <s.FollowProfile />
+                <s.Nickname>닉네임</s.Nickname>
+              </s.FollowItem>
+            </s.PopupContent>
+          </s.Popup>
+        </s.Overlay>
+      )}
+
+      {showFollowingPopup && (
+        <s.Overlay>
+          <s.Popup>
+            <s.CloseButton onClick={closePopup}>×</s.CloseButton>
+            <s.PopupHeader>
+              <s.Tab active={false} onClick={toggleFollowPopup}>
+                follow
+              </s.Tab>
+              <s.Tab active={true} onClick={toggleFollowingPopup}>
+                following
+              </s.Tab>
+            </s.PopupHeader>
+            <s.PopupContent>
+              <s.FollowItem>
+                <s.Nickname>닉네임</s.Nickname>
+                <s.FollowProfile />
+              </s.FollowItem>
+            </s.PopupContent>
+          </s.Popup>
+        </s.Overlay>
+      )}
+    </s.Container>
   );
 };
 
 export default MyBlog;
-
-const Container = styled.div`
-  display: flex;
-  background: #0d0d0e;
-  color: #ffffff;
-  height: 100vh;
-  overflow: hidden;
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  margin-top: 50px;
-  ::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-const PostListWrapper = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  height: calc(100vh - 70px);
-  padding-right: 20px;
-
-  // 스크롤바 숨김
-  ::-webkit-scrollbar {
-    display: none;
-  }
-`;

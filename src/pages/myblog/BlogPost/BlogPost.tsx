@@ -33,9 +33,7 @@ function BlogPost() {
         </S.Overlay>
       </S.TopSection>
       <S.MainContent>
-        <S.SidebarWrapper>
-          <Sidebar />
-        </S.SidebarWrapper>
+        <S.SidebarWrapper>{/* <Sidebar /> */}</S.SidebarWrapper>
         <S.PostContent>
           <p>작성한 글이 표시됩니다.</p>
           <p>
