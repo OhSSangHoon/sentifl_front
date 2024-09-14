@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as S from "./Styles/PostList.styles";
 import axiosInstance from "../../../axiosInterceptor";
 import { useAuth } from "../../../AuthProvider";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 interface Post {
   postId: number;
@@ -13,14 +14,14 @@ interface Post {
 const PostList = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0); // 현재 페이지 번호
-  const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
-  const [first, setFirst] = useState(true); // 첫 페이지 여부
-  const [last, setLast] = useState(false); // 마지막 페이지 여부
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // 클릭된 이미지 URL
-  const pageSize = 3; // 페이지당 게시물 수
-
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [first, setFirst] = useState(true);
+  const [last, setLast] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const pageSize = 3;
   const { uid } = useAuth();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const extractImageAndText = (htmlContent: string) => {
     const imageRegex = /<img[^>]+src="([^">]+)"/g;
@@ -88,19 +89,18 @@ const PostList = () => {
         await axiosInstance.delete(`/post/${postId}`);
         const updatedPosts = posts.filter((post) => post.postId !== postId);
 
-        // 남아있는 게시물의 수가 페이지 크기보다 적으면 다음 페이지 게시물 가져오기
         if (updatedPosts.length < pageSize && !last) {
           const response = await axiosInstance.get(`/post/${uid}`, {
             params: {
               page: page + 1,
-              size: pageSize - updatedPosts.length, // 부족한 게시물 수만큼 가져오기
+              size: pageSize - updatedPosts.length,
             },
           });
 
           const { content } = response.data;
-          setPosts([...updatedPosts, ...content]); // 기존 게시물과 새로운 게시물 결합
+          setPosts([...updatedPosts, ...content]);
         } else {
-          setPosts(updatedPosts); // 부족하지 않으면 기존 업데이트
+          setPosts(updatedPosts);
         }
 
         alert("게시물이 삭제되었습니다.");
@@ -109,6 +109,10 @@ const PostList = () => {
         alert("게시물 삭제에 실패했습니다.");
       }
     }
+  };
+
+  const editPost = (postId: number) => {
+    navigate(`/modify/${postId}`); // Navigate to the edit page with the postId
   };
 
   if (loading) {
@@ -131,7 +135,9 @@ const PostList = () => {
                       <S.PostDate>
                         {new Date(post.time).toLocaleDateString()}
                       </S.PostDate>
-                      <S.ActionButton>수정</S.ActionButton>
+                      <S.ActionButton onClick={() => editPost(post.postId)}>
+                        수정
+                      </S.ActionButton>
                       <S.ActionButton onClick={() => deletePost(post.postId)}>
                         삭제
                       </S.ActionButton>
