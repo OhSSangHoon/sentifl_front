@@ -48,6 +48,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           user_id: uid,
           post_url: postUrl,
           token: accessToken,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
         }
       );
       console.log("FastAPI 응답:", response.data);
@@ -260,6 +265,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         alert("게시물이 성공적으로 저장되었습니다.");
   
         await sendToFastAPI(uid, s3Url, accessToken);
+
+        const { url: musicUrl, title: musicTitle, emotion } = response.data;
   
         navigate("/myblog");
       }
