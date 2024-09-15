@@ -1,7 +1,7 @@
 // 메인_이웃 블로그
 
 import React from "react";
-import * as S from "./Styles/NeighborBlog.styles";
+import * as S from "./Styles/FollowingPostList.styles";
 import DotNav from "../../components/DotNav";
 
 function FollowingPostsList() {

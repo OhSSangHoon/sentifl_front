@@ -2,7 +2,8 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
-  height: 100vh;
+  height: auto;
+  min-height: 100vh;
   background-color: #0d0d0e;
   color: #fff;
   margin-top: 100px;
@@ -19,7 +20,7 @@ export const Sidebar = styled.div`
   border-bottom-right-radius: 50px;
   margin-left: 30px;
   position: fixed; /* 고정된 위치 */
-  top: 100px; /* 헤더 아래에 위치 */
+  top: 100px;
   left: 0;
   height: calc(100vh - 100px);
 `;

@@ -19,7 +19,8 @@ export default Recommend;
 
 const Container = styled.div`
   background-color: gray;
-  height: 100vh;
+  height: auto;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

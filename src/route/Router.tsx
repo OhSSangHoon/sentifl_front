@@ -32,7 +32,7 @@ function Router() {
             </ProtectedRoute>
           }
         />
-        <Route path="/post/:postId" element={<BlogPost />} />
+        <Route path="/user/:uid/post/:postId" element={<BlogPost />} />
         <Route path="/modify/:postId" element={<ModifyPage />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
         <Route
@@ -40,7 +40,7 @@ function Router() {
           element={<FollowingPostsList />}
         />
         <Route path="/create-song" element={<CreateSong />} />
-        <Route path="/songresult" element={<SongResult />} />
+        <Route path="/song-result" element={<SongResult />} />
         <Route path="/user/:uid/playlist" element={<Playlist />} />
       </Route>
     </Routes>

@@ -1,72 +1,34 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React from "react";
+import * as S from "./Styles/SongResult.style";
 
 const SongResult = () => {
-  const [loading, setLoading] = useState(true);
-
   return (
-    <Wrapper>
-      {loading ? (
-        <LoadingScreen>
-          <Title>MAKE SENTIFL</Title>
-          <LoadingText>
-            노래를 생성중입니다. 멋진 음악을 만들어 드릴게요.
-          </LoadingText>
-        </LoadingScreen>
-      ) : (
-        <PlayButtonWrapper>
-          <PlayButton>▶ 노래 재생하기</PlayButton>
-        </PlayButtonWrapper>
-      )}
-    </Wrapper>
+    <S.Wrapper>
+      <S.TopLeftInfo>
+        <S.InfoText>휴식동안 느낀 당신의 감정이에요.</S.InfoText>
+        <S.ColorInfo>
+          <S.ColorBox color="#0000FF" />
+          <S.ColorText>슬픔: 영화 그리운 사람 만남의 회상</S.ColorText>
+        </S.ColorInfo>
+        <S.ColorInfo>
+          <S.ColorBox color="#00FFFF" />
+          <S.ColorText>편안: 조용하면서도 상쾌한 바람</S.ColorText>
+        </S.ColorInfo>
+      </S.TopLeftInfo>
+
+      <S.PlayButtonWrapper>
+        <S.PlayButton>▶</S.PlayButton>
+      </S.PlayButtonWrapper>
+
+      <S.TitleWrapper>
+        <S.MainTitle>제목이 들어가는 곳</S.MainTitle>
+      </S.TitleWrapper>
+
+      <S.BottomLeftButton>MY PLAYLIST</S.BottomLeftButton>
+
+      <S.BottomRightText>My blog</S.BottomRightText>
+    </S.Wrapper>
   );
 };
 
 export default SongResult;
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #000;
-  color: white;
-`;
-
-const LoadingScreen = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  margin-bottom: 20px;
-`;
-
-const LoadingText = styled.p`
-  margin-top: 20px;
-  font-size: 16px;
-  color: #ccc;
-`;
-
-const PlayButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-
-const PlayButton = styled.button`
-  padding: 15px 30px;
-  font-size: 18px;
-  background-color: #1abc9c;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  cursor: pointer;
-  &:hover {
-    background-color: #16a085;
-  }
-`;

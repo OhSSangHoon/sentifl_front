@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const SidebarContainer = styled.aside`
-  width: 300px;
-  height: 100vh;
+  width: 350px;
+  height: auto;
   background-color: #1e1e1e;
   padding: 20px;
   display: flex;
@@ -91,6 +91,13 @@ export const PlaylistBadge = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 5px;
+
+  &:hover {
+    background-color: #5f5f5f;
+  }
+  &:active {
+    background-color: #5f5f5f;
+  }
 `;
 
 export const ProfileName = styled.h2`
@@ -106,7 +113,7 @@ export const ProfileStats = styled.div`
 `;
 
 export const ProfileStatItem = styled.div`
-  overflow: hidden; /* 부모 요소에서 스크롤이 생기는 것 방지 */
+  overflow: hidden;
   white-space: nowrap;
   font-size: 14px;
   line-height: 1.2;

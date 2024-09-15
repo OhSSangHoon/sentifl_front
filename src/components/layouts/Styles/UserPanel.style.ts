@@ -93,6 +93,13 @@ export const UserPlaylist = styled.div`
   font-size: 12px;
   white-space: nowrap;
   width: auto;
+
+  &:hover {
+    background-color: #5f5f5f;
+  }
+  &:active {
+    background-color: #5f5f5f;
+  }
 `;
 
 export const UserStats = styled.div`

@@ -4,7 +4,8 @@ export const Container = styled.div`
   display: flex;
   background: #0d0d0e;
   color: #ffffff;
-  height: 100vh;
+  height: auto;
+  min-height: 100vh;
   overflow: hidden;
   font-family: Arial, sans-serif;
   padding: 20px;
@@ -15,10 +16,11 @@ export const Container = styled.div`
 `;
 
 export const PostListWrapper = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  height: calc(100vh - 70px);
-  padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  width: 100%;
 
   ::-webkit-scrollbar {
     display: none;

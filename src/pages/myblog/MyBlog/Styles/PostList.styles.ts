@@ -83,8 +83,13 @@ export const ActionButton = styled.button`
 
 export const HeartIcon = styled.span`
   font-size: 16px;
-  color: #b5b5b5;
+  color: "#b5b5b5"
   margin-left: 10px;
+  cursor: pointer;
+
+  &:hover {
+    color: red;
+  }
 `;
 
 export const PostDescription = styled.p`
@@ -99,30 +104,26 @@ export const PaginationWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 20px;
+  min-height: 60px;
 `;
 
-export const PageButton = styled.button`
+export const PageButton = styled.button<{ active?: boolean }>`
   padding: 12px 20px;
   margin: 0 5px;
-  background-color: transparent;
-  color: #ccc;
-  border: 2px solid #ccc;
-  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0);
+  color: ${({ active }) => (active ? "#D9D9D9" : "#777777")};
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
+  border: none;
 
   &:disabled {
-    background-color: transparent;
-    color: rgba(204, 204, 204, 0.5);
-    border-color: rgba(204, 204, 204, 0.5);
     cursor: not-allowed;
   }
-`;
 
-export const PageNumber = styled.span`
-  font-size: 16px;
-  margin: 0 10px;
+  &:hover {
+    color: ${({ active }) => (active ? "#fff" : "#D9D9D9")};
+  }
 `;
 
 export const Overlay = styled.div`

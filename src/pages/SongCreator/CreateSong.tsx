@@ -4,6 +4,7 @@ import React from "react";
 import * as S from "./Styles/CreateSong.style";
 import { FaCheck, FaPlay, FaParking } from "react-icons/fa";
 import PostList from "./PostList";
+import { PostListWrapper } from "../myblog/MyBlog/Styles/MyBlog.style";
 
 const CreateSong = () => {
   return (
@@ -15,7 +16,9 @@ const CreateSong = () => {
           <FaParking style={{ marginRight: "5px" }} /> 0p
         </S.Points>
       </S.Sidebar>
-      <PostList />
+      <PostListWrapper>
+        <PostList />
+      </PostListWrapper>
       <S.PlaySection>
         <S.PlayButton>
           <FaPlay />
