@@ -1,3 +1,4 @@
+// Sidebar.tsx
 import React from "react";
 import {
   FaAngleDown,
@@ -6,24 +7,26 @@ import {
   FaCog,
   FaParking,
   FaPen,
-  FaStar,
 } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../AuthProvider";
+import { useNavigate } from "react-router-dom";
 import * as S from "./Styles/Sidebar.styles";
 
-interface SidebarProps {
-  toggleFollowPopup: () => void;
-  toggleFollowingPopup: () => void;
+export interface SidebarProps {
+  nickname: string;
+  uid: string;
+  profileImage: string;
+  toggleFollowPopup?: () => void;
+  toggleFollowingPopup?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
-  toggleFollowPopup,
-  toggleFollowingPopup,
+  nickname,
+  uid,
+  profileImage,
+  toggleFollowPopup = () => {},
+  toggleFollowingPopup = () => {},
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { nickname, uid, profileImage } = useAuth();
 
   const handlePenClick = () => {
     navigate("/Create");
@@ -95,7 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
 export default Sidebar;
 
-// // 내 블로그- 사이드바
+// import React from "react";
 // import {
 //   FaAngleDown,
 //   FaBell,
@@ -109,7 +112,15 @@ export default Sidebar;
 // import { useAuth } from "../../../AuthProvider";
 // import * as S from "./Styles/Sidebar.styles";
 
-// const Sidebar: React.FC = () => {
+// export interface SidebarProps {
+//   toggleFollowPopup: () => void;
+//   toggleFollowingPopup: () => void;
+// }
+
+// const Sidebar: React.FC<SidebarProps> = ({
+//   toggleFollowPopup,
+//   toggleFollowingPopup,
+// }) => {
 //   const navigate = useNavigate();
 //   const location = useLocation();
 //   const { nickname, uid, profileImage } = useAuth();
@@ -119,7 +130,7 @@ export default Sidebar;
 //   };
 
 //   const goToPlaylist = () => {
-//     navigate("/playlist");
+//     navigate(`/user/${uid}/playlist`);
 //   };
 
 //   return (
@@ -138,21 +149,23 @@ export default Sidebar;
 //         <S.Profile>
 //           <S.ProfileImageWrapper>
 //             <S.ProfileImage
-//               src={profileImage || "path_to_profile_image"}
+//               src={profileImage || "/default-profile.png"}
 //               alt="Profile"
 //             />
 //           </S.ProfileImageWrapper>
 //           <S.ProfileInfo>
-//             <S.PlaylistBadge>My Playlist</S.PlaylistBadge>
+//             <S.PlaylistBadge onClick={goToPlaylist}>
+//               My Playlist
+//             </S.PlaylistBadge>
 //             <S.ProfileName>{nickname}</S.ProfileName>
 //             <S.ProfileStats>
-//               <S.ProfileStatItem>
+//               <S.ProfileStatItem onClick={toggleFollowPopup}>
 //                 <small>follow</small>
 //                 <br />
 //                 <strong>0</strong>
 //               </S.ProfileStatItem>
 //               <S.Separator>|</S.Separator>
-//               <S.ProfileStatItem>
+//               <S.ProfileStatItem onClick={toggleFollowingPopup}>
 //                 <small>following</small>
 //                 <br />
 //                 <strong>0</strong>
