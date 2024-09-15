@@ -27,25 +27,11 @@ export const BackgroundImage = styled.img`
   left: 0;
 `;
 
-export const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
 export const TopRightContent = styled.div`
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 30px;
+  right: 50px;
   color: #aaa;
-  font-size: 12px;
 `;
 
 export const LeftContent = styled.div`
@@ -58,9 +44,13 @@ export const LeftContent = styled.div`
 export const SongTitleWrapper = styled.div`
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 30px;
   display: flex;
   align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 8px 20px;
+  border-radius: 30px;
+  gap: 10px;
 `;
 
 export const SongTitle = styled.div`
@@ -68,13 +58,13 @@ export const SongTitle = styled.div`
   align-items: center;
   font-size: 14px;
   color: white;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 5px 15px;
-  border-radius: 20px;
-  gap: 10px;
 `;
 
 export const CategoryAndTitle = styled.div`
+  position: absolute;
+  top: 60%;
+  left: 20px;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -95,13 +85,13 @@ export const Title = styled.h1`
 
 export const ViewCount = styled.div`
   color: #aaa;
-  font-size: 12px;
+  font-size: 14px;
 `;
 
 export const BottomRightContent = styled.div`
   position: absolute;
-  bottom: 20px;
-  right: 20px;
+  bottom: 50px;
+  right: 40px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -109,7 +99,7 @@ export const BottomRightContent = styled.div`
 
 export const Date = styled.div`
   color: #aaa;
-  font-size: 12px;
+  font-size: 14px;
   margin-right: 10px;
 `;
 
@@ -153,4 +143,35 @@ export const PostContent = styled.div`
     margin-bottom: 20px;
   }
   overflow-y: auto;
+`;
+
+export const FixedBottomBar = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+`;
+
+export const InputField = styled.input`
+  flex: 1;
+  background-color: #444;
+  border: none;
+  padding: 10px;
+  margin: 0 10px;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 14px;
+`;
+
+export const Icon = styled.span`
+  font-size: 20px;
+  color: #fff;
+  cursor: pointer;
+  margin: 0 10px;
 `;

@@ -4,7 +4,7 @@ import React from "react";
 import * as S from "./Styles/NeighborBlog.styles";
 import DotNav from "../../components/DotNav";
 
-function NeighborBlogList() {
+function FollowingPostsList() {
   return (
     <S.Container>
       <S.Title>NEW POST</S.Title>
@@ -37,4 +37,4 @@ function NeighborBlogList() {
   );
 }
 
-export default NeighborBlogList;
+export default FollowingPostsList;

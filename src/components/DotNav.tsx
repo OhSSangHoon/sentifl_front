@@ -12,7 +12,7 @@ const DotNavigation = () => {
     <DotContainer>
       <Dot onClick={() => handleNavigate("/")} />
       <Dot onClick={() => handleNavigate("/musicrecommend")} />
-      <Dot onClick={() => handleNavigate("/neighborbloglist")} />
+      <Dot onClick={() => handleNavigate("/user/:uid/following-posts")} />
     </DotContainer>
   );
 };

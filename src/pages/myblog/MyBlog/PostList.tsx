@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as S from "./Styles/PostList.styles";
 import axiosInstance from "../../../axiosInterceptor";
 import { useAuth } from "../../../AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 interface Post {
   postId: number;
@@ -11,16 +12,17 @@ interface Post {
 }
 
 const PostList = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0); // 현재 페이지 번호
-  const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
-  const [first, setFirst] = useState(true); // 첫 페이지 여부
-  const [last, setLast] = useState(false); // 마지막 페이지 여부
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // 클릭된 이미지 URL
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const pageSize = 3; // 페이지당 게시물 수
 
   const { uid } = useAuth();
+  const navigate = useNavigate();
+  const handlePostClick = (postId: number) => {
+    navigate(`/post/${postId}`);
+  };
 
   const extractImageAndText = (htmlContent: string) => {
     const imageRegex = /<img[^>]+src="([^">]+)"/g;
@@ -34,24 +36,38 @@ const PostList = () => {
   };
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchAllPosts = async () => {
       try {
-        const response = await axiosInstance.get(`/post/${uid}`, {
-          params: {
-            page: page,
-            size: pageSize,
-          },
-        });
+        const allFetchedPosts: Post[] = [];
+        let currentPage = 0;
+        let lastPage = false;
 
-        if (response.status === 200) {
-          const { content, totalPages, first, last } = response.data;
-          setPosts(content);
-          setTotalPages(totalPages);
-          setFirst(first);
-          setLast(last);
-        } else {
-          console.log("게시물을 불러올 수 없습니다.");
+        while (!lastPage) {
+          const response = await axiosInstance.get(`/post/${uid}`, {
+            params: {
+              page: currentPage,
+              size: pageSize,
+            },
+          });
+
+          if (response.status === 200) {
+            const { content, last } = response.data;
+            allFetchedPosts.push(...content); // 게시물을 병합
+            lastPage = last; // 마지막 페이지 확인
+            currentPage += 1; // 다음 페이지로 이동
+          } else {
+            console.log("게시물을 불러올 수 없습니다.");
+            break;
+          }
         }
+
+        // 모든 데이터를 병합한 후 최신순으로 정렬
+        const sortedPosts = allFetchedPosts.sort(
+          (a: Post, b: Post) =>
+            new Date(b.time).getTime() - new Date(a.time).getTime()
+        );
+
+        setAllPosts(sortedPosts);
         setLoading(false);
       } catch (err) {
         console.log("게시물을 불러오는 중 오류 발생:", err);
@@ -59,17 +75,17 @@ const PostList = () => {
       }
     };
 
-    fetchPosts();
-  }, [page]);
+    fetchAllPosts();
+  }, [uid]);
 
   const handlePrevPage = () => {
-    if (!first) {
+    if (page > 0) {
       setPage(page - 1);
     }
   };
 
   const handleNextPage = () => {
-    if (!last) {
+    if ((page + 1) * pageSize < allPosts.length) {
       setPage(page + 1);
     }
   };
@@ -86,23 +102,8 @@ const PostList = () => {
     if (window.confirm("정말로 이 게시물을 삭제하시겠습니까?")) {
       try {
         await axiosInstance.delete(`/post/${postId}`);
-        const updatedPosts = posts.filter((post) => post.postId !== postId);
-
-        // 남아있는 게시물의 수가 페이지 크기보다 적으면 다음 페이지 게시물 가져오기
-        if (updatedPosts.length < pageSize && !last) {
-          const response = await axiosInstance.get(`/post/${uid}`, {
-            params: {
-              page: page + 1,
-              size: pageSize - updatedPosts.length, // 부족한 게시물 수만큼 가져오기
-            },
-          });
-
-          const { content } = response.data;
-          setPosts([...updatedPosts, ...content]); // 기존 게시물과 새로운 게시물 결합
-        } else {
-          setPosts(updatedPosts); // 부족하지 않으면 기존 업데이트
-        }
-
+        const updatedPosts = allPosts.filter((post) => post.postId !== postId);
+        setAllPosts(updatedPosts); // 삭제 후 전체 게시물 업데이트
         alert("게시물이 삭제되었습니다.");
       } catch (err) {
         console.error("게시물을 삭제하는 중 오류 발생:", err);
@@ -115,14 +116,20 @@ const PostList = () => {
     return <p>로딩 중...</p>;
   }
 
+  // 현재 페이지에 해당하는 게시물만 표시
+  const displayedPosts = allPosts.slice(page * pageSize, (page + 1) * pageSize);
+
   return (
     <>
       <S.Content>
-        {posts.map((post, postIndex) => {
+        {displayedPosts.map((post, postIndex) => {
           const { images, textContent } = extractImageAndText(post.content);
 
           return (
-            <S.Post key={post.postId}>
+            <S.Post
+              key={post.postId}
+              onClick={() => handlePostClick(post.postId)}
+            >
               <S.PostContentWrapper>
                 <S.PostInfo>
                   <S.PostHeader>
@@ -163,13 +170,16 @@ const PostList = () => {
       )}
 
       <S.PaginationWrapper>
-        <S.PageButton onClick={handlePrevPage} disabled={first}>
+        <S.PageButton onClick={handlePrevPage} disabled={page === 0}>
           이전
         </S.PageButton>
         <S.PageNumber>
-          {page + 1} / {totalPages}
+          {page + 1} / {Math.ceil(allPosts.length / pageSize)}
         </S.PageNumber>
-        <S.PageButton onClick={handleNextPage} disabled={last}>
+        <S.PageButton
+          onClick={handleNextPage}
+          disabled={(page + 1) * pageSize >= allPosts.length}
+        >
           다음
         </S.PageButton>
       </S.PaginationWrapper>

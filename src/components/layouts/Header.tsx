@@ -4,7 +4,7 @@ import * as S from "./Styles/Header.styles";
 import UserPanel from "./UserPanel";
 
 function Header() {
-  const { isLoggedIn, nickname, logout } = useAuth();
+  const { isLoggedIn, nickname, logout, uid } = useAuth();
   const profileImage = localStorage.getItem("profileImage");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -23,7 +23,7 @@ function Header() {
         <img src="/path" alt="logo" />
       </S.Logo>
       <S.Nav>
-        <S.StyledNavLink to="/myblog">Create</S.StyledNavLink>
+        <S.StyledNavLink to={`/user/${uid}/blog`}>Create</S.StyledNavLink>
         <S.StyledNavLink to="/">Home</S.StyledNavLink>
       </S.Nav>
       {isLoggedIn ? (

@@ -16,11 +16,11 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
   const navigate = useNavigate();
 
   const goToMyBlog = () => {
-    navigate("/myblog");
+    navigate(`/user/${uid}/blog`);
   };
 
   const goToPlaylist = () => {
-    navigate("/playlist");
+    navigate(`/user/${uid}/playlist`);
   };
 
   return (

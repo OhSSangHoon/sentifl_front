@@ -89,6 +89,7 @@ export const PlaylistBadge = styled.div`
   padding: 2px 5px;
   border-radius: 5px;
   display: flex;
+  justify-content: center;
   margin-bottom: 5px;
 `;
 
