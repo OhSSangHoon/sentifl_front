@@ -130,6 +130,10 @@ const PostList = () => {
     }
   };
 
+  const editPost = (postId: number) => {
+    navigate(`/modify/${postId}`); // Navigate to the edit page with the postId
+  };
+
   if (loading) {
     return <p>로딩 중...</p>;
   }
@@ -160,12 +164,7 @@ const PostList = () => {
                         <S.PostDate>
                           {new Date(post.time).toLocaleDateString()}
                         </S.PostDate>
-                        <S.ActionButton
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            // 수정 로직 추가
-                          }}
-                        >
+                        <S.ActionButton onClick={() => editPost(post.postId)}>
                           수정
                         </S.ActionButton>
                         <S.ActionButton
