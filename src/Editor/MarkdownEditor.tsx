@@ -6,7 +6,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import axiosInstance from "../axiosInterceptor";
-import { uploadfinalToS3, uploadTempToS3, uploadToS3 } from "../services/s3Service";
+import {
+  uploadfinalToS3,
+  uploadTempToS3,
+  uploadToS3,
+} from "../services/s3Service";
 import * as S from "./Styles/Editor.style";
 
 Quill.register("modules/imageResize", ImageResize);
@@ -37,22 +41,28 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const quillRef = useRef<Quill | null>(null);
   const navigate = useNavigate();
   const { uid } = useAuth();
-  const [internalThumbnailUrl, setInternalThumbnailUrl] = useState<string | null>(thumbnailUrl); // 썸네일 URL을 관리하는 상태
+  const [internalThumbnailUrl, setInternalThumbnailUrl] = useState<
+    string | null
+  >(thumbnailUrl); // 썸네일 URL을 관리하는 상태
 
   // FastAPI로 데이터를 전송
-  const sendToFastAPI = async (uid: string, postUrl: string, accessToken: string) => {
+  const sendToFastAPI = async (
+    uid: string,
+    postUrl: string,
+    accessToken: string
+  ) => {
     try {
       const response = await axiosInstance.post(
         "http://localhost:8000/create/music", // FastAPI 엔드포인트
         {
           user_id: uid,
-          post_url: postUrl,
+          html_url: postUrl,
           token: accessToken,
         },
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
       );
       console.log("FastAPI 응답:", response.data);
@@ -145,7 +155,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   };
 
   // 썸네일 이미지 직접 업로드 핸들러
-  const handleThumbnail = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThumbnail = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files ? event.target.files[0] : null;
     if (file) {
       try {
@@ -211,44 +223,47 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       console.log("Quill 에디터가 초기화되지 않았습니다.");
       return;
     }
-  
+
     if (!title || (quillRef.current?.getLength() || 0) <= 1) {
       alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
-  
+
     const accessToken = localStorage.getItem("accessToken");
-  
+
     if (!accessToken) {
       alert("로그인이 필요합니다.");
       return;
     }
-  
+
     // 썸네일 이미지가 없을 경우, content에서 첫 번째 이미지를 썸네일로 사용
     if (!internalThumbnailUrl) {
       setFirstContentImageAsThumbnail();
     }
-  
+
     const editorHtml = quillRef.current.root.innerHTML;
     const fileTitle = title
       ? title.replace(/[^a-z0-9]/gi, "_").toLowerCase()
       : "untitled";
     const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
     const jsonFileName = `${fileTitle}_${timestamp}.json`;
-  
+
     const jsonContent = {
       title: title,
       content: editorHtml,
       thumbnailUrl: internalThumbnailUrl || "",
     };
-  
+
     try {
       const jsonBlob = new Blob([JSON.stringify(jsonContent, null, 2)], {
         type: "application/json",
       });
-      
-      const s3Url = await uploadfinalToS3(new File([jsonBlob], jsonFileName), uid);
-  
+
+      const s3Url = await uploadfinalToS3(
+        new File([jsonBlob], jsonFileName),
+        uid
+      );
+
       const postData = {
         // title: title,
         // content: editorHtml,
@@ -256,26 +271,24 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         postUrl: s3Url,
         thumbnailUrl: internalThumbnailUrl || "",
       };
-  
+
       // JWT 토큰을 'Authorization' 헤더로 Bearer 형식으로 추가
-      const response = await axiosInstance.post("/post", postData, {
-      });
-  
+      const response = await axiosInstance.post("/post", postData, {});
+
       if (response.status === 200) {
         alert("게시물이 성공적으로 저장되었습니다.");
-  
+
         await sendToFastAPI(uid, s3Url, accessToken);
 
         const { url: musicUrl, title: musicTitle, emotion } = response.data;
-  
-        navigate("/myblog");
+
+        navigate(`/user/${uid}/blog`);
       }
     } catch (error) {
       console.error("게시물 저장 실패:", error);
       alert("게시물 저장에 실패했습니다.");
     }
   };
-  
 
   return (
     <S.EditorWrapper>
@@ -285,7 +298,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       </S.SaveBtn>
       <S.TitleWrapper
         style={{
-          backgroundImage: internalThumbnailUrl ? `url(${internalThumbnailUrl})` : "none",
+          backgroundImage: internalThumbnailUrl
+            ? `url(${internalThumbnailUrl})`
+            : "none",
         }}
       >
         <S.TitleInput

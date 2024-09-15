@@ -51,8 +51,6 @@ const PostList = () => {
             },
           });
 
-          console.log("API 응답 데이터:", response.data);
-
           if (response.status === 200) {
             const data = response.data;
 
@@ -82,8 +80,6 @@ const PostList = () => {
           (a: Post, b: Post) =>
             new Date(b.time).getTime() - new Date(a.time).getTime()
         );
-
-        console.log("가져온 게시물:", sortedPosts);
 
         setAllPosts(sortedPosts);
         setLoading(false);
@@ -152,14 +148,13 @@ const PostList = () => {
             );
 
             return (
-              <S.Post
-                key={post.postId}
-                onClick={() => handlePostClick(post.postId)}
-              >
+              <S.Post key={post.postId}>
                 <S.PostContentWrapper>
                   <S.PostInfo>
                     <S.PostHeader>
-                      <S.PostTitle>{post.title}</S.PostTitle>
+                      <S.PostTitle onClick={() => handlePostClick(post.postId)}>
+                        {post.title}
+                      </S.PostTitle>
                       <S.PostMeta>
                         <S.PostDate>
                           {new Date(post.time).toLocaleDateString()}
@@ -179,6 +174,7 @@ const PostList = () => {
                       </S.PostMeta>
                     </S.PostHeader>
                     <S.PostDescription
+                      onClick={() => handlePostClick(post.postId)}
                       dangerouslySetInnerHTML={{ __html: textContent }}
                     />
                   </S.PostInfo>
