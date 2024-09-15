@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import * as S from "./Styles/PostList.styles";
-import axiosInstance from "../../../axiosInterceptor";
-import { useAuth } from "../../../AuthProvider";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useAuth } from "../../../AuthProvider";
+import axiosInstance from "../../../axiosInterceptor";
+import * as S from "./Styles/PostList.styles";
 
 interface Post {
   postId: number;

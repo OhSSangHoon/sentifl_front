@@ -2,11 +2,11 @@ import AWS from "aws-sdk";
 import Quill from "quill";
 import ImageResize from "quill-image-resize";
 import "quill/dist/quill.bubble.css";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import axiosInstance from "../axiosInterceptor";
-import { uploadTempToS3, uploadToS3, uploadfinalToS3 } from "../services/s3Service";
+import { uploadfinalToS3, uploadTempToS3, uploadToS3 } from "../services/s3Service";
 import * as S from "./Styles/Editor.style";
 
 Quill.register("modules/imageResize", ImageResize);
@@ -23,6 +23,7 @@ interface MarkdownEditorProps {
   title: string;
   setTitle: (title: string) => void;
   images: Array<{ imageName: string; imageUrl: string }>;
+  thumbnailUrl: string | null;
 }
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
@@ -31,14 +32,86 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   title,
   setTitle,
   images,
+  thumbnailUrl, // 썸네일 URL을 props로 받음
 }) => {
   const quillRef = useRef<Quill | null>(null);
   const navigate = useNavigate();
   const { uid } = useAuth();
+  const [internalThumbnailUrl, setInternalThumbnailUrl] = useState<string | null>(thumbnailUrl); // 썸네일 URL을 관리하는 상태
 
-  // 오디오 URL 관련
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  // FastAPI로 데이터를 전송
+  const sendToFastAPI = async (uid: string, postUrl: string, accessToken: string) => {
+    try {
+      const response = await axiosInstance.post(
+        "http://localhost:8000/create/music", // FastAPI 엔드포인트
+        {
+          user_id: uid,
+          post_url: postUrl,
+          token: accessToken,
+        }
+      );
+      console.log("FastAPI 응답:", response.data);
+    } catch (error) {
+      console.error("FastAPI로 데이터 전송 실패:", error);
+    }
+  };
 
+  // 썸네일 URL이 업데이트되면 내부 상태도 업데이트
+  useEffect(() => {
+    if (thumbnailUrl) {
+      setInternalThumbnailUrl(thumbnailUrl);
+    }
+  }, [thumbnailUrl]);
+
+  // Quill 에디터 초기화
+  useEffect(() => {
+    let isMounted = true;
+
+    if (!quillRef.current && isMounted) {
+      const quill = new Quill("#editor", {
+        theme: "bubble",
+        modules: {
+          toolbar: {
+            container: [
+              [{ header: 2 }],
+              [{ header: 3 }],
+              ["bold", "italic", "underline", "strike"],
+              ["link", "image"],
+              ["clean"],
+            ],
+            handlers: {
+              image: imageHandler,
+            },
+          },
+          imageResize: {
+            displayStyles: {
+              backgroundColor: "black",
+              border: "none",
+              color: "white",
+            },
+            modules: ["Resize", "DisplaySize"],
+          },
+          history: {
+            delay: 500,
+            maxStack: 100,
+            userOnly: true,
+          },
+        },
+      });
+
+      quillRef.current = quill;
+
+      if (initialDelta && quill) {
+        quill.setContents(initialDelta); // Delta 형식을 Quill 에디터에 적용
+      }
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [initialDelta]);
+
+  // 이미지 업로드 핸들러
   const imageHandler = async () => {
     const input = document.createElement("input");
     input.setAttribute("type", "file");
@@ -66,37 +139,33 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     };
   };
 
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          [{ header: 2 }],
-          [{ header: 3 }],
-          ["bold", "italic", "underline", "strike"],
-          ["link", "image"],
-          ["clean"],
-        ],
-        handlers: {
-          image: imageHandler,
-        },
-      },
-      imageResize: {
-        displayStyles: {
-          backgroundColor: "black",
-          border: "none",
-          color: "white",
-        },
-        modules: ["Resize", "DisplaySize"],
-      },
-      history: {
-        delay: 500,
-        maxStack: 100,
-        userOnly: true,
-      },
-    }),
-    [imageHandler]
-  );
+  // 썸네일 이미지 직접 업로드 핸들러
+  const handleThumbnail = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null;
+    if (file) {
+      try {
+        const s3Url = await uploadToS3(file, uid);
+        setInternalThumbnailUrl(s3Url);
+      } catch (error) {
+        console.error("썸네일 이미지 업로드 오류: ", error);
+      }
+    }
+  };
 
+  // Content에서 첫 번째 이미지를 자동으로 썸네일로 설정하는 함수
+  const setFirstContentImageAsThumbnail = () => {
+    const editor = quillRef.current;
+    if (editor) {
+      const editorHtml = editor.root.innerHTML;
+      const imgTagMatch = editorHtml.match(/<img[^>]+src="([^">]+)"/); // 첫 번째 이미지 src 추출
+
+      if (imgTagMatch && imgTagMatch[1]) {
+        setInternalThumbnailUrl(imgTagMatch[1]);
+      }
+    }
+  };
+
+  // 임시 저장 핸들러
   const handleTemporarySave = async () => {
     if (!quillRef.current) {
       console.log("Quill editor is not initialized.");
@@ -104,30 +173,34 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
 
     if (!title || (quillRef.current?.getLength() || 0) <= 1) {
-      alert("제목과 내용을 모두 입력해주세요."); // 경고 메시지 출력
+      alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
 
-    const editorContent = quillRef.current.getContents(); // Delta 형식으로 콘텐츠 가져오기
-    console.log("Editor content (Delta):", editorContent); // 디버깅: Delta 형식의 콘텐츠 확인
-    const editorDelta = JSON.stringify(editorContent); // Delta 형식을 JSON으로 변환
+    const editorContent = quillRef.current.getContents();
+    const editorDelta = JSON.stringify(editorContent);
+
+    // 썸네일이 없을 경우 첫 번째 이미지로 설정
+    if (!internalThumbnailUrl) {
+      setFirstContentImageAsThumbnail();
+    }
 
     const jsonContent = {
       title: title,
-      content: editorDelta, // Delta 형식의 콘텐츠 포함
+      content: editorDelta,
+      thumbnailUrl: internalThumbnailUrl || "",
     };
 
     try {
       const s3Url = await uploadTempToS3(jsonContent, uid);
-
       console.log("File uploaded to S3:", s3Url);
-      
       navigate("/");
     } catch (error) {
-      console.error("Error uploading zip file to S3:", error);
+      console.error("Error uploading temp file to S3:", error);
     }
   };
 
+  // 최종 저장 핸들러
   const handleSave = async () => {
     if (!quillRef.current) {
       console.log("Quill 에디터가 초기화되지 않았습니다.");
@@ -135,7 +208,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
   
     if (!title || (quillRef.current?.getLength() || 0) <= 1) {
-      alert("제목과 내용을 모두 입력해주세요."); // 경고 메시지 출력
+      alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
   
@@ -146,94 +219,79 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       return;
     }
   
-    // Quill 에디터의 내용을 HTML로 변환
-    const editorHtml = quillRef.current.root.innerHTML;
+    // 썸네일 이미지가 없을 경우, content에서 첫 번째 이미지를 썸네일로 사용
+    if (!internalThumbnailUrl) {
+      setFirstContentImageAsThumbnail();
+    }
   
-    // 제목을 파일 이름으로 사용
+    const editorHtml = quillRef.current.root.innerHTML;
     const fileTitle = title
       ? title.replace(/[^a-z0-9]/gi, "_").toLowerCase()
       : "untitled";
     const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
     const jsonFileName = `${fileTitle}_${timestamp}.json`;
   
-    // JSON 파일에 title 값과 HTML 형식의 콘텐츠 저장
     const jsonContent = {
       title: title,
       content: editorHtml,
+      thumbnailUrl: internalThumbnailUrl || "",
     };
   
     try {
-      // 이미지 업로드를 제거하고, JSON 파일만 업로드
       const jsonBlob = new Blob([JSON.stringify(jsonContent, null, 2)], {
         type: "application/json",
       });
-      const s3Url = await uploadfinalToS3(
-        new File([jsonBlob], jsonFileName),
-        uid
-      );
-      console.log("JSON 파일 업로드 성공:", s3Url);
+      
+      const s3Url = await uploadfinalToS3(new File([jsonBlob], jsonFileName), uid);
   
       const postData = {
-        title: title,
-        content: editorHtml,
+        // title: title,
+        // content: editorHtml,
+        uid: uid,
+        postUrl: s3Url,
+        thumbnailUrl: internalThumbnailUrl || "",
       };
   
-      const response = await axiosInstance.post("/post", postData, {});
-      console.log("응답 데이터:", response.data); // 응답 데이터
+      // JWT 토큰을 'Authorization' 헤더로 Bearer 형식으로 추가
+      const response = await axiosInstance.post("/post", postData, {
+      });
   
       if (response.status === 200) {
         alert("게시물이 성공적으로 저장되었습니다.");
-        setAudioUrl(response.data.musicUrl); // musicUrl을 상태로 저장
+  
+        await sendToFastAPI(uid, s3Url, accessToken);
+  
         navigate("/myblog");
       }
     } catch (error) {
-      console.error("JSON 파일을 S3에 업로드하는 중 에러 발생:", error);
+      console.error("게시물 저장 실패:", error);
       alert("게시물 저장에 실패했습니다.");
     }
   };
   
-  
-  useEffect(() => {
-    let isMounted = true;
-
-    if (!quillRef.current && isMounted) {
-      const quill = new Quill("#editor", {
-        theme: "bubble",
-        modules: modules,
-      });
-
-      quillRef.current = quill;
-
-      if (initialDelta && quill) {
-        quill.setContents(initialDelta); // Delta 형식을 Quill 에디터에 적용
-      }
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [modules, initialDelta]);
-
-  // audioUrl 자동 재생
-  useEffect(() => {
-    if (audioUrl) {
-      const audio = new Audio(audioUrl);
-      audio.play();
-    }
-  }, [audioUrl]);
 
   return (
     <S.EditorWrapper>
       <S.SaveBtn>
-        <button onClick={handleSave}>작성완료</button>
         <button onClick={handleTemporarySave}>임시저장</button>
+        <button onClick={handleSave}>작성완료</button>
       </S.SaveBtn>
-      <S.Title
-        type="text"
-        placeholder="제목을 작성해주세요."
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
+      <S.TitleWrapper
+        style={{
+          backgroundImage: internalThumbnailUrl ? `url(${internalThumbnailUrl})` : "none",
+        }}
+      >
+        <S.TitleInput
+          placeholder="제목을 입력하세요."
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <S.ThumbnailInput
+          type="file"
+          accept="image/*"
+          onChange={handleThumbnail}
+        />
+      </S.TitleWrapper>
       <S.EditorContainer>
         <S.Editor id="editor" />
       </S.EditorContainer>

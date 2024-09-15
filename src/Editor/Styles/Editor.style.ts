@@ -13,21 +13,40 @@ export const EditorWrapper = styled.div`
     }
 `;
 
-export const Title = styled.input`
-    height:300px;
-    padding:100px;
-    padding-bottom:0;
-    font-size: 2.5em;
-    font-weight:bold;
-    color: #fff;
-    background: #333;
-    border: none;
-    box-sizing: border-box;
+export const TitleWrapper = styled.div`
+    height:500px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flexDirection: column;
+    position:relative;
+`;
+
+export const TitleInput = styled.input`
+    width:100%;
+    height:100%;
+    background:none;
+    font-size: 20px;
+    color:#fff;
+    font-size:50px;
+    border:1px solid blue;
+    padding:0 100px;
 
     &:focus {
         outline: none;
-    }
+    
 `;
+
+export const ThumbnailInput = styled.input`
+    position: absolute;
+    backgroundColor:#4CAF50;
+    color: white;
+    borderRadius: 4px;
+    cursor:pointer;
+    z-index:1;
+    
+`;
+
 
 export const EditorContainer = styled.div`
     width: 100%;

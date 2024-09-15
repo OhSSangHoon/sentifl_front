@@ -9,6 +9,7 @@ function Create() {
     const [hasTempSave, setHasTempSave] = useState(false);
     const [title, setTitle] = useState<string>('');
     const [initialDelta, setInitialDelta] = useState<any>(null);
+    const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
     const [images, setImages] = useState<Array<{ imageName: string; imageUrl: string }>>([]);
     const { uid } = useAuth();
 
@@ -43,11 +44,14 @@ function Create() {
             setTitle(jsonData.title);
             const editorDelta = JSON.parse(jsonData.content);
             setInitialDelta(editorDelta);
+
+            if (jsonData.thumbnailUrl) {
+                setThumbnailUrl(jsonData.thumbnailUrl);
+            }
         };
         
-    
         checkForTempSave();
-    }, []);
+    }, [uid]);
 
     if (isLoading) {
         return <></>;
@@ -61,6 +65,7 @@ function Create() {
                 title={title}
                 setTitle={setTitle}
                 images={images}
+                thumbnailUrl={thumbnailUrl}
             />
         </S.Main>
     );
