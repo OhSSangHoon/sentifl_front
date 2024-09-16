@@ -59,7 +59,7 @@ function BlogPost() {
         </S.PostContent>
       </S.MainContent>
       <S.FixedBottomBar>
-        <S.Icon>❤</S.Icon>
+        <S.HeartIcon>❤</S.HeartIcon>
         <S.Icon>💬</S.Icon>
         <S.InputField type="text" placeholder="댓글을 입력하세요" />
         <S.Icon>

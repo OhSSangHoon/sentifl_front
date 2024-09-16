@@ -26,6 +26,19 @@ export const LeftIcons = styled.div`
     margin-right: 5px;
     color: #ffffff;
     font-size: 20px;
+    margin-right: 5px;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &:active {
+      color: #f5f5f5;
+    }
   }
 `;
 
@@ -37,6 +50,13 @@ export const RightIcons = styled.div`
     margin-left: 15px;
     color: #ffffff;
     font-size: 20px;
+    &:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &:active {
+      color: #f5f5f5;
+    }
   }
 `;
 
@@ -118,6 +138,8 @@ export const ProfileStatItem = styled.div`
   font-size: 14px;
   line-height: 1.2;
   text-align: center;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
 
   small {
     font-size: 12px;
@@ -127,6 +149,14 @@ export const ProfileStatItem = styled.div`
   strong {
     font-size: 18px;
     color: #ffffff;
+  }
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:active {
+    opacity: 0.5;
   }
 `;
 
@@ -193,6 +223,13 @@ export const Icons = styled.div`
     color: #ffffff;
     font-size: 16px;
     cursor: pointer;
+    &:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &:active {
+      color: #f5f5f5;
+    }
   }
 `;
 

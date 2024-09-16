@@ -4,7 +4,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: auto;
-  min-height: 100vh;
+  min-height: 140vh;
   background-color: #0e0e0e;
   color: white;
 `;
@@ -52,6 +52,15 @@ export const SongTitleWrapper = styled.div`
   padding: 8px 20px;
   border-radius: 30px;
   gap: 10px;
+  transition: opacity 0.3s;
+
+  &:hover {
+    opacity: 0.6;
+  }
+
+  &:active {
+    opacity: 0.5;
+  }
 `;
 
 export const SongTitle = styled.div`
@@ -152,7 +161,7 @@ export const FixedBottomBar = styled.div`
   left: 0;
   width: 100%;
   background-color: #333;
-  padding: 10px 20px;
+  padding: 20px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -175,4 +184,19 @@ export const Icon = styled.span`
   color: #fff;
   cursor: pointer;
   margin: 0 10px;
+  transition: color 0.3s, opacity 0.3s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    opacity: 0.6;
+  }
+`;
+
+export const HeartIcon = styled(Icon)`
+  &:hover {
+    color: red;
+  }
 `;

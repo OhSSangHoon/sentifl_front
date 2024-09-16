@@ -267,13 +267,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       const postData = {
         // title: title,
         // content: editorHtml,
-        uid: uid,
+        // uid: uid,
         postUrl: s3Url,
         thumbnailUrl: internalThumbnailUrl || "",
       };
 
       // JWT 토큰을 'Authorization' 헤더로 Bearer 형식으로 추가
-      const response = await axiosInstance.post("/post", postData, {});
+      const response = await axiosInstance.post(`/post/${uid}`, postData, {});
 
       if (response.status === 200) {
         alert("게시물이 성공적으로 저장되었습니다.");
