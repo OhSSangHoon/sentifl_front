@@ -102,7 +102,7 @@ const PostList = () => {
         console.log("게시물 내용을 불러올 수 없습니다.");
       }
     } catch (error) {
-      console.error("게시물 내용을 가져오는 중 오류 발생:", error);
+      // console.error("게시물 내용을 가져오는 중 오류 발생:", error);
     }
   };
 

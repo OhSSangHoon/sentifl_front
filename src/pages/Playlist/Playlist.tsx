@@ -1,8 +1,42 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as S from "./Styles/Playlist.style";
 import { FaPlay, FaPlus, FaAsterisk } from "react-icons/fa";
+import axiosInstance from "../../axiosInterceptor";
+import { useParams } from "react-router-dom";
 
 function Playlist() {
+  const { uid } = useParams();
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(`/music/${uid}`, {
+  //         params: {
+  //           lastId: 1,
+  //           size: 10,
+  //         },
+  //       });
+  //       console.log("응답 데이터:", response.data);
+  //     } catch (error: any) {
+  //       if (error.response) {
+  //         // 서버에서의 에러 메시지 확인
+  //         console.error("서버 에러:", error.response.data);
+  //         alert(`서버에서 에러가 발생했습니다: ${error.response.data.error}`);
+  //       } else if (error.request) {
+  //         // 요청이 서버에 도달하지 못했을 때
+  //         console.error("요청 에러:", error.request);
+  //         alert("서버에 연결할 수 없습니다.");
+  //       } else {
+  //         // 기타 에러
+  //         console.error("오류:", error.message);
+  //         alert("예상치 못한 오류가 발생했습니다.");
+  //       }
+  //     }
+  //   };
+
+  //   fetchData();
+  // });
+
   return (
     <S.PlaylistContainer>
       <S.TopBar>
@@ -13,7 +47,6 @@ function Playlist() {
       <S.Content>
         <S.Sidebar>
           <S.SidebarHeader>MY PLAYLIST</S.SidebarHeader>
-          <S.Button>재생목록 이름</S.Button>
           <S.Button>재생목록 이름</S.Button>
         </S.Sidebar>
         <S.SongList>

@@ -281,6 +281,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         await sendToFastAPI(uid, s3Url, accessToken);
 
         const { url: musicUrl, title: musicTitle, emotion } = response.data;
+        console.log(response.data);
 
         navigate(`/user/${uid}/blog`);
       }
