@@ -25,6 +25,7 @@ function Header() {
       <S.Nav>
         <S.StyledNavLink to={`/user/${uid}/blog`}>Create</S.StyledNavLink>
         <S.StyledNavLink to="/">Home</S.StyledNavLink>
+        <S.StyledNavLink to="/create-song">노래제작(임시버튼)</S.StyledNavLink>
       </S.Nav>
       {isLoggedIn ? (
         <S.ProfileLink onClick={togglePopup}>

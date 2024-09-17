@@ -4,41 +4,39 @@ import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import * as S from "./Styles/PostList.styles";
 
-interface Post {
+export interface Post {
   postId: number;
+  postUrl: string;
+  thumbnailUrl: string;
+  createdTime: string;
+  modifiedTime: string;
+}
+
+export interface PostContent {
   title: string;
-  content?: string;
-  time: string;
+  content: string;
 }
 
 const PostList = () => {
   const [allPosts, setAllPosts] = useState<Post[]>([]);
+  const [postContents, setPostContents] = useState<{
+    [key: number]: PostContent;
+  }>({});
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const pageSize = 3; // 한 페이지에 3개의 포스트 표시
-  const paginationSize = 5; // 페이지네이션 숫자 버튼의 크기
+  const pageSize = 3;
+  const paginationSize = 5;
 
   const { uid } = useAuth();
   const navigate = useNavigate();
 
-  const totalPages = Math.ceil(allPosts.length / pageSize); // 총 페이지 수 계산
+  const totalPages = Math.ceil(allPosts.length / pageSize);
   const currentPaginationStart =
     Math.floor(page / paginationSize) * paginationSize;
 
   const handlePostClick = (postId: number) => {
     navigate(`/user/${uid}/post/${postId}`);
-  };
-
-  const extractImageAndText = (htmlContent: string = "") => {
-    const imageRegex = /<img[^>]+src="([^">]+)"/g;
-    const images: string[] = [];
-    let match;
-    while ((match = imageRegex.exec(htmlContent)) !== null) {
-      images.push(match[1]);
-    }
-    const textContent = htmlContent.replace(/<img[^>]*>/g, "");
-    return { images, textContent };
   };
 
   useEffect(() => {
@@ -59,10 +57,7 @@ const PostList = () => {
           if (response.status === 200) {
             const data = response.data;
 
-            if (Array.isArray(data)) {
-              allFetchedPosts.push(...data);
-              lastPage = true;
-            } else if (data.content && Array.isArray(data.content)) {
+            if (Array.isArray(data.content)) {
               allFetchedPosts.push(...data.content);
               lastPage = data.last;
             } else {
@@ -77,10 +72,10 @@ const PostList = () => {
           }
         }
 
-        // 최신순으로 정렬
         const sortedPosts = allFetchedPosts.sort(
           (a: Post, b: Post) =>
-            new Date(b.time).getTime() - new Date(a.time).getTime()
+            new Date(b.createdTime).getTime() -
+            new Date(a.createdTime).getTime()
         );
 
         setAllPosts(sortedPosts);
@@ -93,6 +88,32 @@ const PostList = () => {
 
     fetchAllPosts();
   }, [uid]);
+
+  const fetchPostContent = async (postUrl: string, postId: number) => {
+    try {
+      const response = await axiosInstance.get(postUrl);
+      if (response.status === 200) {
+        const { title, content }: PostContent = response.data;
+        setPostContents((prevContents) => ({
+          ...prevContents,
+          [postId]: { title, content },
+        }));
+      } else {
+        console.log("게시물 내용을 불러올 수 없습니다.");
+      }
+    } catch (error) {
+      // console.error("게시물 내용을 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(() => {
+    // 모든 포스트의 내용을 가져오는 코드
+    allPosts.forEach((post) => {
+      if (!postContents[post.postId]) {
+        fetchPostContent(post.postUrl, post.postId);
+      }
+    });
+  }, [allPosts]);
 
   const handlePrevPageGroup = () => {
     if (currentPaginationStart > 0) {
@@ -136,6 +157,12 @@ const PostList = () => {
     navigate(`/post/${postId}`);
   };
 
+  // HTML을 텍스트로 변환하는 함수
+  const stripHtmlTags = (htmlContent: string) => {
+    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
+    return doc.body.textContent || "";
+  };
+
   if (loading) {
     return <p>로딩 중...</p>;
   }
@@ -149,21 +176,18 @@ const PostList = () => {
           <p>게시물이 없습니다.</p>
         ) : (
           displayedPosts.map((post) => {
-            const { images, textContent } = extractImageAndText(
-              post.content || ""
-            );
-
+            const postContent = postContents[post.postId];
             return (
               <S.Post key={post.postId}>
                 <S.PostContentWrapper>
                   <S.PostInfo>
                     <S.PostHeader>
                       <S.PostTitle onClick={() => handlePostClick(post.postId)}>
-                        {post.title}
+                        {postContent?.title || "제목 불러오는 중..."}
                       </S.PostTitle>
                       <S.PostMeta>
                         <S.PostDate>
-                          {new Date(post.time).toLocaleDateString()}
+                          {new Date(post.createdTime).toLocaleDateString()}
                         </S.PostDate>
                         <S.ActionButton onClick={() => editPost(post.postId)}>
                           수정
@@ -182,20 +206,21 @@ const PostList = () => {
                     <S.PostDescription
                       onClick={() => handlePostClick(post.postId)}
                     >
-                      {textContent}
+                      {postContent?.content
+                        ? stripHtmlTags(postContent.content)
+                        : "내용 불러오는 중..."}
                     </S.PostDescription>
                   </S.PostInfo>
-                  {images.map((src, index) => (
+                  {post.thumbnailUrl && (
                     <S.PostImage
-                      key={index}
-                      src={src}
-                      alt={`Post Image ${index}`}
+                      src={post.thumbnailUrl}
+                      alt="Thumbnail"
                       onClick={(event) => {
                         event.stopPropagation();
-                        openImageOverlay(src);
+                        openImageOverlay(post.thumbnailUrl);
                       }}
                     />
-                  ))}
+                  )}
                 </S.PostContentWrapper>
               </S.Post>
             );

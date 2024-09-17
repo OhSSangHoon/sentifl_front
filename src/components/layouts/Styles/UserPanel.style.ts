@@ -35,6 +35,13 @@ export const CloseButton = styled.button`
   font-size: 18px;
   color: white;
   cursor: pointer;
+  &:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  &:active {
+    color: #f5f5f5;
+  }
 `;
 
 export const ProfileImage = styled.img`
@@ -111,6 +118,16 @@ export const FollowStat = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:active {
+    opacity: 0.5;
+  }
 `;
 
 export const StatNumber = styled.div`
@@ -151,6 +168,13 @@ export const SettingsIcon = styled.div`
   border-radius: 50%;
   color: white;
   cursor: pointer;
+  &:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  &:active {
+    color: #f5f5f5;
+  }
 `;
 
 export const Tabs = styled.div`
