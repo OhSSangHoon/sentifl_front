@@ -1,49 +1,74 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"; // URL에서 postId를 가져오기 위한 useParams 사용
-import axiosInstance from "../axiosInterceptor"; // axiosInstance로 API 요청
-import * as S from "./Styles/Editor.style"; // 스타일 파일
+import Quill from "quill"; // Quill을 불러와서 Delta 변환을 위해 사용
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../AuthProvider";
+import axiosInstance from "../axiosInterceptor";
+import * as S from "./Styles/Editor.style";
 
-// 컴포넌트 정의
-const ModPost: React.FC = () => {
-  const { postId } = useParams(); // URL에서 postId 가져오기
-  const [title, setTitle] = useState<string>(""); // 제목을 저장하는 상태
-  const [content, setContent] = useState<string>(""); // 내용을 저장하는 상태
-  const [isLoading, setIsLoading] = useState<boolean>(true); // 로딩 상태 관리
+interface EditorProps {
+  loadFromTempSave: boolean;
+  postId: string | undefined;
+}
 
-  // API를 호출하여 게시글 데이터를 가져오는 함수
+const ModPost: React.FC<EditorProps> = ({ loadFromTempSave, postId }) => {
+  const [title, setTitle] = useState<string>("제목 없음");
+  const [content, setContent] = useState<string>(""); // HTML 형식으로 변환된 내용 상태
+  const [isLoading, setIsLoading] = useState<boolean>(true); // 로딩 상태 추가
+  const [postUrl, setPostUrl] = useState<string | null>(null); // postUrl 상태 추가
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null); // 썸네일 URL 상태 추가
+  const { uid } = useAuth();
+
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const response = await axiosInstance.get(`/post/${postId}`); // postId로 API 호출
+        console.log("Fetching post data for postId:", postId); // postId 로그 출력
+        const response = await axiosInstance.get(`/post/${uid}/${postId}`);
         const postData = response.data;
 
-        console.log("Post data:", postData); // 전체 데이터 확인용 로그
-        console.log("title: ", title);
+        console.log("Post data received:", postData); // postData 로그 출력
 
-        // title과 content 상태 업데이트
-        setTitle(postData.title || "제목 없음");
-        setContent(postData.content || "내용이 없습니다.");
+        if (postData.content) {
+          try {
+            const deltaContent = JSON.parse(postData.content);
+            const quill = new Quill(document.createElement("div"));
+            quill.setContents(deltaContent);
+            const htmlContent = quill.root.innerHTML;
+
+            setTitle(postData.title || "제목 없음");
+            setContent(htmlContent || "내용이 없습니다.");
+            setPostUrl(postData.postUrl || null); // postUrl 설정
+            setThumbnailUrl(postData.thumbnailUrl || null); // 썸네일 설정
+
+            // postUrl, thumbnailUrl, postId 로그 출력
+            console.log("postUrl:", postData.postUrl);
+            console.log("thumbnailUrl:", postData.thumbnailUrl);
+            console.log("postId:", postId);
+          } catch (parseError) {
+            console.error("Content 파싱 중 오류 발생:", parseError);
+            setContent("내용을 불러오는 중 오류가 발생했습니다.");
+          }
+        } else {
+          setContent("내용이 없습니다.");
+        }
       } catch (error) {
         console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
       } finally {
-        setIsLoading(false); // 로딩 상태 해제
+        setIsLoading(false);
       }
     };
 
     if (postId) {
-      fetchPostData(); // postId가 있을 경우에만 데이터 가져오기
+      fetchPostData();
     }
   }, [postId]);
 
-  // 로딩 중일 때 로딩 메시지 출력
   if (isLoading) {
     return <p>로딩 중...</p>;
   }
 
   return (
     <S.EditorWrapper>
-      <h1>{title}</h1> {/* 제목 출력 */}
-      <div dangerouslySetInnerHTML={{ __html: content }}></div> {/* HTML 형식으로 내용 출력 */}
+      <h1>{title}</h1>
+      <div dangerouslySetInnerHTML={{ __html: content }}></div> {/* 변환된 HTML을 출력 */}
     </S.EditorWrapper>
   );
 };

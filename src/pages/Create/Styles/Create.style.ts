@@ -15,3 +15,14 @@ export const Main = styled.div`
     position: relative;
   }
 `;
+
+
+export const Form = styled.form`
+`;
+
+export const Input = styled.input`
+`;
+
+export const TextArea = styled.textarea``;
+
+export const ThumbnailImage = styled.img``;

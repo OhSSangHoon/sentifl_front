@@ -272,15 +272,15 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         thumbnailUrl: internalThumbnailUrl || "",
       };
 
-      // JWT 토큰을 'Authorization' 헤더로 Bearer 형식으로 추가
-      const response = await axiosInstance.post("/post", postData, {});
+      
+      const response = await axiosInstance.post(`/post/${uid}`, postData, {});
 
       if (response.status === 200) {
         alert("게시물이 성공적으로 저장되었습니다.");
 
         await sendToFastAPI(uid, s3Url, accessToken);
 
-        const { url: musicUrl, title: musicTitle, emotion } = response.data;
+        // const { url: musicUrl, title: musicTitle, emotion } = response.data;
 
         navigate(`/user/${uid}/blog`);
       }

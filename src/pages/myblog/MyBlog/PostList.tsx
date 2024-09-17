@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import * as S from "./Styles/PostList.styles";
-import axiosInstance from "../../../axiosInterceptor";
-import { useAuth } from "../../../AuthProvider";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../AuthProvider";
+import axiosInstance from "../../../axiosInterceptor";
+import * as S from "./Styles/PostList.styles";
 
 interface Post {
   postId: number;
@@ -121,7 +121,7 @@ const PostList = () => {
   const deletePost = async (postId: number) => {
     if (window.confirm("정말로 이 게시물을 삭제하시겠습니까?")) {
       try {
-        await axiosInstance.delete(`/post/${postId}`);
+        await axiosInstance.delete(`/post/${uid}/${postId}`);
         const updatedPosts = allPosts.filter((post) => post.postId !== postId);
         setAllPosts(updatedPosts);
         alert("게시물이 삭제되었습니다.");
@@ -133,7 +133,7 @@ const PostList = () => {
   };
 
   const editPost = (postId: number) => {
-    navigate(`/modify/${postId}`);
+    navigate(`/post/${postId}`);
   };
 
   if (loading) {
