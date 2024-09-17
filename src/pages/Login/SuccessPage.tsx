@@ -32,10 +32,11 @@ const SuccessPage = () => {
 
     if (accessToken) {
       localStorage.setItem("accessToken", accessToken); // 로컬 스토리지에 저장
+      setAccessToken(accessToken);
     }
 
     if (refreshToken) {
-      document.cookie = `Authorization-Refresh=${refreshToken}; path=/; secure; HttpOnly; SameSite=Strict`; // 쿠키에 저장
+      document.cookie = `Authorization-Refresh=${refreshToken}; path=/; SameSite=Strict;`; // 쿠키에 저장
     }
 
     if (uid && nickName && profile) {
@@ -47,7 +48,7 @@ const SuccessPage = () => {
     } else {
       console.error("Missing parameters");
     }
-  }, [navigate, setIsLoggedIn, setAccessToken, setNickname]);
+  }, [navigate, setIsLoggedIn, setAccessToken, setNickname, setUid, setProfileImage]);
 
   return (
     <div>
