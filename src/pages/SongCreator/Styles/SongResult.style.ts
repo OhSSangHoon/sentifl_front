@@ -21,19 +21,27 @@ export const TopLeftInfo = styled.div`
 `;
 
 export const InfoText = styled.p`
-  font-size: 14px;
-  margin-bottom: 10px;
+  font-size: 30px;
+  margin-bottom: 50px;
 `;
 
 export const ColorInfo = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  gap: 10px;
+`;
+
+export const EmotionTextWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 10px;
 `;
 
 export const ColorBox = styled.div<{ color: string }>`
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   background-color: ${({ color }) => color};
   margin-right: 10px;
 `;
@@ -57,10 +65,15 @@ export const PlayButton = styled.button`
   font-size: 24px;
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
-  border: none;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
   cursor: pointer;
+
   &:hover {
     background-color: rgba(255, 255, 255, 0.3);
+  }
+  svg {
+    color: rgba(255, 255, 255, 0.6);
   }
 `;
 
@@ -72,6 +85,7 @@ export const BottomLeftButton = styled.button`
   font-size: 12px;
   background-color: transparent;
   border: 1px solid #fff;
+  border-radius: 20px;
   color: white;
   cursor: pointer;
   &:hover {
@@ -90,10 +104,10 @@ export const MainTitle = styled.h1`
   font-weight: bold;
 `;
 
-export const BottomRightText = styled.p`
+export const BottomRightText = styled.div`
   position: absolute;
-  bottom: 20px;
-  right: 20px;
-  font-size: 12px;
+  bottom: 50px;
+  right: 50px;
+  font-size: 20px;
   color: white;
 `;

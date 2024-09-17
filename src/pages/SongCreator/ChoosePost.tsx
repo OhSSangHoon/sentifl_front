@@ -211,9 +211,13 @@ const ChoosePost = () => {
           );
           console.log(post.postId);
 
-          if (springResponse.status === 200) {
+          if (springResponse.status === 200 || springResponse.status === 204) {
             alert("노래 제작이 성공적으로 완료되었습니다!");
             console.log("스프링 백엔드 응답:", springResponse.data);
+
+            navigate("/song-result", {
+              state: { title, emotion1: emotion, emotion2: emotion, musicUrl },
+            });
           } else {
             console.error("노래 제작 실패:", springResponse);
             alert("노래 제작에 실패했습니다.");
