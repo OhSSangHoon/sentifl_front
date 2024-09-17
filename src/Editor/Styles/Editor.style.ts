@@ -4,7 +4,7 @@ export const EditorWrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 90%;
+    height: 100%;
 
     /* 스크롤바 숨기기 */
     &::-webkit-scrollbar {
@@ -13,8 +13,9 @@ export const EditorWrapper = styled.div`
     }
 `;
 
+
 export const TitleWrapper = styled.div`
-    height:500px;
+    height:400px;
     background-size: cover;
     background-position: center;
     display: flex;
@@ -22,38 +23,74 @@ export const TitleWrapper = styled.div`
     position:relative;
 `;
 
-export const TitleInput = styled.input`
+
+export const TitleInput = styled.input<{ hasThumbnail: boolean }>`
     width:100%;
     height:100%;
-    background:none;
+    background:${(props) => (props.hasThumbnail ? 'none' : '#111')};
     font-size: 20px;
+    font-weight:bold;
     color:#fff;
     font-size:50px;
-    border:1px solid blue;
-    padding:0 100px;
+    padding:0 170px;
+    padding-top:100px;
+    border:none;
 
     &:focus {
         outline: none;
-    
+    }
+
+    ::placeholder {
+        color:#fff;
+    }
+
 `;
+
+
+export const ThumbnailWrapper = styled.div`
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    right:150px;
+    bottom:10px;
+    z-index:2;
+    
+    {
+        object-fit: cover;
+        border-radius: 8px;
+    }
+`;
+
+
+export const ThumbnailImg = styled.img`
+    width:35px;
+    position: absolute;
+    backgroundColor:#4CAF50;
+    color: white;
+    borderRadius: 4px;
+    z-index:1;
+`;
+
 
 export const ThumbnailInput = styled.input`
     position: absolute;
     backgroundColor:#4CAF50;
     color: white;
     borderRadius: 4px;
-    cursor:pointer;
     z-index:1;
-    
+    opacity:0;
 `;
 
 
 export const EditorContainer = styled.div`
     width: 100%;
-    height: 100vh;
+    height: 100%;
+    margin:0 auto;
     background: #080808;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow-y: scroll;
+    z-index:1;
 
     /* 스크롤바 숨기기 */
     &::-webkit-scrollbar {
@@ -65,12 +102,15 @@ export const EditorContainer = styled.div`
     -ms-overflow-style: none;  /* IE와 Edge에서 스크롤바를 숨기기 */
 `;
 
+
 export const Editor = styled.div.attrs({
     id: 'editor',
 })`
-    border:1px solid red;
+    width:100%;
     height: 100%;
     display: flex;
+    border:1px solid red;
+    margin:0 auto;
 
     .ql-align-center{
         display:none;
@@ -91,7 +131,7 @@ export const Editor = styled.div.attrs({
         overflow-y: scroll;
         width: 100%;
         height: 100%;
-        padding:20px 100px;
+        padding:100px 250px;
         box-sizing: border-box;
         font-size:1.5em;
 
@@ -112,8 +152,12 @@ export const Editor = styled.div.attrs({
 
 
 export const SaveBtn = styled.div`
-    height:10%;
-    position:relative;
+    position:absolute;
+    right:100px;
+    top:10px;
+    display:flex;
+    gap:10px;
+    z-index:2;
     
     &::-webkit-scrollbar {
         width: 0px;

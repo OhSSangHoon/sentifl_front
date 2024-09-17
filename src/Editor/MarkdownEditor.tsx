@@ -4,6 +4,7 @@ import ImageResize from "quill-image-resize";
 import "quill/dist/quill.bubble.css";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Thumbnail from "../assets/icons/thumbnail/Thumbnail.webp";
 import { useAuth } from "../AuthProvider";
 import axiosInstance from "../axiosInterceptor";
 import {
@@ -12,6 +13,7 @@ import {
   uploadToS3,
 } from "../services/s3Service";
 import * as S from "./Styles/Editor.style";
+
 
 Quill.register("modules/imageResize", ImageResize);
 
@@ -265,22 +267,18 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       );
 
       const postData = {
-        // title: title,
-        // content: editorHtml,
-        // uid: uid,
         postUrl: s3Url,
         thumbnailUrl: internalThumbnailUrl || "",
       };
 
-      // JWT 토큰을 'Authorization' 헤더로 Bearer 형식으로 추가
-      const response = await axiosInstance.post("/post", postData, {});
+      
+      const response = await axiosInstance.post(`/post/${uid}`, postData, {});
 
       if (response.status === 200) {
         alert("게시물이 성공적으로 저장되었습니다.");
 
         await sendToFastAPI(uid, s3Url, accessToken);
 
-        const { url: musicUrl, title: musicTitle, emotion } = response.data;
 
         navigate(`/user/${uid}/blog`);
       }
@@ -292,10 +290,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
   return (
     <S.EditorWrapper>
-      <S.SaveBtn>
-        <button onClick={handleTemporarySave}>임시저장</button>
-        <button onClick={handleSave}>작성완료</button>
-      </S.SaveBtn>
       <S.TitleWrapper
         style={{
           backgroundImage: internalThumbnailUrl
@@ -303,16 +297,24 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             : "none",
         }}
       >
+        <S.SaveBtn>
+          <button onClick={handleSave}>저장</button>
+          <button onClick={handleTemporarySave}>임시저장</button>
+        </S.SaveBtn>
         <S.TitleInput
+          hasThumbnail={!!internalThumbnailUrl}
           placeholder="제목을 입력하세요."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <S.ThumbnailInput
-          type="file"
-          accept="image/*"
-          onChange={handleThumbnail}
-        />
+        <S.ThumbnailWrapper>
+          <S.ThumbnailImg src={Thumbnail} />
+          <S.ThumbnailInput
+            type="file"
+            accept="image/*"
+            onChange={handleThumbnail}
+          />
+        </S.ThumbnailWrapper>
       </S.TitleWrapper>
       <S.EditorContainer>
         <S.Editor id="editor" />
