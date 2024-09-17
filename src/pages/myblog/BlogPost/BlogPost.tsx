@@ -71,7 +71,10 @@ function BlogPost() {
   return (
     <S.Container>
       <S.TopSection>
-        <S.BackgroundImage src={post.thumbnailUrl || "default_image.jpg"} alt="Background" />
+        <S.BackgroundImage
+          src={post.thumbnailUrl || "default_image.jpg"}
+          alt="Background"
+        />
 
         <S.TopRightContent>
           <S.ViewCount>조회수 : 0회</S.ViewCount>
@@ -107,6 +110,34 @@ function BlogPost() {
         </S.SidebarWrapper>
         <S.PostContent>
           <div dangerouslySetInnerHTML={{ __html: post.content }} />
+          <S.IconWrapper>
+            <S.PostHeartIcon>
+              ❤<S.PostHeartCount>00</S.PostHeartCount>
+            </S.PostHeartIcon>
+            <S.PostCommentIcon>
+              💬
+              <S.PostCommentCount>00</S.PostCommentCount>
+            </S.PostCommentIcon>
+          </S.IconWrapper>
+          <S.CommentSection>
+            <S.CommentTitle>댓글 00</S.CommentTitle>
+            <S.Comment>
+              <S.CommentAuthorWrapper>
+                <S.CommentAuthor>닉네임</S.CommentAuthor>
+                <S.CommentDate>2024.08.29</S.CommentDate>
+                <S.CommentHeartIcon>❤</S.CommentHeartIcon>
+                <S.CommentHeartCount>00</S.CommentHeartCount>
+                <S.ReplyButton>답글</S.ReplyButton>
+              </S.CommentAuthorWrapper>
+              <S.CommentText>댓글 예시 댓글 예</S.CommentText>
+              <S.CommentActions>
+                <S.CommentActionButtonWrapper>
+                  <S.CommentActionButton>수정</S.CommentActionButton>
+                  <S.CommentActionButton>삭제</S.CommentActionButton>
+                </S.CommentActionButtonWrapper>
+              </S.CommentActions>
+            </S.Comment>
+          </S.CommentSection>
         </S.PostContent>
       </S.MainContent>
       <S.FixedBottomBar>

@@ -7,35 +7,38 @@ import { useParams } from "react-router-dom";
 function Playlist() {
   const { uid } = useParams();
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(`/music/${uid}`, {
-  //         params: {
-  //           lastId: 1,
-  //           size: 10,
-  //         },
-  //       });
-  //       console.log("응답 데이터:", response.data);
-  //     } catch (error: any) {
-  //       if (error.response) {
-  //         // 서버에서의 에러 메시지 확인
-  //         console.error("서버 에러:", error.response.data);
-  //         alert(`서버에서 에러가 발생했습니다: ${error.response.data.error}`);
-  //       } else if (error.request) {
-  //         // 요청이 서버에 도달하지 못했을 때
-  //         console.error("요청 에러:", error.request);
-  //         alert("서버에 연결할 수 없습니다.");
-  //       } else {
-  //         // 기타 에러
-  //         console.error("오류:", error.message);
-  //         alert("예상치 못한 오류가 발생했습니다.");
-  //       }
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchSongs = async () => {
+      try {
+        const response = await axiosInstance.get(`/music/${uid}`, {
+          params: {
+            lastId: null,
+            size: 10,
+          },
+        });
 
-  //   fetchData();
-  // });
+        console.log("API 응답 성공:", response.data);
+      } catch (error: any) {
+        if (error.response) {
+          console.error(
+            "API 호출 중 오류 발생: 상태 코드",
+            error.response.status,
+            "응답 데이터:",
+            error.response.data
+          );
+        } else if (error.request) {
+          console.error(
+            "서버로부터 응답이 없습니다. 요청 정보:",
+            error.request
+          );
+        } else {
+          console.error("API 호출 중 예기치 못한 오류 발생:", error.message);
+        }
+      }
+    };
+
+    fetchSongs();
+  }, [uid]);
 
   return (
     <S.PlaylistContainer>
