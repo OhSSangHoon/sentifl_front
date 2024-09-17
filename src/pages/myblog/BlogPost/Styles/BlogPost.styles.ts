@@ -133,6 +133,7 @@ export const MainContent = styled.div`
   display: flex;
   flex-grow: 1;
   overflow-y: auto;
+  padding-bottom: 80px;
 `;
 
 export const SidebarWrapper = styled.div`
