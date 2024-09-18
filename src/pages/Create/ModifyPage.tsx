@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
-import MarkdownEditor from "../../Editor/MarkdownEditor"; // Quill 기반 에디터
+import MarkdownEditor from "../../Editor/MarkdownEditor";
+import { updateToS3 } from '../../services/s3Service';
 import * as S from './Styles/Create.style';
 
 
@@ -10,6 +11,7 @@ interface PostData {
   title: string;
   content: string;
   thumbnailUrl: string | null;
+  postUrl: string;
 }
 
 const ModifyPage = () => {
@@ -17,50 +19,82 @@ const ModifyPage = () => {
   const { uid } = useAuth(); // 사용자의 uid 가져오기
   const navigate = useNavigate();
 
-  const [post, setPost] = useState<PostData | null>(null); // 게시물 상태
-  const [loading, setLoading] = useState<boolean>(true); // 로딩 상태
+  const [post, setPost] = useState<PostData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        // 1. 사용자의 게시물 목록을 가져옴
         const response = await axiosInstance.get(`/post/${uid}`);
         if (response.status === 200) {
           const postList = response.data.content;
-
-          // 2. postId에 맞는 게시물 찾기
           const selectedPost = postList.find((p: any) => p.postId === Number(postId));
 
           if (selectedPost) {
             const { postUrl, thumbnailUrl } = selectedPost;
-
-            // 3. postUrl로 게시물 내용 가져오기 (S3에서)
             const postContentResponse = await axiosInstance.get(postUrl);
             if (postContentResponse.status === 200) {
               const { title, content } = postContentResponse.data;
-
-              // 게시물 데이터를 상태에 저장
-              setPost({
-                title,
-                content,
-                thumbnailUrl,
-              });
+              setPost({ title, content, thumbnailUrl, postUrl });
             }
-          } else {
-            console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");
           }
         }
       } catch (error) {
         console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
       } finally {
-        setLoading(false); // 로딩 완료
+        setLoading(false);
       }
     };
 
     if (postId) {
-      fetchPostData(); // postId가 있을 때만 게시물 데이터 가져오기
+      fetchPostData();
     }
   }, [postId, uid]);
+
+
+  const handleModify = async (content: string, thumbnailUrl: string) => {
+    try {
+      const postUrl = post?.postUrl; // 게시물의 S3 URL을 가져옴
+  
+      if (!postUrl) {
+        console.error("postUrl is not valid:", postUrl);
+        alert("유효하지 않은 postUrl입니다. 게시물 수정에 실패했습니다.");
+        return;  // postUrl이 유효하지 않으면 함수 종료
+      }
+  
+      // 수정된 게시물 내용을 JSON으로 구성
+      const jsonContent = {
+        title: post?.title || "",
+        content,
+        thumbnailUrl,
+      };
+  
+      // 1. S3에 수정된 파일 덮어쓰기
+      const jsonBlob = new Blob([JSON.stringify(jsonContent, null, 2)], {
+        type: "application/json",
+      });
+  
+      await updateToS3(new File([jsonBlob], "updated_post.json"), postUrl);
+  
+      // 2. 서버로 PUT 요청 보내기
+      const response = await axiosInstance.put(`/post/${uid}/${postId}`, {
+        postUrl,
+        thumbnailUrl,
+      });
+  
+      if (response.status === 200) {
+        alert("게시물이 성공적으로 수정되었습니다.");
+        navigate(`/user/${uid}/post/${postId}`);
+      } else {
+        alert("게시물 수정에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("게시물 수정 실패:", error);
+      alert("게시물 수정에 실패했습니다.");
+    }
+  };
+  
+  
 
   if (loading) {
     return <p>로딩 중...</p>;
@@ -77,27 +111,9 @@ const ModifyPage = () => {
         initialDelta={post.content}
         title={post.title}
         setTitle={(newTitle) => setPost({ ...post, title: newTitle })}
-        images={[]} // 이미지 데이터는 필요에 따라 처리
-        thumbnailUrl={post.thumbnailUrl} // 썸네일 URL
-        onSave={async (updatedContent: string, updatedThumbnailUrl: string) => {
-          // 수정된 게시물 저장
-          const updatedPost = {
-            title: post.title,
-            content: updatedContent,
-            thumbnailUrl: updatedThumbnailUrl,
-          };
-
-          try {
-            const response = await axiosInstance.put(`/post/${uid}/${postId}`, updatedPost);
-            if (response.status === 200) {
-              alert("게시물이 성공적으로 수정되었습니다.");
-              navigate(`/user/${uid}/post/${postId}`); // 수정 후 해당 게시물 페이지로 이동
-            }
-          } catch (error) {
-            console.error("게시물 수정 실패:", error);
-            alert("게시물 수정에 실패했습니다.");
-          }
-        }}
+        images={[]} // 필요에 따라 이미지 처리
+        thumbnailUrl={post.thumbnailUrl}
+        onModify={handleModify} // 수정 핸들러 전달
       />
     </S.Main>
   );
