@@ -94,6 +94,38 @@ export const downloadFromS3 = async (
   }
 };
 
+export const updateToS3 = async (file: File, postUrl: string): Promise<string> => {
+  const s3 = new AWS.S3();
+
+  try {
+    // URL 객체를 사용해 파일 경로 추출
+    const url = new URL(postUrl);
+    const fileKey = url.pathname.substring(1); // '/n-123/post/1726626375445.json' 형식에서 첫 번째 '/' 제거
+    
+    if (!fileKey) {
+      throw new Error("S3 파일 경로를 추출할 수 없습니다.");
+    }
+
+    const upload = new AWS.S3.ManagedUpload({
+      params: {
+        Bucket: "sentifiimages", // 버킷 이름
+        Key: fileKey, // 추출된 파일 경로에 덮어쓰기
+        Body: file,
+        ContentType: file.type,
+      },
+    });
+
+    const data = await upload.promise();
+    console.log("S3 파일 덮어쓰기 성공: ", data.Location);
+    return data.Location; // 덮어쓰기된 파일의 S3 URL 반환
+  } catch (err) {
+    console.error("Error updating file on S3:", err);
+    throw new Error("파일 업데이트에 실패했습니다.");
+  }
+};
+
+
+
 export const deleteFromS3 = async (key: string): Promise<void> => {
   const s3 = new AWS.S3();
   const params = {
