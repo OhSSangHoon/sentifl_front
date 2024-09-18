@@ -165,7 +165,7 @@ const PostList = () => {
   };
 
   const editPost = (postId: number) => {
-    navigate(`/post/${postId}`);
+    navigate(`/modify/${postId}`);
   };
 
   // HTML을 텍스트로 변환하는 함수

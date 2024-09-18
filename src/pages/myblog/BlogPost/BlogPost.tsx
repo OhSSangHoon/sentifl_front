@@ -75,15 +75,11 @@ function BlogPost() {
   return (
     <S.Container>
       <S.TopSection>
-<<<<<<< HEAD
         <S.BackgroundImage
           src={post.thumbnailUrl || "default_image.jpg"}
           alt="Background"
         />
 
-=======
-        <S.BackgroundImage src={post.thumbnailUrl || "default_image.jpg"} alt="Background" />
->>>>>>> sh_develop
         <S.TopRightContent>
           <S.ViewCount>조회수 : 0회</S.ViewCount>
         </S.TopRightContent>

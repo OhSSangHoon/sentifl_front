@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "../components/layouts/Layout";
+import ModifyPage from "../Editor/ModifyPage";
 import Create from "../pages/Create/Create";
-import ModifyPage from "../pages/Create/ModifyPage";
 import Home from "../pages/home/Home";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
@@ -33,7 +33,7 @@ function Router() {
           }
         />
         <Route path="/user/:uid/post/:postId" element={<BlogPost />} />
-        <Route path="/post/:postId" element={<ModifyPage />} />
+        <Route path="/modify/:postId" element={<ModifyPage />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
         <Route
           path="/user/:uid/following-posts"

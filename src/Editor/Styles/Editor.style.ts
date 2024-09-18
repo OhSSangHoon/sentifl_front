@@ -51,7 +51,6 @@ export const ThumbnailWrapper = styled.div`
     position: absolute;
     width: 50px;
     height: 50px;
-    cursor: pointer;
     right:150px;
     bottom:10px;
     z-index:2;
