@@ -114,6 +114,7 @@ const ModifyPage = () => {
         images={[]} // 필요에 따라 이미지 처리
         thumbnailUrl={post.thumbnailUrl}
         onModify={handleModify} // 수정 핸들러 전달
+        isCreatePage={false}
       />
     </S.Main>
   );

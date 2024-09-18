@@ -66,6 +66,7 @@ function Create() {
                 setTitle={setTitle}
                 images={images}
                 thumbnailUrl={thumbnailUrl}
+                isCreatePage={true}
             />
         </S.Main>
     );
