@@ -33,7 +33,7 @@ function Router() {
           }
         />
         <Route path="/user/:uid/post/:postId" element={<BlogPost />} />
-        <Route path="/post/:postId" element={<ModifyPage />} />
+        <Route path="/modify/:postId" element={<ModifyPage />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
         <Route
           path="/user/:uid/following-posts"

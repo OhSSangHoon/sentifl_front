@@ -100,8 +100,7 @@ export const updateToS3 = async (file: File, postUrl: string): Promise<string> =
   try {
     // URL 객체를 사용해 파일 경로 추출
     const url = new URL(postUrl);
-    const fileKey = url.pathname.substring(1); // '/n-123/post/1726626375445.json' 형식에서 첫 번째 '/' 제거
-    
+    const fileKey = url.pathname.substring(1);
     if (!fileKey) {
       throw new Error("S3 파일 경로를 추출할 수 없습니다.");
     }
