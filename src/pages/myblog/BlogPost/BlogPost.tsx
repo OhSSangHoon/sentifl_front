@@ -21,38 +21,49 @@ function BlogPost() {
 
   // 게시글 데이터를 가져오는 함수
   useEffect(() => {
-    const fetchPostData = async () => {
+    const fetchAllPosts = async () => {
       try {
-        // 1. 특정 사용자의 게시물 목록에서 해당 postId로 게시물 정보 가져오기
-        const response = await axiosInstance.get(`/post/${uid}`); // uid로 게시물 목록 가져오기
-        if (response.status === 200) {
-          const postList = response.data.content;
+        let allPosts: any[] = [];
+        let currentPage = 0;
+        let lastPage = false;
 
-          // 2. postId에 해당하는 게시물 찾기
-          const selectedPost = postList.find(
-            (p: any) => p.postId === Number(postId)
-          );
+        // 페이지네이션을 이용해 모든 게시글 가져오기
+        while (!lastPage) {
+          const response = await axiosInstance.get(`/post/${uid}`, {
+            params: { page: currentPage, size: 10 }, // 한 번에 10개씩 가져오기
+          });
 
-          if (selectedPost) {
-            const { postUrl, thumbnailUrl } = selectedPost;
-
-            // 3. postUrl로 게시글 내용 가져오기 (S3에서)
-            const postContentResponse = await axiosInstance.get(postUrl);
-            if (postContentResponse.status === 200) {
-              const { title, content } = postContentResponse.data;
-
-              // 가져온 데이터를 상태에 저장
-              setPost({
-                title,
-                content,
-                thumbnailUrl,
-              });
-            }
+          if (response.status === 200) {
+            allPosts = [...allPosts, ...response.data.content];
+            lastPage = response.data.last; // 마지막 페이지 여부 확인
+            currentPage += 1;
           } else {
-            console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");
+            console.error("게시물 목록을 불러오는 중 오류 발생");
+            break;
+          }
+        }
+
+        // postId에 해당하는 게시물 찾기
+        const selectedPost = allPosts.find(
+          (p: any) => p.postId === Number(postId)
+        );
+
+        if (selectedPost) {
+          const { postUrl, thumbnailUrl } = selectedPost;
+
+          // S3에서 게시글 내용 가져오기
+          const postContentResponse = await axiosInstance.get(postUrl);
+          if (postContentResponse.status === 200) {
+            const { title, content } = postContentResponse.data;
+
+            setPost({
+              title,
+              content,
+              thumbnailUrl,
+            });
           }
         } else {
-          console.error("게시물 목록을 불러올 수 없습니다.");
+          console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");
         }
       } catch (error) {
         console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
@@ -62,9 +73,9 @@ function BlogPost() {
     };
 
     if (postId) {
-      fetchPostData(); // postId가 있을 때만 게시물 데이터 가져오기
+      fetchAllPosts(); // postId가 있을 때만 게시물 데이터 가져오기
     }
-  }, [postId, uid]); // postId, uid 변경 시 다시 호출
+  }, [postId, uid]);
 
   if (loading) {
     return <p>로딩 중...</p>;
@@ -81,6 +92,7 @@ function BlogPost() {
           src={post.thumbnailUrl || "default_image.jpg"}
           alt="Background"
         />
+
         <S.TopRightContent>
           <S.ViewCount>조회수 : 0회</S.ViewCount>
         </S.TopRightContent>

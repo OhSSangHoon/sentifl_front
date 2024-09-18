@@ -3,9 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
 import MarkdownEditor from "../../Editor/MarkdownEditor";
-import { updateToS3 } from '../../services/s3Service';
-import * as S from './Styles/Create.style';
-
+import { updateToS3 } from "../../services/s3Service";
+import * as S from "./Styles/Create.style";
 
 interface PostData {
   title: string;
@@ -28,7 +27,9 @@ const ModifyPage = () => {
         const response = await axiosInstance.get(`/post/${uid}`);
         if (response.status === 200) {
           const postList = response.data.content;
-          const selectedPost = postList.find((p: any) => p.postId === Number(postId));
+          const selectedPost = postList.find(
+            (p: any) => p.postId === Number(postId)
+          );
 
           if (selectedPost) {
             const { postUrl, thumbnailUrl } = selectedPost;
@@ -51,37 +52,36 @@ const ModifyPage = () => {
     }
   }, [postId, uid]);
 
-
   const handleModify = async (content: string, thumbnailUrl: string) => {
     try {
       const postUrl = post?.postUrl; // 게시물의 S3 URL을 가져옴
-  
+
       if (!postUrl) {
         console.error("postUrl is not valid:", postUrl);
         alert("유효하지 않은 postUrl입니다. 게시물 수정에 실패했습니다.");
-        return;  // postUrl이 유효하지 않으면 함수 종료
+        return; // postUrl이 유효하지 않으면 함수 종료
       }
-  
+
       // 수정된 게시물 내용을 JSON으로 구성
       const jsonContent = {
         title: post?.title || "",
         content,
         thumbnailUrl,
       };
-  
+
       // 1. S3에 수정된 파일 덮어쓰기
       const jsonBlob = new Blob([JSON.stringify(jsonContent, null, 2)], {
         type: "application/json",
       });
-  
+
       await updateToS3(new File([jsonBlob], "updated_post.json"), postUrl);
-  
+
       // 2. 서버로 PUT 요청 보내기
       const response = await axiosInstance.put(`/post/${uid}/${postId}`, {
         postUrl,
         thumbnailUrl,
       });
-  
+
       if (response.status === 200) {
         alert("게시물이 성공적으로 수정되었습니다.");
         navigate(`/user/${uid}/post/${postId}`);
@@ -93,8 +93,6 @@ const ModifyPage = () => {
       alert("게시물 수정에 실패했습니다.");
     }
   };
-  
-  
 
   if (loading) {
     return <p>로딩 중...</p>;
