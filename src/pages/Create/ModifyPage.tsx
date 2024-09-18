@@ -1,79 +1,122 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import axiosInstance from "../../axiosInterceptor"; // axios 설정 가져오기
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../AuthProvider";
+import axiosInstance from "../../axiosInterceptor";
+import MarkdownEditor from "../../Editor/MarkdownEditor";
+import { updateToS3 } from '../../services/s3Service';
+import * as S from './Styles/Create.style';
 
-// Post 타입 정의 (S3에서 가져올 JSON 파일 구조)
-interface Post {
+
+interface PostData {
   title: string;
-  content: string; // HTML 형식
+  content: string;
   thumbnailUrl: string | null;
   postUrl: string;
 }
 
 const ModifyPage = () => {
-  const { postId } = useParams(); // URL에서 postId 가져오기
-  const [post, setPost] = useState<Post | null>(null); // S3 JSON 데이터를 저장할 상태
-  const [postUrl, setPostUrl] = useState<string | null>(null); // DB에서 가져온 post_url
+  const { postId } = useParams<{ postId: string }>(); // URL에서 postId 추출
+  const { uid } = useAuth(); // 사용자의 uid 가져오기
+  const navigate = useNavigate();
 
-  // 1. 데이터베이스에서 post_url을 가져오는 함수
+  const [post, setPost] = useState<PostData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
-    const fetchPostUrl = async () => {
+    const fetchPostData = async () => {
       try {
-        // postId를 사용해 post_url을 DB에서 가져옴
-        const response = await axiosInstance.get(`/post/${postId}`);
-        const data = response.data;
+        const response = await axiosInstance.get(`/post/${uid}`);
+        if (response.status === 200) {
+          const postList = response.data.content;
+          const selectedPost = postList.find((p: any) => p.postId === Number(postId));
 
-        console.log("Fetched postUrl from DB:", data.postUrl); // postUrl 로그 추가
-        setPostUrl(data.postUrl); // 데이터베이스에서 가져온 post_url 값을 저장
+          if (selectedPost) {
+            const { postUrl, thumbnailUrl } = selectedPost;
+            const postContentResponse = await axiosInstance.get(postUrl);
+            if (postContentResponse.status === 200) {
+              const { title, content } = postContentResponse.data;
+              setPost({ title, content, thumbnailUrl, postUrl });
+            }
+          }
+        }
       } catch (error) {
-        console.error("Error fetching post URL from DB:", error);
+        console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     if (postId) {
-      fetchPostUrl(); // postId가 있을 때만 호출
+      fetchPostData();
     }
-  }, [postId]);
+  }, [postId, uid]);
 
-  // 2. S3에서 JSON 파일을 가져오는 함수
-  useEffect(() => {
-    const fetchPostData = async () => {
-      if (postUrl) {
-        try {
-          console.log("Fetching post data from S3 with URL:", postUrl); // S3 postUrl 로그 추가
-          const response = await fetch(postUrl); // S3의 JSON 파일 요청
-          const postData: Post = await response.json(); // JSON 파일 파싱
 
-          console.log("Fetched post data from S3:", postData); // Fetched 데이터 로그 추가
-          // S3에서 가져온 데이터를 상태로 저장
-          setPost(postData);
-        } catch (error) {
-          console.error("Error fetching post data from S3:", error);
-        }
+  const handleModify = async (content: string, thumbnailUrl: string) => {
+    try {
+      const postUrl = post?.postUrl; // 게시물의 S3 URL을 가져옴
+  
+      if (!postUrl) {
+        console.error("postUrl is not valid:", postUrl);
+        alert("유효하지 않은 postUrl입니다. 게시물 수정에 실패했습니다.");
+        return;  // postUrl이 유효하지 않으면 함수 종료
       }
-    };
-
-    if (postUrl) {
-      fetchPostData(); // postUrl이 있을 때만 호출
+  
+      // 수정된 게시물 내용을 JSON으로 구성
+      const jsonContent = {
+        title: post?.title || "",
+        content,
+        thumbnailUrl,
+      };
+  
+      // 1. S3에 수정된 파일 덮어쓰기
+      const jsonBlob = new Blob([JSON.stringify(jsonContent, null, 2)], {
+        type: "application/json",
+      });
+  
+      await updateToS3(new File([jsonBlob], "updated_post.json"), postUrl);
+  
+      // 2. 서버로 PUT 요청 보내기
+      const response = await axiosInstance.put(`/post/${uid}/${postId}`, {
+        postUrl,
+        thumbnailUrl,
+      });
+  
+      if (response.status === 200) {
+        alert("게시물이 성공적으로 수정되었습니다.");
+        navigate(`/user/${uid}/post/${postId}`);
+      } else {
+        alert("게시물 수정에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("게시물 수정 실패:", error);
+      alert("게시물 수정에 실패했습니다.");
     }
-  }, [postUrl]);
+  };
+  
+  
+
+  if (loading) {
+    return <p>로딩 중...</p>;
+  }
 
   if (!post) {
-    return <div>Loading...</div>; // post 데이터가 로드되기 전 로딩 화면 표시
+    return <p>게시글을 불러오는 중 문제가 발생했습니다.</p>;
   }
 
   return (
-    <div>
-      <h1>{post.title}</h1>
-      
-      {/* 썸네일 이미지 표시 */}
-      {post.thumbnailUrl && (
-        <img src={post.thumbnailUrl} alt="썸네일 이미지" />
-      )}
-      
-      {/* content에 포함된 HTML을 그대로 렌더링 */}
-      <div dangerouslySetInnerHTML={{ __html: post.content }} />
-    </div>
+    <S.Main>
+      <MarkdownEditor
+        loadFromTempSave={false}
+        initialDelta={post.content}
+        title={post.title}
+        setTitle={(newTitle) => setPost({ ...post, title: newTitle })}
+        images={[]} // 필요에 따라 이미지 처리
+        thumbnailUrl={post.thumbnailUrl}
+        onModify={handleModify} // 수정 핸들러 전달
+        isCreatePage={false}
+      />
+    </S.Main>
   );
 };
 

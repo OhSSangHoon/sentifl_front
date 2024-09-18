@@ -30,6 +30,8 @@ interface MarkdownEditorProps {
   setTitle: (title: string) => void;
   images: Array<{ imageName: string; imageUrl: string }>;
   thumbnailUrl: string | null;
+  onModify?: (content: string, thumbnailUrl: string) => void;
+  isCreatePage?: boolean;
 }
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
@@ -39,6 +41,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   setTitle,
   images,
   thumbnailUrl, // 썸네일 URL을 props로 받음
+  onModify,
+  isCreatePage,
 }) => {
   const quillRef = useRef<Quill | null>(null);
   const navigate = useNavigate();
@@ -119,7 +123,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       quillRef.current = quill;
 
       if (initialDelta && quill) {
-        quill.setContents(initialDelta); // Delta 형식을 Quill 에디터에 적용
+        quill.root.innerHTML = initialDelta;
       }
     }
 
@@ -244,6 +248,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
 
     const editorHtml = quillRef.current.root.innerHTML;
+
     const fileTitle = title
       ? title.replace(/[^a-z0-9]/gi, "_").toLowerCase()
       : "untitled";
@@ -288,6 +293,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
   };
 
+  const handleModify = () => {
+    if(quillRef.current && onModify){
+      const content = quillRef.current.root.innerHTML;
+      onModify(content, internalThumbnailUrl || "");
+    }
+  };
+
   return (
     <S.EditorWrapper>
       <S.TitleWrapper
@@ -298,8 +310,16 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         }}
       >
         <S.SaveBtn>
-          <button onClick={handleSave}>저장</button>
-          <button onClick={handleTemporarySave}>임시저장</button>
+          {isCreatePage ? (
+            <>
+              <button onClick={handleSave}>저장</button>
+              <button onClick={handleTemporarySave}>임시저장</button>
+            </>
+          ):(
+            <>
+              <button onClick={handleModify}>수정</button>
+            </>
+          )}
         </S.SaveBtn>
         <S.TitleInput
           hasThumbnail={!!internalThumbnailUrl}

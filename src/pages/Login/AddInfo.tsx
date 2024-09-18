@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../axiosInterceptor";
@@ -25,7 +26,7 @@ const AddInfo = () => {
     }
 
     if (refreshToken) {
-      document.cookie = `Authorization-Refresh=${refreshToken}; path=/; secure; samesite=strict`;
+      document.cookie = `Authorization-Refresh=${refreshToken}; path=/; samesite=strict`;
     } else {
       console.error("리프레시 토큰이 없습니다.");
     }
@@ -45,12 +46,16 @@ const AddInfo = () => {
         // 리디렉션을 프론트엔드에서 수행
         window.location.href = `/auth/success?uid=${uid}&nickName=${encodedNickname}&profile=${profile}`;
       })
-      .catch((error) => {
-        console.error("추가 정보 입력 실패:", error.response?.data || error);
-        if (error.response?.status === 409) {
-          alert("UID가 이미 존재합니다. 다른 UID를 입력해주세요.");
+      .catch((error: unknown) => {
+        if (axios.isAxiosError(error)) {
+          console.error("추가 정보 입력 실패:", error.response?.data || error);
+          if (error.response?.status === 409) {
+            alert("UID가 이미 존재합니다. 다른 UID를 입력해주세요.");
+          } else {
+            alert("추가 정보 입력 중 오류가 발생했습니다.");
+          }
         } else {
-          alert("추가 정보 입력 중 오류가 발생했습니다.");
+          console.error("예상치 못한 오류:", error);
         }
       });
   };
