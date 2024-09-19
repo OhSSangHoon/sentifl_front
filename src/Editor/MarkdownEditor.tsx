@@ -14,7 +14,6 @@ import {
 } from "../services/s3Service";
 import * as S from "./Styles/Editor.style";
 
-
 Quill.register("modules/imageResize", ImageResize);
 
 AWS.config.update({
@@ -51,31 +50,31 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     string | null
   >(thumbnailUrl); // 썸네일 URL을 관리하는 상태
 
-  // FastAPI로 데이터를 전송
-  const sendToFastAPI = async (
-    uid: string,
-    postUrl: string,
-    accessToken: string
-  ) => {
-    try {
-      const response = await axiosInstance.post(
-        "http://localhost:8000/create/music", // FastAPI 엔드포인트
-        {
-          user_id: uid,
-          html_url: postUrl,
-          token: accessToken,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      console.log("FastAPI 응답:", response.data);
-    } catch (error) {
-      console.error("FastAPI로 데이터 전송 실패:", error);
-    }
-  };
+  // // FastAPI로 데이터를 전송
+  // const sendToFastAPI = async (
+  //   uid: string,
+  //   postUrl: string,
+  //   accessToken: string
+  // ) => {
+  //   try {
+  //     const response = await axiosInstance.post(
+  //       "http://localhost:8000/create/music", // FastAPI 엔드포인트
+  //       {
+  //         user_id: uid,
+  //         html_url: postUrl,
+  //         token: accessToken,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //         },
+  //       }
+  //     );
+  //     console.log("FastAPI 응답:", response.data);
+  //   } catch (error) {
+  //     console.error("FastAPI로 데이터 전송 실패:", error);
+  //   }
+  // };
 
   // 썸네일 URL이 업데이트되면 내부 상태도 업데이트
   useEffect(() => {
@@ -276,14 +275,12 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         thumbnailUrl: internalThumbnailUrl || "",
       };
 
-      
       const response = await axiosInstance.post(`/post/${uid}`, postData, {});
 
       if (response.status === 200) {
         alert("게시물이 성공적으로 저장되었습니다.");
 
-        await sendToFastAPI(uid, s3Url, accessToken);
-
+        // await sendToFastAPI(uid, s3Url, accessToken);
 
         navigate(`/user/${uid}/blog`);
       }
@@ -294,7 +291,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   };
 
   const handleModify = () => {
-    if(quillRef.current && onModify){
+    if (quillRef.current && onModify) {
       const content = quillRef.current.root.innerHTML;
       onModify(content, internalThumbnailUrl || "");
     }
@@ -315,7 +312,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               <button onClick={handleSave}>저장</button>
               <button onClick={handleTemporarySave}>임시저장</button>
             </>
-          ):(
+          ) : (
             <>
               <button onClick={handleModify}>수정</button>
             </>
