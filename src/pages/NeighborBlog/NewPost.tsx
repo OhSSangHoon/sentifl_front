@@ -1,10 +1,10 @@
 // 메인_이웃 블로그
 
 import React from "react";
-import * as S from "./Styles/FollowingPostList.styles";
+import * as S from "./Styles/NewPost.styles";
 import DotNav from "../../components/DotNav";
 
-function FollowingPostsList() {
+function NewPost() {
   return (
     <S.Container>
       <S.Title>NEW POST</S.Title>
@@ -37,4 +37,4 @@ function FollowingPostsList() {
   );
 }
 
-export default FollowingPostsList;
+export default NewPost;

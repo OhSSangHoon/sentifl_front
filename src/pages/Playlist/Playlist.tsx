@@ -12,7 +12,7 @@ function Playlist() {
       try {
         const response = await axiosInstance.get(`/music/${uid}`, {
           params: {
-            lastId: null,
+            lastId: 1,
             size: 10,
           },
         });

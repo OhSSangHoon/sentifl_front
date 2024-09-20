@@ -50,11 +50,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     string | null
   >(thumbnailUrl); // 썸네일 URL을 관리하는 상태
 
-<<<<<<< HEAD
-  // FastAPI로 데이터를 전송
-=======
   // // FastAPI로 데이터를 전송
->>>>>>> b8b93087408bccb17a13825630a35bd4a582bc54
   // const sendToFastAPI = async (
   //   uid: string,
   //   postUrl: string,
@@ -285,10 +281,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         alert("게시물이 성공적으로 저장되었습니다.");
 
         // await sendToFastAPI(uid, s3Url, accessToken);
-<<<<<<< HEAD
-
-=======
->>>>>>> b8b93087408bccb17a13825630a35bd4a582bc54
 
         navigate(`/user/${uid}/blog`);
       }
