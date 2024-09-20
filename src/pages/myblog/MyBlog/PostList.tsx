@@ -17,6 +17,17 @@ export interface PostContent {
   content: string;
 }
 
+export const PostDescription = ({ content }: { content: string }) => {
+  const MAX_DESCRIPTION_LENGTH = 800; // 글자 수 제한
+
+  const displayedContent =
+    content.length > MAX_DESCRIPTION_LENGTH
+      ? content.substring(0, MAX_DESCRIPTION_LENGTH) + "..."
+      : content; // 내용이 길면 생략 처리
+
+  return <p>{displayedContent}</p>;
+};
+
 const PostList = () => {
   const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [postContents, setPostContents] = useState<{
@@ -154,7 +165,7 @@ const PostList = () => {
   };
 
   const editPost = (postId: number) => {
-    navigate(`/post/${postId}`);
+    navigate(`/modify/${postId}`);
   };
 
   // HTML을 텍스트로 변환하는 함수
@@ -206,9 +217,14 @@ const PostList = () => {
                     <S.PostDescription
                       onClick={() => handlePostClick(post.postId)}
                     >
-                      {postContent?.content
+                      <PostDescription
+                        content={stripHtmlTags(
+                          postContent?.content || "내용 불러오는 중..."
+                        )}
+                      />
+                      {/* {postContent?.content
                         ? stripHtmlTags(postContent.content)
-                        : "내용 불러오는 중..."}
+                        : "내용 불러오는 중..."} */}
                     </S.PostDescription>
                   </S.PostInfo>
                   {post.thumbnailUrl && (

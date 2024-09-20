@@ -37,7 +37,7 @@ export const PostImage = styled.img`
 export const PostHeader = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `;
 
 export const PostTitle = styled.h2`

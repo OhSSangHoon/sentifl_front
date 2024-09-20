@@ -134,10 +134,67 @@ export const MainContent = styled.div`
   flex-grow: 1;
   overflow-y: auto;
   padding-bottom: 80px;
+  max-width: 100%;
+`;
+
+export const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding: 10px;
+`;
+
+export const PostHeartIcon = styled.div`
+  background-color: #1e1e1e;
+  padding: 5px 15px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #d9d9d9;
+  }
+`;
+
+export const PostCommentIcon = styled.div`
+  background-color: #1e1e1e;
+  padding: 5px 15px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #d9d9d9;
+  }
+`;
+
+export const PostHeartCount = styled.span`
+  margin-left: 5px;
+  font-size: 14px;
+  color: white;
+  &:hover {
+    color: black;
+  }
+`;
+
+export const PostCommentCount = styled.span`
+  margin-left: 5px;
+  font-size: 14px;
+  color: white;
+  &:hover {
+    color: black;
+  }
 `;
 
 export const SidebarWrapper = styled.div`
-  width: 300px;
+  width: 350px;
   margin-left: 20px;
   margin-right: 40px;
   overflow-y: hidden;
@@ -145,7 +202,12 @@ export const SidebarWrapper = styled.div`
 
 export const PostContent = styled.div`
   flex-grow: 1;
+  position: relative;
+  min-width: 500px;
+  max-width: 1000px;
+  word-wrap: break-word;
   padding: 40px;
+  padding-bottom: 120px;
   font-size: 16px;
   line-height: 1.6;
   background: #0e0e0e;
@@ -199,5 +261,112 @@ export const Icon = styled.span`
 export const HeartIcon = styled(Icon)`
   &:hover {
     color: red;
+  }
+`;
+
+export const CommentSection = styled.div`
+  margin-top: 20px;
+  padding: 10px 0;
+  border-top: 1px solid #333;
+`;
+
+export const CommentTitle = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #fff;
+`;
+
+export const Comment = styled.div`
+  margin-bottom: 20px;
+  padding: 10px;
+  border-bottom: 1px solid #444;
+  color: #b5b5b5;
+`;
+
+export const CommentAuthorWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+export const CommentAuthor = styled.div`
+  font-size: 14px;
+  color: #aaa;
+`;
+
+export const CommentDate = styled.div`
+  font-size: 12px;
+  color: #777;
+  margin-right: 10px;
+`;
+
+export const CommentText = styled.p`
+  font-size: 14px;
+  color: #ddd;
+  margin-top: 10px;
+`;
+
+export const CommentActions = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+`;
+
+export const CommentActionButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #444;
+  border-radius: 5px;
+  overflow: hidden;
+`;
+
+export const CommentActionButton = styled.button`
+  background: #333;
+  color: white;
+  font-size: 14px;
+  border: none;
+  padding: 8px;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background-color: #555;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #444;
+  }
+`;
+
+export const CommentHeartIcon = styled.span`
+  font-size: 14px;
+  color: #aaa;
+  margin-right: 10px;
+  cursor: pointer;
+
+  &:hover {
+    color: red;
+  }
+`;
+
+export const CommentHeartCount = styled.span`
+  font-size: 14px;
+  color: #aaa;
+  margin-right: 10px;
+`;
+
+export const ReplyButton = styled.button`
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #aaa;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
   }
 `;

@@ -25,7 +25,7 @@ function Router() {
         <Route path="/Create" element={<Create />} />
         <Route path="/user/:uid/blog" element={<MyBlog />}/>
         <Route path="/user/:uid/post/:postId" element={<BlogPost />} />
-        <Route path="/post/:postId" element={<ModifyPage />} />
+        <Route path="/modify/:postId" element={<ModifyPage />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
         <Route path="/user/:uid/following-posts" element={<FollowingPostsList />}/>
         <Route path="/create-song" element={<CreateSong />} />

@@ -1,32 +1,61 @@
+// 노래 결과 페이지
+
 import React from "react";
 import * as S from "./Styles/SongResult.style";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { FiArrowRight, FiPlay } from "react-icons/fi";
 
-const SongResult = () => {
+const SongResult: React.FC = () => {
+  const navigate = useNavigate();
+  const { uid } = useParams<{ uid: string }>();
+  const location = useLocation();
+
+  // navigate로 전달된 데이터 받기
+  const { title, emotion1, emotion2, musicUrl } = location.state || {};
+
+  const handlePlay = () => {
+    const audio = new Audio(musicUrl);
+    audio.play();
+  };
+
   return (
     <S.Wrapper>
       <S.TopLeftInfo>
-        <S.InfoText>휴식동안 느낀 당신의 감정이에요.</S.InfoText>
+        <S.InfoText>하루동안 느낀 당신의 감정이에요.</S.InfoText>
         <S.ColorInfo>
           <S.ColorBox color="#0000FF" />
-          <S.ColorText>슬픔: 영화 그리운 사람 만남의 회상</S.ColorText>
+          <S.EmotionTextWrapper>
+            <S.ColorText>{emotion1}</S.ColorText>
+            <S.ColorText>{emotion1} 설명부분</S.ColorText>
+          </S.EmotionTextWrapper>
         </S.ColorInfo>
         <S.ColorInfo>
           <S.ColorBox color="#00FFFF" />
-          <S.ColorText>편안: 조용하면서도 상쾌한 바람</S.ColorText>
+          <S.EmotionTextWrapper>
+            <S.ColorText>{emotion2}</S.ColorText>
+            <S.ColorText>{emotion2}설명부분</S.ColorText>
+          </S.EmotionTextWrapper>
         </S.ColorInfo>
       </S.TopLeftInfo>
 
       <S.PlayButtonWrapper>
-        <S.PlayButton>▶</S.PlayButton>
+        <S.PlayButton onClick={handlePlay}>
+          <FiPlay size={40} />
+        </S.PlayButton>
       </S.PlayButtonWrapper>
 
       <S.TitleWrapper>
-        <S.MainTitle>제목이 들어가는 곳</S.MainTitle>
+        <S.MainTitle>{title}</S.MainTitle>
       </S.TitleWrapper>
 
-      <S.BottomLeftButton>MY PLAYLIST</S.BottomLeftButton>
+      <S.BottomLeftButton onClick={() => navigate(`/user/${uid}/playlist`)}>
+        MY PLAYLIST
+      </S.BottomLeftButton>
 
-      <S.BottomRightText>My blog</S.BottomRightText>
+      <S.BottomRightText onClick={() => navigate(`/user/${uid}/blog`)}>
+        My blog <FiArrowRight />
+      </S.BottomRightText>
     </S.Wrapper>
   );
 };
