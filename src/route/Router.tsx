@@ -13,7 +13,6 @@ import FollowingPostsList from "../pages/NeighborBlog/FollowingPostList";
 import Playlist from "../pages/Playlist/Playlist";
 import CreateSong from "../pages/SongCreator/CreateSong";
 import SongResult from "../pages/SongCreator/SongResult";
-import ProtectedRoute from "./ProtectedRoute";
 
 function Router() {
   return (
@@ -24,21 +23,11 @@ function Router() {
         <Route path="/auth/success" element={<Success />} />
         <Route path="/auth/add-info" element={<AddInfo />} />
         <Route path="/Create" element={<Create />} />
-        <Route
-          path="/user/:uid/blog"
-          element={
-            <ProtectedRoute>
-              <MyBlog />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/user/:uid/blog" element={<MyBlog />}/>
         <Route path="/user/:uid/post/:postId" element={<BlogPost />} />
         <Route path="/post/:postId" element={<ModifyPage />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
-        <Route
-          path="/user/:uid/following-posts"
-          element={<FollowingPostsList />}
-        />
+        <Route path="/user/:uid/following-posts" element={<FollowingPostsList />}/>
         <Route path="/create-song" element={<CreateSong />} />
         <Route path="/song-result" element={<SongResult />} />
         <Route path="/user/:uid/playlist" element={<Playlist />} />

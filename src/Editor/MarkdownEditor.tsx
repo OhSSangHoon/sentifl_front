@@ -52,30 +52,30 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   >(thumbnailUrl); // 썸네일 URL을 관리하는 상태
 
   // FastAPI로 데이터를 전송
-  const sendToFastAPI = async (
-    uid: string,
-    postUrl: string,
-    accessToken: string
-  ) => {
-    try {
-      const response = await axiosInstance.post(
-        "http://localhost:8000/create/music", // FastAPI 엔드포인트
-        {
-          user_id: uid,
-          html_url: postUrl,
-          token: accessToken,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      console.log("FastAPI 응답:", response.data);
-    } catch (error) {
-      console.error("FastAPI로 데이터 전송 실패:", error);
-    }
-  };
+  // const sendToFastAPI = async (
+  //   uid: string,
+  //   postUrl: string,
+  //   accessToken: string
+  // ) => {
+  //   try {
+  //     const response = await axiosInstance.post(
+  //       "http://localhost:8000/create/music", // FastAPI 엔드포인트
+  //       {
+  //         user_id: uid,
+  //         html_url: postUrl,
+  //         token: accessToken,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //         },
+  //       }
+  //     );
+  //     console.log("FastAPI 응답:", response.data);
+  //   } catch (error) {
+  //     console.error("FastAPI로 데이터 전송 실패:", error);
+  //   }
+  // };
 
   // 썸네일 URL이 업데이트되면 내부 상태도 업데이트
   useEffect(() => {
@@ -282,7 +282,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       if (response.status === 200) {
         alert("게시물이 성공적으로 저장되었습니다.");
 
-        await sendToFastAPI(uid, s3Url, accessToken);
+        // await sendToFastAPI(uid, s3Url, accessToken);
 
 
         navigate(`/user/${uid}/blog`);

@@ -1,11 +1,11 @@
 // 글 선택하여 노래 제작하는 페이지
 
-import React, { useEffect, useState } from "react";
-import * as S from "./Styles/ChoosePost.style";
-import axiosInstance from "../../axiosInterceptor";
-import { useAuth } from "../../AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { FaPlay } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../AuthProvider";
+import axiosInstance from "../../axiosInterceptor";
+import * as S from "./Styles/ChoosePost.style";
 
 export interface Post {
   postId: number;
@@ -211,7 +211,7 @@ const ChoosePost = () => {
           );
           console.log(post.postId);
 
-          if (springResponse.status === 200) {
+          if (springResponse.status === 200 || springResponse.status === 204) {
             alert("노래 제작이 성공적으로 완료되었습니다!");
             console.log("스프링 백엔드 응답:", springResponse.data);
           } else {
