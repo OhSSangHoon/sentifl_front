@@ -1,16 +1,46 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import isPropValid from '@emotion/is-prop-valid';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from "react-router-dom";
+import { createGlobalStyle, StyleSheetManager } from "styled-components";
+import { AuthProvider } from "./AuthProvider";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import Router from "./route/Router";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+
+const GlobalStyle = createGlobalStyle`
+  *{
+    margin: 0;
+    box-sizing: border-box;
+    overflow-x:hidden;
+  }
+
+  /* 스크롤바 숨기기 */
+  body::-webkit-scrollbar {
+    width: 0.4em;
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    outline: none;
+  }
+
+  body::-webkit-scrollbar {
+    display: none; /* 스크롤바 숨기기 */
+  }
+`;
+export default GlobalStyle;
+
+ReactDOM.render(
+  <AuthProvider>
+    <StyleSheetManager shouldForwardProp={(prop) => isPropValid(prop)}>
+        <BrowserRouter>
+          <GlobalStyle />
+            <Router />
+        </BrowserRouter>
+    </StyleSheetManager>
+  </AuthProvider>,
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
