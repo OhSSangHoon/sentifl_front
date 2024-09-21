@@ -222,9 +222,6 @@ const PostList = () => {
                           postContent?.content || "내용 불러오는 중..."
                         )}
                       />
-                      {/* {postContent?.content
-                        ? stripHtmlTags(postContent.content)
-                        : "내용 불러오는 중..."} */}
                     </S.PostDescription>
                   </S.PostInfo>
                   {post.thumbnailUrl && (

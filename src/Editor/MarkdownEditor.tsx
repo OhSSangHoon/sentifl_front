@@ -50,35 +50,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     string | null
   >(thumbnailUrl); // 썸네일 URL을 관리하는 상태
 
-<<<<<<< HEAD
-  // FastAPI로 데이터를 전송
-=======
-  // // FastAPI로 데이터를 전송
->>>>>>> b8b93087408bccb17a13825630a35bd4a582bc54
-  // const sendToFastAPI = async (
-  //   uid: string,
-  //   postUrl: string,
-  //   accessToken: string
-  // ) => {
-  //   try {
-  //     const response = await axiosInstance.post(
-  //       "http://localhost:8000/create/music", // FastAPI 엔드포인트
-  //       {
-  //         user_id: uid,
-  //         html_url: postUrl,
-  //         token: accessToken,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       }
-  //     );
-  //     console.log("FastAPI 응답:", response.data);
-  //   } catch (error) {
-  //     console.error("FastAPI로 데이터 전송 실패:", error);
-  //   }
-  // };
 
   // 썸네일 URL이 업데이트되면 내부 상태도 업데이트
   useEffect(() => {
@@ -125,8 +96,22 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
       quillRef.current = quill;
 
+      // Delta 형식인지 HTML 형식인지 확인
       if (initialDelta && quill) {
-        quill.root.innerHTML = initialDelta;
+        try {
+          const parsedDelta = typeof initialDelta === "string" ? JSON.parse(initialDelta) : initialDelta;
+
+          // Delta 형식일 경우
+          if (parsedDelta.ops) {
+            quill.setContents(parsedDelta);
+          } else {
+            // HTML 형식일 경우
+            quill.root.innerHTML = initialDelta;
+          }
+        } catch (error) {
+          console.error("Error parsing Delta or applying HTML:", error);
+          quill.root.innerHTML = initialDelta; // 에러가 있을 경우 HTML로 처리
+        }
       }
     }
 
@@ -285,10 +270,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         alert("게시물이 성공적으로 저장되었습니다.");
 
         // await sendToFastAPI(uid, s3Url, accessToken);
-<<<<<<< HEAD
-
-=======
->>>>>>> b8b93087408bccb17a13825630a35bd4a582bc54
 
         navigate(`/user/${uid}/blog`);
       }

@@ -42,8 +42,9 @@ function Create() {
             const jsonData = JSON.parse(jsonText);
         
             setTitle(jsonData.title);
-            const editorDelta = JSON.parse(jsonData.content);
-            setInitialDelta(editorDelta);
+
+            const deltaContent = JSON.parse(jsonData.content);
+            setInitialDelta(deltaContent); // Delta 형식을 그대로 저장
 
             if (jsonData.thumbnailUrl) {
                 setThumbnailUrl(jsonData.thumbnailUrl);
