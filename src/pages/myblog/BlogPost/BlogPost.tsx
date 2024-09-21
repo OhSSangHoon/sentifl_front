@@ -4,6 +4,7 @@ import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import Sidebar from "../MyBlog/SideBar";
 import * as S from "./Styles/BlogPost.styles";
+import { FaPaperPlane, FaPlay, FaWaveSquare } from "react-icons/fa";
 
 interface PostData {
   title: string;
@@ -92,11 +93,14 @@ function BlogPost() {
           src={post.thumbnailUrl || "default_image.jpg"}
           alt="Background"
         />
-
         <S.TopRightContent>
           <S.ViewCount>조회수 : 0회</S.ViewCount>
         </S.TopRightContent>
         <S.LeftContent>
+          <S.SongTitleWrapper>
+            <S.SongTitle>노래제목</S.SongTitle> <FaPlay />
+            <FaWaveSquare />
+          </S.SongTitleWrapper>
           <S.CategoryAndTitle>
             <S.Category>카테고리</S.Category>
             <S.Title>{post.title}</S.Title>
@@ -145,6 +149,14 @@ function BlogPost() {
             </S.Comment>
           </S.CommentSection>
         </S.PostContent>
+        <S.FixedBottomBar>
+          <S.Icon>❤</S.Icon>
+          <S.Icon>💬</S.Icon>
+          <S.InputField type="text" placeholder="댓글을 입력하세요" />
+          <S.Icon>
+            <FaPaperPlane />
+          </S.Icon>
+        </S.FixedBottomBar>
       </S.MainContent>
     </S.Container>
   );

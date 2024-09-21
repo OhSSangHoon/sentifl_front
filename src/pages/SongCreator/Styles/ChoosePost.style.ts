@@ -16,6 +16,7 @@ export const PostListWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   // min-height: 700px;
+  z-index: 1000;
 `;
 
 export const Post = styled.div`
@@ -118,8 +119,8 @@ export const PlaySection = styled.div`
   justify-content: center;
   padding: 20px;
   position: fixed; /* 고정된 위치에 배치 */
-  right: 20px; /* 화면 오른쪽에서 20px 떨어진 위치에 고정 */
-  top: 100px; /* 상단에서 100px 떨어진 위치에 고정 */
+  right: 20px;
+  top: 100px;
 `;
 
 export const PlayButton = styled.div`

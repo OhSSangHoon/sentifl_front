@@ -9,7 +9,7 @@ import Success from "../pages/Login/SuccessPage";
 import MusicRecommend from "../pages/musicRecommend/MusicRecommend";
 import BlogPost from "../pages/myblog/BlogPost/BlogPost";
 import MyBlog from "../pages/myblog/MyBlog/MyBlog";
-import FollowingPostsList from "../pages/NeighborBlog/FollowingPostList";
+import NewPost from "../pages/NeighborBlog/NewPost";
 import Playlist from "../pages/Playlist/Playlist";
 import CreateSong from "../pages/SongCreator/CreateSong";
 import SongResult from "../pages/SongCreator/SongResult";
@@ -23,11 +23,11 @@ function Router() {
         <Route path="/auth/success" element={<Success />} />
         <Route path="/auth/add-info" element={<AddInfo />} />
         <Route path="/Create" element={<Create />} />
-        <Route path="/user/:uid/blog" element={<MyBlog />}/>
+        <Route path="/user/:uid/blog" element={<MyBlog />} />
         <Route path="/user/:uid/post/:postId" element={<BlogPost />} />
         <Route path="/modify/:postId" element={<ModifyPage />} />
         <Route path="/musicrecommend" element={<MusicRecommend />} />
-        <Route path="/user/:uid/following-posts" element={<FollowingPostsList />}/>
+        <Route path="/user/:uid/following-newpost" element={<NewPost />} />
         <Route path="/create-song" element={<CreateSong />} />
         <Route path="/song-result" element={<SongResult />} />
         <Route path="/user/:uid/playlist" element={<Playlist />} />

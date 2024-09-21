@@ -50,7 +50,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     string | null
   >(thumbnailUrl); // 썸네일 URL을 관리하는 상태
 
-
   // 썸네일 URL이 업데이트되면 내부 상태도 업데이트
   useEffect(() => {
     if (thumbnailUrl) {
