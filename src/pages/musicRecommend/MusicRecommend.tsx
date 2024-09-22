@@ -4,10 +4,10 @@ import React from "react";
 import styled from "styled-components";
 import DotNav from "../../components/DotNav";
 
-function Recommend() {
+function MusicRecommend() {
   return (
     <Container>
-      <h1>Welcome to MusicRec</h1>
+      <h1 style={{ color: "white" }}>노래 추천</h1>
       <DotNavWrapper>
         <DotNav />
       </DotNavWrapper>
@@ -15,10 +15,9 @@ function Recommend() {
   );
 }
 
-export default Recommend;
+export default MusicRecommend;
 
 const Container = styled.div`
-  background-color: gray;
   height: auto;
   min-height: 100vh;
   display: flex;

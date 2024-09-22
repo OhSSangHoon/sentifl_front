@@ -63,14 +63,18 @@ export const PlayButton = styled.button`
   height: 100px;
   border-radius: 50%;
   font-size: 24px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: transparent;
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  border: 0.5px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
   cursor: pointer;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   &:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.1);
   }
   svg {
     color: rgba(255, 255, 255, 0.6);
@@ -102,12 +106,4 @@ export const TitleWrapper = styled.div`
 export const MainTitle = styled.h1`
   font-size: 48px;
   font-weight: bold;
-`;
-
-export const BottomRightText = styled.div`
-  position: absolute;
-  bottom: 50px;
-  right: 50px;
-  font-size: 20px;
-  color: white;
 `;
