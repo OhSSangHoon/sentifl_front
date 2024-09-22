@@ -98,7 +98,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       // Delta 형식인지 HTML 형식인지 확인
       if (initialDelta && quill) {
         try {
-          const parsedDelta = typeof initialDelta === "string" ? JSON.parse(initialDelta) : initialDelta;
+          const parsedDelta =
+            typeof initialDelta === "string"
+              ? JSON.parse(initialDelta)
+              : initialDelta;
 
           // Delta 형식일 경우
           if (parsedDelta.ops) {
@@ -263,9 +266,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         thumbnailUrl: internalThumbnailUrl || "",
       };
 
-      const response = await axiosInstance.post(`/post/${uid}`, postData, {});
+      const response = await axiosInstance.post(
+        `/api/v1/post/${uid}`,
+        postData,
+        {}
+      );
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("게시물이 성공적으로 저장되었습니다.");
 
         // await sendToFastAPI(uid, s3Url, accessToken);

@@ -5,10 +5,11 @@ import * as S from "./Styles/SongResult.style";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { FiArrowRight, FiPlay } from "react-icons/fi";
+import { useAuth } from "../../AuthProvider";
 
 const SongResult: React.FC = () => {
   const navigate = useNavigate();
-  const { uid } = useParams<{ uid: string }>();
+  const { uid } = useAuth();
   const location = useLocation();
 
   // navigate로 전달된 데이터 받기

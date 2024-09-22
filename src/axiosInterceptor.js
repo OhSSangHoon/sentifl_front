@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
+  baseURL: process.env.REACT_APP_BASE_URL,
   withCredentials: true,
 });
 
@@ -34,7 +34,7 @@ axiosInstance.interceptors.response.use(
       try {
         // 새로운 액세스 토큰 요청 (reissue)
         const tokenResponse = await axiosInstance.post(
-          "http://localhost:8080/api/v1/auth/reissue"
+          `${process.env.REACT_APP_BASE_URL}/api/v1/auth/reissue`
         );
 
         // 응답 헤더에서 새로운 액세스 토큰 확인

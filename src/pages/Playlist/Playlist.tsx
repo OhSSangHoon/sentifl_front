@@ -15,29 +15,30 @@ function Playlist() {
   const fetchSongs = async () => {
     if (loading || !hasMore) return;
 
-    setLoading(true); // 로딩 시작
+    setLoading(true);
     try {
-      const response = await axiosInstance.get(`/music/${uid}`, {
+      const response = await axiosInstance.get(`/api/v1/music/${uid}`, {
         params: {
           lastId: lastId,
           size: 10,
         },
       });
 
-      console.log(response.data);
-      const newSongs = response.data.content;
+      if (response.status === 200) {
+        console.log(response.data);
+        const newSongs = response.data.content;
 
-      if (newSongs.length > 0) {
-        // 새로운 데이터를 기존 목록에 추가
-        setSongs((prevSongs) => [...prevSongs, ...newSongs]);
+        if (newSongs.length > 0) {
+          setSongs((prevSongs) => [...prevSongs, ...newSongs]);
+          setLastId(newSongs[newSongs.length - 1].id);
+        }
 
-        // 마지막 ID를 최신 song의 ID로 업데이트
-        setLastId(newSongs[newSongs.length - 1].id);
-      }
-
-      // 서버에서 반환된 last 값에 따라 처리
-      if (response.data.last) {
-        setHasMore(false);
+        // 서버에서 반환된 last 값에 따라 처리
+        if (response.data.last) {
+          setHasMore(false);
+        }
+      } else {
+        console.error(`Unexpected response status: ${response.status}`);
       }
     } catch (error: any) {
       console.error("API 호출 중 오류:", error);
@@ -49,7 +50,7 @@ function Playlist() {
   const deleteSong = async (songId: number) => {
     if (window.confirm("정말로 이 노래를 삭제하시겠습니까?")) {
       try {
-        const response = await axiosInstance.delete(`/music/${songId}`);
+        const response = await axiosInstance.delete(`/api/v1/music/${songId}`);
 
         if (response.status === 204) {
           setSongs((prevSongs) =>

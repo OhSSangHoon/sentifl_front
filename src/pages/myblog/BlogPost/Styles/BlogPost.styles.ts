@@ -287,9 +287,10 @@ export const Comment = styled.div`
 export const CommentAuthorWrapper = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between; /* 양쪽 끝에 배치 */
   margin-bottom: 10px;
+  width: 100%;
 `;
-
 export const CommentAuthor = styled.div`
   font-size: 14px;
   color: #aaa;
@@ -315,10 +316,7 @@ export const CommentActions = styled.div`
 
 export const CommentActionButtonWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  border: 1px solid #444;
-  border-radius: 5px;
-  overflow: hidden;
+  gap: 10px;
 `;
 
 export const CommentActionButton = styled.button`
@@ -345,7 +343,7 @@ export const CommentActionButton = styled.button`
 export const CommentHeartIcon = styled.span`
   font-size: 14px;
   color: #aaa;
-  margin-right: 10px;
+
   cursor: pointer;
 
   &:hover {
@@ -356,7 +354,6 @@ export const CommentHeartIcon = styled.span`
 export const CommentHeartCount = styled.span`
   font-size: 14px;
   color: #aaa;
-  margin-right: 10px;
 `;
 
 export const ReplyButton = styled.button`

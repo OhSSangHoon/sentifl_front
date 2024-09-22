@@ -24,7 +24,7 @@ const ModifyPage = () => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const response = await axiosInstance.get(`/post/${uid}`);
+        const response = await axiosInstance.get(`/api/v1/post/${uid}`);
         if (response.status === 200) {
           const postList = response.data.content;
           const selectedPost = postList.find(
@@ -77,12 +77,15 @@ const ModifyPage = () => {
       await updateToS3(new File([jsonBlob], "updated_post.json"), postUrl);
 
       // 2. 서버로 PUT 요청 보내기
-      const response = await axiosInstance.put(`/post/${uid}/${postId}`, {
-        postUrl,
-        thumbnailUrl,
-      });
+      const response = await axiosInstance.put(
+        `/api/v1/post/${uid}/${postId}`,
+        {
+          postUrl,
+          thumbnailUrl,
+        }
+      );
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("게시물이 성공적으로 수정되었습니다.");
         navigate(`/user/${uid}/post/${postId}`);
       } else {
