@@ -1,22 +1,44 @@
-// 노래 결과 페이지
-
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import * as S from "./Styles/SongResult.style";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import { FiArrowRight, FiPlay } from "react-icons/fi";
+import { useAuth } from "../../AuthProvider";
+import { FaPlay, FaPause } from "react-icons/fa";
 
 const SongResult: React.FC = () => {
   const navigate = useNavigate();
-  const { uid } = useParams<{ uid: string }>();
+  const { uid } = useAuth();
   const location = useLocation();
 
   // navigate로 전달된 데이터 받기
   const { title, emotion1, emotion2, musicUrl } = location.state || {};
 
-  const handlePlay = () => {
-    const audio = new Audio(musicUrl);
-    audio.play();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(new Audio(musicUrl));
+
+  // 노래가 끝났을 때 실행되는 핸들러
+  useEffect(() => {
+    const handleEnded = () => {
+      setIsPlaying(false); // 노래가 끝나면 재생 버튼으로 변경
+    };
+
+    // audioRef.current에 ended 이벤트 리스너 추가
+    const audio = audioRef.current;
+    audio.addEventListener("ended", handleEnded);
+
+    // cleanup 함수에서 이벤트 리스너 제거
+    return () => {
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, []);
+
+  // 재생 버튼 클릭 핸들러
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
   };
 
   return (
@@ -34,14 +56,14 @@ const SongResult: React.FC = () => {
           <S.ColorBox color="#00FFFF" />
           <S.EmotionTextWrapper>
             <S.ColorText>{emotion2}</S.ColorText>
-            <S.ColorText>{emotion2}설명부분</S.ColorText>
+            <S.ColorText>{emotion2} 설명부분</S.ColorText>
           </S.EmotionTextWrapper>
         </S.ColorInfo>
       </S.TopLeftInfo>
 
       <S.PlayButtonWrapper>
-        <S.PlayButton onClick={handlePlay}>
-          <FiPlay size={40} />
+        <S.PlayButton onClick={handlePlayPause}>
+          {isPlaying ? <FaPause size={40} /> : <FaPlay size={40} />}{" "}
         </S.PlayButton>
       </S.PlayButtonWrapper>
 
@@ -52,10 +74,6 @@ const SongResult: React.FC = () => {
       <S.BottomLeftButton onClick={() => navigate(`/user/${uid}/playlist`)}>
         MY PLAYLIST
       </S.BottomLeftButton>
-
-      <S.BottomRightText onClick={() => navigate(`/user/${uid}/blog`)}>
-        My blog <FiArrowRight />
-      </S.BottomRightText>
     </S.Wrapper>
   );
 };

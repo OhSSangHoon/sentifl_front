@@ -4,7 +4,7 @@ import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import Sidebar from "../MyBlog/SideBar";
 import * as S from "./Styles/BlogPost.styles";
-import { FaPaperPlane, FaPlay, FaWaveSquare } from "react-icons/fa";
+import { FaPaperPlane, FaPlay, FaWaveSquare, FaComment } from "react-icons/fa";
 
 interface PostData {
   title: string;
@@ -20,6 +20,8 @@ function BlogPost() {
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [showCommentInput, setShowCommentInput] = useState(false);
+
   // 게시글 데이터를 가져오는 함수
   useEffect(() => {
     const fetchAllPosts = async () => {
@@ -30,7 +32,7 @@ function BlogPost() {
 
         // 페이지네이션을 이용해 모든 게시글 가져오기
         while (!lastPage) {
-          const response = await axiosInstance.get(`/post/${uid}`, {
+          const response = await axiosInstance.get(`/api/v1/post/${uid}`, {
             params: { page: currentPage, size: 10 }, // 한 번에 10개씩 가져오기
           });
 
@@ -86,6 +88,10 @@ function BlogPost() {
     return <p>게시글을 불러오는 중 문제가 발생했습니다.</p>;
   }
 
+  const toggleCommentInput = () => {
+    setShowCommentInput((prev) => !prev);
+  };
+
   return (
     <S.Container>
       <S.TopSection>
@@ -124,8 +130,8 @@ function BlogPost() {
             <S.PostHeartIcon>
               ❤<S.PostHeartCount>00</S.PostHeartCount>
             </S.PostHeartIcon>
-            <S.PostCommentIcon>
-              💬
+            <S.PostCommentIcon onClick={toggleCommentInput}>
+              <FaComment />
               <S.PostCommentCount>00</S.PostCommentCount>
             </S.PostCommentIcon>
           </S.IconWrapper>
@@ -133,30 +139,39 @@ function BlogPost() {
             <S.CommentTitle>댓글 00</S.CommentTitle>
             <S.Comment>
               <S.CommentAuthorWrapper>
-                <S.CommentAuthor>닉네임</S.CommentAuthor>
-                <S.CommentDate>2024.08.29</S.CommentDate>
-                <S.CommentHeartIcon>❤</S.CommentHeartIcon>
-                <S.CommentHeartCount>00</S.CommentHeartCount>
-                <S.ReplyButton>답글</S.ReplyButton>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                >
+                  <S.CommentAuthor>닉네임</S.CommentAuthor>
+                  <S.CommentDate>2024.08.29</S.CommentDate>
+                  <S.CommentHeartIcon>❤</S.CommentHeartIcon>
+                  <S.CommentHeartCount>00</S.CommentHeartCount>
+                </div>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                >
+                  <S.CommentActionButtonWrapper>
+                    <S.CommentActionButton>수정</S.CommentActionButton>
+                    <S.CommentActionButton>삭제</S.CommentActionButton>
+                  </S.CommentActionButtonWrapper>
+                </div>
               </S.CommentAuthorWrapper>
               <S.CommentText>댓글 예시 댓글 예</S.CommentText>
-              <S.CommentActions>
-                <S.CommentActionButtonWrapper>
-                  <S.CommentActionButton>수정</S.CommentActionButton>
-                  <S.CommentActionButton>삭제</S.CommentActionButton>
-                </S.CommentActionButtonWrapper>
-              </S.CommentActions>
             </S.Comment>
           </S.CommentSection>
         </S.PostContent>
-        <S.FixedBottomBar>
-          <S.Icon>❤</S.Icon>
-          <S.Icon>💬</S.Icon>
-          <S.InputField type="text" placeholder="댓글을 입력하세요" />
-          <S.Icon>
-            <FaPaperPlane />
-          </S.Icon>
-        </S.FixedBottomBar>
+        {showCommentInput && (
+          <S.FixedBottomBar>
+            <S.Icon>❤</S.Icon>
+            <S.Icon>
+              <FaComment />
+            </S.Icon>
+            <S.InputField type="text" placeholder="댓글을 입력하세요" />
+            <S.Icon>
+              <FaPaperPlane />
+            </S.Icon>
+          </S.FixedBottomBar>
+        )}
       </S.MainContent>
     </S.Container>
   );

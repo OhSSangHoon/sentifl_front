@@ -50,7 +50,7 @@ const ChoosePost = () => {
         let lastPage = false;
 
         while (!lastPage) {
-          const response = await axiosInstance.get(`/post/${uid}`, {
+          const response = await axiosInstance.get(`/api/v1/post/${uid}`, {
             params: {
               page: currentPage,
               size: pageSize,
@@ -146,7 +146,7 @@ const ChoosePost = () => {
   ): Promise<{ musicUrl: string; emotion: string; title: string } | null> => {
     try {
       const response = await axiosInstance.post(
-        "http://localhost:8000/create/music", // FastAPI 엔드포인트
+        `/create/music`, // baseURL을 무시하고 수동으로 FastAPI의 URL을 사용
         {
           user_id: uid,
           html_url: postUrl,
@@ -156,6 +156,7 @@ const ChoosePost = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
+          baseURL: process.env.REACT_APP_FASTAPI_BASE_URL, // 여기서 baseURL을 덮어씌움
         }
       );
 
@@ -169,6 +170,8 @@ const ChoosePost = () => {
       }
     } catch (error) {
       console.error("FastAPI로 데이터 전송 실패:", error);
+      console.log("FastAPI URL:", process.env.REACT_APP_FASTAPI_BASE_URL);
+
       return null;
     }
   };
@@ -200,7 +203,7 @@ const ChoosePost = () => {
 
           // FastAPI에서 받아온 데이터를 스프링 백엔드로 전송
           const springResponse = await axiosInstance.post(
-            `/music/post/${post.postId}`,
+            `/api/v1/music/post/${post.postId}`,
             {
               musicUrl: musicUrl,
               title: title,
@@ -211,7 +214,7 @@ const ChoosePost = () => {
           );
           console.log(post.postId);
 
-          if (springResponse.status === 200 || springResponse.status === 204) {
+          if (springResponse.status === 204) {
             alert("노래 제작이 성공적으로 완료되었습니다!");
             console.log("스프링 백엔드 응답:", springResponse.data);
 

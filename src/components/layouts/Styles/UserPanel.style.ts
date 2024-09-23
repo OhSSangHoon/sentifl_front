@@ -24,6 +24,7 @@ export const PopupContainer = styled.div`
   padding: 40px 20px;
   color: white;
   overflow: hidden;
+  z-index: 1000;
 `;
 
 export const CloseButton = styled.button`

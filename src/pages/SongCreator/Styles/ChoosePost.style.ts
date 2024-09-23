@@ -16,7 +16,7 @@ export const PostListWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   // min-height: 700px;
-  z-index: 1000;
+  z-index: 900;
 `;
 
 export const Post = styled.div`

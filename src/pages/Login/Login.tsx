@@ -5,17 +5,16 @@ import * as S from "./Styles/Login.styles";
 
 function Login() {
   const handleNaverLogin = async () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+    window.location.href = `${process.env.REACT_APP_BASE_URL}/oauth2/authorization/naver`;
   };
 
   const handleGoogleLogin = async () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    window.location.href = `${process.env.REACT_APP_BASE_URL}/oauth2/authorization/google`;
   };
 
   const handleKakaoLogin = async () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+    window.location.href = `${process.env.REACT_APP_BASE_URL}/oauth2/authorization/kakao`;
   };
-
   return (
     <S.Container>
       <S.LeftPanel>

@@ -37,7 +37,7 @@ const AddInfo = () => {
 
     // uid와 nickname을 백엔드로 전송
     axiosInstance
-      .post("/auth/add-info", { uid, nickName: nickname })
+      .post("/api/v1/auth/add-info", { uid, nickName: nickname })
       .then(() => {
         alert("추가 정보가 성공적으로 입력되었습니다.");
 

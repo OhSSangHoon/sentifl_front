@@ -58,7 +58,7 @@ const PostList = () => {
         let lastPage = false;
 
         while (!lastPage) {
-          const response = await axiosInstance.get(`/post/${uid}`, {
+          const response = await axiosInstance.get(`/api/v1/post/${uid}`, {
             params: {
               page: currentPage,
               size: pageSize,
@@ -153,7 +153,7 @@ const PostList = () => {
   const deletePost = async (postId: number) => {
     if (window.confirm("정말로 이 게시물을 삭제하시겠습니까?")) {
       try {
-        await axiosInstance.delete(`/post/${uid}/${postId}`);
+        await axiosInstance.delete(`/api/v1/post/${uid}/${postId}`);
         const updatedPosts = allPosts.filter((post) => post.postId !== postId);
         setAllPosts(updatedPosts);
         alert("게시물이 삭제되었습니다.");

@@ -17,14 +17,24 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
 
   const goToMyBlog = () => {
     navigate(`/user/${uid}/blog`);
+    onClose();
   };
 
   const goToPlaylist = () => {
     navigate(`/user/${uid}/playlist`);
+    onClose();
+  };
+
+  const handleOverlayClick = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
   };
 
   return (
-    <S.PopupOverlay>
+    <S.PopupOverlay onClick={handleOverlayClick}>
       <S.PopupContainer>
         <S.CloseButton onClick={onClose}>X</S.CloseButton>
         <S.UserProfile>
