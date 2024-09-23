@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../../AuthProvider"; // useAuth 사용
+import { useAuth } from "../../AuthProvider";
 import * as S from "./Styles/Header.styles";
 import UserPanel from "./UserPanel";
 
@@ -40,7 +40,6 @@ function Header() {
       {isPopupOpen && (
         <UserPanel onClose={togglePopup} onLogout={handleLogout} />
       )}
-      {/* 팝업 컴포넌트 호출 */}
     </S.HeaderContainer>
   );
 }

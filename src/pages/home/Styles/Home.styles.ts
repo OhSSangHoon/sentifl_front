@@ -22,6 +22,10 @@ const moveCircle = keyframes`
   }
 `;
 
+export const Follow = styled.div`
+  z-index:1;
+`
+
 export const Background = styled.div`
   height: 100vh;
   background: linear-gradient(135deg, #080808, #202020);

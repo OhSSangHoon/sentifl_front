@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaCog } from "react-icons/fa";
-import * as S from "./Styles/UserPanel.style";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
+import axiosInstance from "../../axiosInterceptor";
+import * as S from "./Styles/UserPanel.style";
 
 interface UserPanelProps {
   onClose: () => void;
@@ -13,7 +14,31 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
   const { nickname, uid } = useAuth();
   const profileImage = localStorage.getItem("profileImage");
 
+  const [followCount, setFollowCount] = useState<number>(0);
+  const [followingCount, setFollowingCount] = useState<number>(0);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // 팔로우 및 팔로잉 정보 불러오기
+    const fetchFollowInfo = async () => {
+      try {
+        // 나를 팔로우한 사용자 수 불러오기
+        const followedByResponse = await axiosInstance.get(`/api/followedby/${uid}`);
+        const followedByCount = followedByResponse.data.content.length;  // content 배열의 길이를 사용해 팔로우 수 계산
+        setFollowCount(followedByCount);
+
+        // 내가 팔로우한 사용자 수 불러오기
+        const followingResponse = await axiosInstance.get(`/api/follow/${uid}`);
+        const followingCount = followingResponse.data.content.length;  // content 배열의 길이를 사용해 팔로잉 수 계산
+        setFollowingCount(followingCount);
+      } catch (error) {
+        console.error("팔로우 정보 불러오기에 실패했습니다.", error);
+      }
+    };
+
+    fetchFollowInfo();
+  }, [uid]);
 
   const goToMyBlog = () => {
     navigate(`/user/${uid}/blog`);
@@ -48,11 +73,11 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
             <S.UserStats>
               <S.FollowStat>
                 <S.StatLabel>follow</S.StatLabel>
-                <S.StatNumber>0</S.StatNumber>
+                <S.StatNumber>{followCount}</S.StatNumber>
               </S.FollowStat>
               <S.FollowStat>
                 <S.StatLabel>following</S.StatLabel>
-                <S.StatNumber>0</S.StatNumber>
+                <S.StatNumber>{followingCount}</S.StatNumber>
               </S.FollowStat>
             </S.UserStats>
           </S.UserInfo>
