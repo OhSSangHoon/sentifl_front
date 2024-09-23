@@ -91,7 +91,7 @@ export const LoginLink = styled(RouterNavLink)`
 `;
 
 export const ProfileLink = styled.div`
-  flex: 1; /* 오른쪽에 위치하게 설정 */
+  flex: 1;
   display: flex;
   justify-content: flex-end;
 `;

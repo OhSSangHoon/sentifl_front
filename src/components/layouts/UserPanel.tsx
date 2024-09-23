@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaCog } from "react-icons/fa";
+import { FiX, FiSettings } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
@@ -24,13 +24,15 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
     const fetchFollowInfo = async () => {
       try {
         // 나를 팔로우한 사용자 수 불러오기
-        const followedByResponse = await axiosInstance.get(`/api/followedby/${uid}`);
-        const followedByCount = followedByResponse.data.content.length;  // content 배열의 길이를 사용해 팔로우 수 계산
+        const followedByResponse = await axiosInstance.get(
+          `/api/followedby/${uid}`
+        );
+        const followedByCount = followedByResponse.data.content.length; // content 배열의 길이를 사용해 팔로우 수 계산
         setFollowCount(followedByCount);
 
         // 내가 팔로우한 사용자 수 불러오기
         const followingResponse = await axiosInstance.get(`/api/follow/${uid}`);
-        const followingCount = followingResponse.data.content.length;  // content 배열의 길이를 사용해 팔로잉 수 계산
+        const followingCount = followingResponse.data.content.length; // content 배열의 길이를 사용해 팔로잉 수 계산
         setFollowingCount(followingCount);
       } catch (error) {
         console.error("팔로우 정보 불러오기에 실패했습니다.", error);
@@ -61,7 +63,9 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
   return (
     <S.PopupOverlay onClick={handleOverlayClick}>
       <S.PopupContainer>
-        <S.CloseButton onClick={onClose}>X</S.CloseButton>
+        <S.CloseButton onClick={onClose}>
+          <FiX size={24} />
+        </S.CloseButton>
         <S.UserProfile>
           <S.UserInfo>
             <S.UserNameAndPlaylist>
@@ -87,7 +91,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
               alt={nickname}
             />
             <S.SettingsIcon>
-              <FaCog />
+              <FiSettings size={24} />
             </S.SettingsIcon>
           </S.ProfileImageContainer>
         </S.UserProfile>
@@ -113,7 +117,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
             </S.PostDetails>
           </S.PostItem>
         </S.PostList>
-        <S.LogoutButton onClick={onLogout}>Log out</S.LogoutButton>
+        <S.LogoutButton onClick={onLogout}>로그아웃</S.LogoutButton>
       </S.PopupContainer>
     </S.PopupOverlay>
   );

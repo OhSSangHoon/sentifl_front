@@ -4,12 +4,13 @@ import Footer from "./Footer";
 import Header from "./Header";
 import * as S from "./Styles/Layout.style";
 import { SlideInDiv } from "./Styles/Transition.style";
+import DotNav from "../DotNav";
 import { useState } from "react";
-import UserPanel from "./UserPanel";
 
 function Layout() {
   const location = useLocation();
   const withSlide = location.state?.withSlide ?? false;
+  const [isSliding, setIsSliding] = useState(false);
 
   return (
     <>
@@ -22,17 +23,21 @@ function Layout() {
                 key={location.key}
                 timeout={500}
                 classNames="slide"
+                onEnter={() => setIsSliding(true)}
+                onExited={() => setIsSliding(false)}
               >
                 <SlideInDiv>
                   <Outlet />
                 </SlideInDiv>
               </CSSTransition>
             ) : (
-              // 애니메이션이 필요 없는 경우 단순히 Outlet을 렌더링
               <Outlet />
             )}
           </TransitionGroup>
         </S.MainContent>
+        <S.DotNavWrapper isSliding={isSliding}>
+          <DotNav />
+        </S.DotNavWrapper>
         <Footer />
       </S.LayoutContainer>
     </>

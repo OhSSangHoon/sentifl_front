@@ -2,16 +2,13 @@
 
 import { useEffect, useState } from "react";
 import axiosInstance from "../../axiosInterceptor";
-import DotNav from "../../components/DotNav";
 import * as S from "./Styles/Home.styles";
-
 
 interface FollowRequest {
   uid: string;
 }
 
 function Home() {
-
   const [uid, setUid] = useState<string>(""); // uid를 입력받는 상태
   const [message, setMessage] = useState<string>(""); // 결과 메시지 상태
   const [followingCount, setFollowingCount] = useState<number>(0);
@@ -67,7 +64,6 @@ function Home() {
 
   return (
     <S.Background>
-      
       <S.CircleContainer>
         <S.Circle
           size="800px"
@@ -77,7 +73,7 @@ function Home() {
           translateY="-50%"
           gradient="linear-gradient(135deg, #F12FBB 0%, #B2EA6A 100%)"
         />
-        
+
         <S.Circle
           size="800px"
           top="50%"
@@ -87,20 +83,17 @@ function Home() {
           gradient="linear-gradient(135deg, #2B8DBE 0%, #C06AEA 100%)"
         />
         <S.Follow>
-        <h2>팔로우 사용자 UID 입력</h2>
-        <input
-          type="text"
-          value={uid}
-          onChange={(e) => setUid(e.target.value)}
-          placeholder="사용자 UID 입력"
-        />
-        <button onClick={handleFollow}>팔로우</button>
-        {message && <p>{message}</p>}
-      </S.Follow>
+          <h2>팔로우 사용자 UID 입력</h2>
+          <input
+            type="text"
+            value={uid}
+            onChange={(e) => setUid(e.target.value)}
+            placeholder="사용자 UID 입력"
+          />
+          <button onClick={handleFollow}>팔로우</button>
+          {message && <p>{message}</p>}
+        </S.Follow>
       </S.CircleContainer>
-      <S.DotNavWrapper>
-        <DotNav />
-      </S.DotNavWrapper>
     </S.Background>
   );
 }

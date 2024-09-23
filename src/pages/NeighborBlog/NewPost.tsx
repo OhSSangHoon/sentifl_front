@@ -1,8 +1,6 @@
 // 메인_이웃 블로그
 
-import React from "react";
 import * as S from "./Styles/NewPost.styles";
-import DotNav from "../../components/DotNav";
 
 function NewPost() {
   return (
@@ -30,9 +28,6 @@ function NewPost() {
           <span>yyyy.mm.dd</span>
         </S.PostItem>
       </S.PostList>
-      <S.DotNavWrapper>
-        <DotNav />
-      </S.DotNavWrapper>
     </S.Container>
   );
 }

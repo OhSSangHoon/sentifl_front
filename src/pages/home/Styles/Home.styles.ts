@@ -23,8 +23,8 @@ const moveCircle = keyframes`
 `;
 
 export const Follow = styled.div`
-  z-index:1;
-`
+  z-index: 1;
+`;
 
 export const Background = styled.div`
   height: 100vh;
@@ -61,10 +61,4 @@ export const Circle = styled.div<CircleProps>`
     translateY(${(props) => props.translateY || "0"});
   filter: blur(100px);
   animation: ${moveCircle} 8s ease-in-out infinite;
-`;
-
-export const DotNavWrapper = styled.div`
-  position: absolute;
-  right: 80px;
-  bottom: 100px;
 `;

@@ -2,15 +2,11 @@
 
 import React from "react";
 import styled from "styled-components";
-import DotNav from "../../components/DotNav";
 
 function MusicRecommend() {
   return (
     <Container>
       <h1 style={{ color: "white" }}>노래 추천</h1>
-      <DotNavWrapper>
-        <DotNav />
-      </DotNavWrapper>
     </Container>
   );
 }
@@ -23,10 +19,4 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const DotNavWrapper = styled.div`
-  position: absolute;
-  right: 80px;
-  bottom: 100px;
 `;

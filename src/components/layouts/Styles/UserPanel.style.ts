@@ -101,6 +101,7 @@ export const UserPlaylist = styled.div`
   font-size: 12px;
   white-space: nowrap;
   width: auto;
+  cursor: pointer;
 
   &:hover {
     background-color: #5f5f5f;
@@ -180,11 +181,11 @@ export const SettingsIcon = styled.div`
 
 export const Tabs = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 100%;
   margin-top: 10px;
-  background-color: rgba(0, 0, 0, 0.39);
-  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 12px;
   border-radius: 5px;
 `;
 
@@ -253,10 +254,10 @@ export const LogoutButton = styled.button`
   bottom: 20px;
   right: 20px;
   background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 30px;
   padding: 10px 20px;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s;

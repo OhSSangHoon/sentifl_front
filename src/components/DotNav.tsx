@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const DotNavigation = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // 현재 경로 가져오기
+  const location = useLocation();
 
   const handleNavigate = (path: string) => {
     navigate(path, { state: { withSlide: true } });
@@ -13,15 +13,15 @@ const DotNavigation = () => {
     <DotContainer>
       <Dot
         onClick={() => handleNavigate("/")}
-        active={location.pathname === "/"} // 현재 경로와 비교하여 활성화 상태 설정
+        active={location.pathname === "/"}
       />
       <Dot
         onClick={() => handleNavigate("/musicrecommend")}
-        active={location.pathname === "/musicrecommend"} // 현재 경로와 비교하여 활성화 상태 설정
+        active={location.pathname === "/musicrecommend"}
       />
       <Dot
-        onClick={() => handleNavigate("/user/:uid/following-newposts")}
-        active={location.pathname === "/user/:uid/following-newposts"} // 현재 경로와 비교하여 활성화 상태 설정
+        onClick={() => handleNavigate("/user/:uid/following-newpost")}
+        active={location.pathname === "/user/:uid/following-newpost"}
       />
     </DotContainer>
   );
@@ -37,12 +37,10 @@ const DotContainer = styled.div`
   gap: 40px;
 `;
 
-// active 상태에 따라 스타일 변경
 const Dot = styled.div<{ active: boolean }>`
   width: 10px;
   height: 10px;
-  background-color: ${(props) =>
-    props.active ? "gray" : "white"}; // 활성화된 경우 색상 변경
+  background-color: ${(props) => (props.active ? "gray" : "white")};
   cursor: pointer;
   transition: background-color 0.3s ease;
 
