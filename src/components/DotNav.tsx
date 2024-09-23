@@ -1,28 +1,26 @@
-import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-const DotNavigation = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+interface DotNavigationProps {
+  scrollToHome: () => void;
+  scrollToMusicRecommend: () => void;
+  scrollToNewPost: () => void;
+  activeSection: string;
+}
 
-  const handleNavigate = (path: string) => {
-    navigate(path, { state: { withSlide: true } });
-  };
-
+const DotNavigation = ({
+  scrollToHome,
+  scrollToMusicRecommend,
+  scrollToNewPost,
+  activeSection,
+}: DotNavigationProps) => {
   return (
     <DotContainer>
+      <Dot onClick={scrollToHome} active={activeSection === "home"} />
       <Dot
-        onClick={() => handleNavigate("/")}
-        active={location.pathname === "/"}
+        onClick={scrollToMusicRecommend}
+        active={activeSection === "musicRecommend"}
       />
-      <Dot
-        onClick={() => handleNavigate("/musicrecommend")}
-        active={location.pathname === "/musicrecommend"}
-      />
-      <Dot
-        onClick={() => handleNavigate("/user/:uid/following-newpost")}
-        active={location.pathname === "/user/:uid/following-newpost"}
-      />
+      <Dot onClick={scrollToNewPost} active={activeSection === "newPost"} />
     </DotContainer>
   );
 };
@@ -30,11 +28,15 @@ const DotNavigation = () => {
 export default DotNavigation;
 
 const DotContainer = styled.div`
+  position: fixed;
+  bottom: 70px;
+  right: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 40px;
+  z-index: 1000;
 `;
 
 const Dot = styled.div<{ active: boolean }>`

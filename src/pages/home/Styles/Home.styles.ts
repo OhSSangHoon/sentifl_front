@@ -26,8 +26,14 @@ export const Follow = styled.div`
   z-index: 1;
 `;
 
+export const PageContainer = styled.div`
+  height: auto;
+  overflow-x: hidden;
+`;
+
 export const Background = styled.div`
-  height: 100vh;
+  height: auto;
+  min-height: 100vh;
   background: linear-gradient(135deg, #080808, #202020);
   position: relative;
   overflow: hidden;
@@ -38,6 +44,13 @@ export const Background = styled.div`
   ::-webkit-scrollbar {
     display: none;
   }
+`;
+
+export const Section = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const CircleContainer = styled.div`

@@ -4,22 +4,10 @@ import Footer from "./Footer";
 import Header from "./Header";
 import * as S from "./Styles/Layout.style";
 import { SlideInDiv } from "./Styles/Transition.style";
-import DotNav from "../DotNav";
-import { useState } from "react";
 
 function Layout() {
   const location = useLocation();
   const withSlide = location.state?.withSlide ?? false;
-
-  const dotNavVisiblePaths = [
-    "/",
-    "/musicrecommend",
-    "/user/:uid/following-newpost",
-  ];
-  // 현재 경로가 dotNavVisiblePaths 중 하나와 일치하는지 확인
-  const showDotNav = dotNavVisiblePaths.some((path) =>
-    new RegExp(`^${path.replace(":uid", "[^/]+")}$`).test(location.pathname)
-  );
 
   return (
     <>
@@ -42,11 +30,7 @@ function Layout() {
             )}
           </TransitionGroup>
         </S.MainContent>
-        {showDotNav && (
-          <S.DotNavWrapper>
-            <DotNav />
-          </S.DotNavWrapper>
-        )}
+
         <Footer />
       </S.LayoutContainer>
     </>

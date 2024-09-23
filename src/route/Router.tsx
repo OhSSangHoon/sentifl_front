@@ -6,10 +6,10 @@ import Home from "../pages/home/Home";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
 import Success from "../pages/Login/SuccessPage";
-import MusicRecommend from "../pages/musicRecommend/MusicRecommend";
+import MusicRecommend from "../pages/home/MusicRecommend";
 import BlogPost from "../pages/myblog/BlogPost/BlogPost";
 import MyBlog from "../pages/myblog/MyBlog/MyBlog";
-import NewPost from "../pages/NeighborBlog/NewPost";
+import NewPost from "../pages/home/NewPost";
 import Playlist from "../pages/Playlist/Playlist";
 import CreateSong from "../pages/SongCreator/CreateSong";
 import SongResult from "../pages/SongCreator/SongResult";
@@ -26,8 +26,6 @@ function Router() {
         <Route path="/user/:uid/blog" element={<MyBlog />} />
         <Route path="/user/:uid/post/:postId" element={<BlogPost />} />
         <Route path="/modify/:postId" element={<ModifyPage />} />
-        <Route path="/musicrecommend" element={<MusicRecommend />} />
-        <Route path="/user/:uid/following-newpost" element={<NewPost />} />
         <Route path="/create-song" element={<CreateSong />} />
         <Route path="/song-result" element={<SongResult />} />
         <Route path="/user/:uid/playlist" element={<Playlist />} />
