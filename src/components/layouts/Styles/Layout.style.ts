@@ -13,10 +13,9 @@ export const MainContent = styled.div`
   background: #0d0d0e;
 `;
 
-export const DotNavWrapper = styled.div<{ isSliding: boolean }>`
+export const DotNavWrapper = styled.div`
   position: absolute;
   right: 80px;
   bottom: 100px;
-  opacity: ${(props) => (props.isSliding ? 0 : 1)};
   transition: opacity 0.5s ease;
 `;

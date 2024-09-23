@@ -10,7 +10,16 @@ import { useState } from "react";
 function Layout() {
   const location = useLocation();
   const withSlide = location.state?.withSlide ?? false;
-  const [isSliding, setIsSliding] = useState(false);
+
+  const dotNavVisiblePaths = [
+    "/",
+    "/musicrecommend",
+    "/user/:uid/following-newpost",
+  ];
+  // 현재 경로가 dotNavVisiblePaths 중 하나와 일치하는지 확인
+  const showDotNav = dotNavVisiblePaths.some((path) =>
+    new RegExp(`^${path.replace(":uid", "[^/]+")}$`).test(location.pathname)
+  );
 
   return (
     <>
@@ -23,8 +32,6 @@ function Layout() {
                 key={location.key}
                 timeout={500}
                 classNames="slide"
-                onEnter={() => setIsSliding(true)}
-                onExited={() => setIsSliding(false)}
               >
                 <SlideInDiv>
                   <Outlet />
@@ -35,9 +42,11 @@ function Layout() {
             )}
           </TransitionGroup>
         </S.MainContent>
-        <S.DotNavWrapper isSliding={isSliding}>
-          <DotNav />
-        </S.DotNavWrapper>
+        {showDotNav && (
+          <S.DotNavWrapper>
+            <DotNav />
+          </S.DotNavWrapper>
+        )}
         <Footer />
       </S.LayoutContainer>
     </>
