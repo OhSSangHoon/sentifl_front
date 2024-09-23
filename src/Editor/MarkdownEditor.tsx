@@ -12,7 +12,9 @@ import {
   uploadTempToS3,
   uploadToS3,
 } from "../services/s3Service";
+import { usePrompt } from "../usePrompt";
 import * as S from "./Styles/Editor.style";
+
 
 Quill.register("modules/imageResize", ImageResize);
 
@@ -46,9 +48,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const quillRef = useRef<Quill | null>(null);
   const navigate = useNavigate();
   const { uid } = useAuth();
-  const [internalThumbnailUrl, setInternalThumbnailUrl] = useState<
-    string | null
-  >(thumbnailUrl); // 썸네일 URL을 관리하는 상태
+  const [internalThumbnailUrl, setInternalThumbnailUrl] = useState<string | null>(thumbnailUrl);
+  const [isDirty, setIsDirty] = useState(false);
+
+  usePrompt("페이지를 떠나시겠습니까? 저장되지 않은 글이 있습니다.", isDirty);
 
   // 썸네일 URL이 업데이트되면 내부 상태도 업데이트
   useEffect(() => {
@@ -93,10 +96,14 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         },
       });
 
+      quill.on('text-change', () => {
+        setIsDirty(true); // 내용이 변경될 때 isDirty를 true로 설정
+      });
+
       quillRef.current = quill;
 
       // Delta 형식인지 HTML 형식인지 확인
-      if (initialDelta && quill) {
+      if (initialDelta) {
         try {
           const parsedDelta = typeof initialDelta === "string" ? JSON.parse(initialDelta) : initialDelta;
 
@@ -114,9 +121,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       }
     }
 
-    return () => {
-      isMounted = false;
-    };
   }, [initialDelta]);
 
   // 이미지 업로드 핸들러
@@ -272,6 +276,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
         navigate(`/user/${uid}/blog`);
       }
+
+      setIsDirty(false); // 저장 후에 변경 상태를 초기화
+
     } catch (error) {
       console.error("게시물 저장 실패:", error);
       alert("게시물 저장에 실패했습니다.");

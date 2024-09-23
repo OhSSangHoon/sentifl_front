@@ -108,7 +108,6 @@ export const Editor = styled.div.attrs({
     width:100%;
     height: 100%;
     display: flex;
-    border:1px solid red;
     margin:0 auto;
 
     .ql-align-center{
