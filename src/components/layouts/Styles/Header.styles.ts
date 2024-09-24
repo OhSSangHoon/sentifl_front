@@ -1,4 +1,3 @@
-// Header.styles.js
 import { NavLink as RouterNavLink } from "react-router-dom";
 import styled from "styled-components";
 
@@ -17,7 +16,7 @@ export const HeaderContainer = styled.header`
 `;
 
 export const Logo = styled(RouterNavLink)`
-  flex: 1;
+  flex: 1; // 로고는 왼쪽에 배치됨
   img {
     height: 40px;
   }
@@ -25,8 +24,8 @@ export const Logo = styled(RouterNavLink)`
 
 export const Nav = styled.nav`
   display: flex;
-  flex: 2;
   justify-content: center;
+  flex: 1; // 중앙을 차지하는 공간
   gap: 20px;
 `;
 
@@ -46,7 +45,7 @@ export const StyledNavLink = styled(RouterNavLink)`
 `;
 
 export const SearchContainer = styled.div`
-  flex: 2;
+  flex: 1;
   display: flex;
   justify-content: center;
   position: relative;
@@ -69,13 +68,12 @@ export const SearchInput = styled.input`
 export const SearchIcon = styled.div`
   position: absolute;
   top: 50%;
-  right: 165px;
+  right: 160px;
   transform: translateY(-50%);
   color: rgba(255, 255, 255, 0.7);
 `;
 
 export const LoginLink = styled(RouterNavLink)`
-  flex: 1;
   text-align: right;
   color: white;
   font-size: 18px;
@@ -91,54 +89,6 @@ export const LoginLink = styled(RouterNavLink)`
 `;
 
 export const ProfileLink = styled.div`
-  flex: 1;
   display: flex;
   justify-content: flex-end;
-`;
-
-export const PopupOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const PopupContainer = styled.div`
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 300px;
-  text-align: center;
-  position: relative;
-`;
-
-export const CloseButton = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-`;
-
-export const ProfileImage = styled.img`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin-bottom: 10px;
-`;
-
-export const ProfileInfo = styled.div`
-  h2 {
-    margin: 10px 0;
-  }
-  p {
-    margin: 5px 0;
-  }
 `;

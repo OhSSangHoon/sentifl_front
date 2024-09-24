@@ -13,6 +13,7 @@ import NewPost from "../pages/home/NewPost";
 import Playlist from "../pages/Playlist/Playlist";
 import CreateSong from "../pages/SongCreator/CreateSong";
 import SongResult from "../pages/SongCreator/SongResult";
+import PreCreateSong from "../pages/SongCreator/PreCreateSong";
 
 function Router() {
   return (
@@ -29,6 +30,7 @@ function Router() {
         <Route path="/create-song" element={<CreateSong />} />
         <Route path="/song-result" element={<SongResult />} />
         <Route path="/user/:uid/playlist" element={<Playlist />} />
+        <Route path="/precreate-song" element={<PreCreateSong />} />
       </Route>
     </Routes>
   );

@@ -1,14 +1,14 @@
-// Sidebar.tsx
 import React from "react";
 import {
   FaAngleDown,
   FaBell,
-  FaCalendarAlt,
   FaCog,
   FaParking,
   FaPen,
+  FaCalendarAlt,
+  FaAsterisk,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as S from "./Styles/Sidebar.styles";
 
 export interface SidebarProps {
@@ -27,6 +27,11 @@ const Sidebar: React.FC<SidebarProps> = ({
   toggleFollowingPopup = () => {},
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // URL에 따라 SidebarTopBar 다르게 관리
+  const isPostUrl = location.pathname.includes("post");
+  const isBlogUrl = location.pathname.includes("blog");
 
   const handlePenClick = () => {
     navigate("/Create");
@@ -38,60 +43,66 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <S.SidebarContainer>
-      <>
-        <S.SidebarTopBar>
+      <S.SidebarTopBar>
+        {isBlogUrl ? (
           <S.LeftIcons>
-            <FaParking />
-            <S.PointText>0p</S.PointText>
+            <FaParking size={18} />
+            <S.PointText>60p</S.PointText>
           </S.LeftIcons>
+        ) : (
+          <S.LeftIcons />
+        )}
+        {isPostUrl ? (
           <S.RightIcons>
-            <FaBell />
-            <FaCog />
+            <FaAsterisk size={18} /> <FaCog size={18} />
           </S.RightIcons>
-        </S.SidebarTopBar>
-        <S.Profile>
-          <S.ProfileImageWrapper>
-            <S.ProfileImage
-              src={profileImage || "/default-profile.png"}
-              alt="Profile"
-            />
-          </S.ProfileImageWrapper>
-          <S.ProfileInfo>
-            <S.PlaylistBadge onClick={goToPlaylist}>
-              My Playlist
-            </S.PlaylistBadge>
-            <S.ProfileName>{nickname}</S.ProfileName>
-            <S.ProfileStats>
-              <S.ProfileStatItem onClick={toggleFollowPopup}>
-                <small>follow</small>
-                <br />
-                <strong>0</strong>
-              </S.ProfileStatItem>
-              <S.Separator>|</S.Separator>
-              <S.ProfileStatItem onClick={toggleFollowingPopup}>
-                <small>following</small>
-                <br />
-                <strong>0</strong>
-              </S.ProfileStatItem>
-            </S.ProfileStats>
-          </S.ProfileInfo>
-        </S.Profile>
-      </>
+        ) : (
+          <S.RightIcons>
+            <FaBell size={18} />
+            <FaCog size={18} />
+          </S.RightIcons>
+        )}
+      </S.SidebarTopBar>
+      <S.Profile>
+        <S.ProfileImageWrapper>
+          <S.ProfileImage
+            src={profileImage || "/default-profile.png"}
+            alt="Profile"
+          />
+        </S.ProfileImageWrapper>
+        <S.ProfileInfo>
+          <S.PlaylistBadge onClick={goToPlaylist}>My Playlist</S.PlaylistBadge>
+          <S.ProfileName>{nickname}</S.ProfileName>
+          <S.ProfileDescription>
+            자기 소개글을 작성 할 수 있습니다.
+          </S.ProfileDescription>
+          <S.ProfileStats>
+            <S.ProfileStatItem onClick={toggleFollowPopup}>
+              <small>follow</small>
+              <strong>0</strong>
+            </S.ProfileStatItem>
+            <S.Separator>|</S.Separator>
+            <S.ProfileStatItem onClick={toggleFollowingPopup}>
+              <small>following</small>
+              <strong>0</strong>
+            </S.ProfileStatItem>
+          </S.ProfileStats>
+        </S.ProfileInfo>
+      </S.Profile>
       <S.Divider />
       <S.Menu>
         <S.CategoryTitle>
           카테고리 <FaAngleDown />
         </S.CategoryTitle>
+        <S.Icons>
+          <FaPen onClick={handlePenClick} size={18} />
+          <FaCalendarAlt size={18} />
+        </S.Icons>
         <S.CategoryList>
           <S.CategoryItem>카테고리 제목</S.CategoryItem>
           <S.CategoryItem>카테고리 제목</S.CategoryItem>
         </S.CategoryList>
       </S.Menu>
-      <S.Divider />
-      <S.Icons>
-        <FaPen onClick={handlePenClick} />
-        <FaCalendarAlt />
-      </S.Icons>
     </S.SidebarContainer>
   );
 };

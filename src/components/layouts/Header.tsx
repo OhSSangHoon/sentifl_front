@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../AuthProvider";
 import * as S from "./Styles/Header.styles";
 import UserPanel from "./UserPanel";
+import { FaSearch } from "react-icons/fa";
 
 function Header() {
   const { isLoggedIn, nickname, logout, uid } = useAuth();
@@ -26,6 +27,12 @@ function Header() {
         <S.StyledNavLink to="/create-song">Create</S.StyledNavLink>
         <S.StyledNavLink to="/">Home</S.StyledNavLink>
       </S.Nav>
+      <S.SearchContainer>
+        <S.SearchInput placeholder="Search..." />
+        <S.SearchIcon>
+          <FaSearch />
+        </S.SearchIcon>
+      </S.SearchContainer>
       {isLoggedIn ? (
         <S.ProfileLink onClick={togglePopup}>
           <img

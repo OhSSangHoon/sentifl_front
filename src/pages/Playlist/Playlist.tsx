@@ -93,7 +93,6 @@ function Playlist() {
               <S.SongDetails>
                 <S.SongTitle>{song.title}</S.SongTitle>
                 <S.SongDateAndDelete>
-                  <S.SongDate>yyyy.mm.dd</S.SongDate>
                   <S.DeleteButton onClick={() => deleteSong(song.id)}>
                     삭제
                   </S.DeleteButton>

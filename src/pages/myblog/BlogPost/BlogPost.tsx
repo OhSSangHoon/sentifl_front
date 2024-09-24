@@ -4,7 +4,8 @@ import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import Sidebar from "../MyBlog/SideBar";
 import * as S from "./Styles/BlogPost.styles";
-import { FaPaperPlane, FaPlay, FaWaveSquare, FaComment } from "react-icons/fa";
+import { FaPaperPlane, FaPlay, FaComment } from "react-icons/fa";
+import { MdGraphicEq } from "react-icons/md";
 
 interface PostData {
   title: string;
@@ -14,7 +15,7 @@ interface PostData {
 
 function BlogPost() {
   const { postId } = useParams<{ postId: string }>();
-  const { uid } = useAuth();
+  const { uid, profileImage } = useAuth();
   const navigate = useNavigate();
 
   const [post, setPost] = useState<PostData | null>(null);
@@ -105,7 +106,7 @@ function BlogPost() {
         <S.LeftContent>
           <S.SongTitleWrapper>
             <S.SongTitle>노래제목</S.SongTitle> <FaPlay />
-            <FaWaveSquare />
+            <MdGraphicEq color="white" />
           </S.SongTitleWrapper>
           <S.CategoryAndTitle>
             <S.Category>카테고리</S.Category>
@@ -121,7 +122,7 @@ function BlogPost() {
           <Sidebar
             nickname={uid}
             uid={uid}
-            profileImage="/default-profile.png"
+            profileImage={profileImage || "/default-profile.png"}
           />
         </S.SidebarWrapper>
         <S.PostContent>
