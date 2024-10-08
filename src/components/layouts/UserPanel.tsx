@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiX, FiSettings } from "react-icons/fi";
+import { FiSettings, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
@@ -25,13 +25,13 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
       try {
         // 나를 팔로우한 사용자 수 불러오기
         const followedByResponse = await axiosInstance.get(
-          `/api/followedby/${uid}`
+          `/api/v1/followedby/${uid}`
         );
         const followedByCount = followedByResponse.data.content.length; // content 배열의 길이를 사용해 팔로우 수 계산
         setFollowCount(followedByCount);
 
         // 내가 팔로우한 사용자 수 불러오기
-        const followingResponse = await axiosInstance.get(`/api/follow/${uid}`);
+        const followingResponse = await axiosInstance.get(`/api/v1/follow/${uid}`);
         const followingCount = followingResponse.data.content.length; // content 배열의 길이를 사용해 팔로잉 수 계산
         setFollowingCount(followingCount);
       } catch (error) {
