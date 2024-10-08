@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../axiosInterceptor";
-import * as S from "./Styles/Home.styles";
+import DotNav from "../../components/DotNav";
 import MusicRecommend from "./MusicRecommend";
 import NewPost from "./NewPost";
-import DotNav from "../../components/DotNav";
+import * as S from "./Styles/Home.styles";
 
 interface FollowRequest {
   uid: string;
@@ -89,7 +89,7 @@ function Home() {
 
     try {
       // 현재 사용자가 로그인된 상태에서의 토큰이나 인증 정보는 Context나 Props로 받아올 수 있음
-      const response = await axiosInstance.post("/api/follow", followRequest, {
+      const response = await axiosInstance.post("/api/v1/follow", followRequest, {
         withCredentials: true, // 인증 쿠키 등을 보낼 경우 설정
       });
 
