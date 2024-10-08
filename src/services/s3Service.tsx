@@ -5,7 +5,7 @@ export const uploadToS3 = async (file: File, uid: string): Promise<string> => {
   const fileFormat = file.name.split(".").pop();
   const upload = new AWS.S3.ManagedUpload({
     params: {
-      Bucket: "sentifiimages",
+      Bucket: "sentifl-public",
       Key: `${uid}/images/${Date.now()}.${fileFormat}`,
       Body: file,
       ContentType: file.type,
@@ -22,12 +22,15 @@ export const uploadToS3 = async (file: File, uid: string): Promise<string> => {
   }
 };
 
-export const uploadfinalToS3 = async (file: File, uid: string): Promise<string> => {
+export const uploadfinalToS3 = async (
+  file: File,
+  uid: string
+): Promise<string> => {
   const s3 = new AWS.S3();
   const fileFormat = file.name.split(".").pop();
   const upload = new AWS.S3.ManagedUpload({
     params: {
-      Bucket: "sentifiimages",
+      Bucket: "sentifl-public",
       Key: `${uid}/post/${Date.now()}.${fileFormat}`,
       Body: file,
       ContentType: file.type,
@@ -51,7 +54,7 @@ export const uploadTempToS3 = async (
   const s3 = new AWS.S3();
   const upload = new AWS.S3.ManagedUpload({
     params: {
-      Bucket: "sentifiimages",
+      Bucket: "sentifl-public",
       Key: `${uid}/temp/tempSaved.json`, // 임시 저장 파일 경로
       Body: JSON.stringify(jsonContent, null, 2),
       ContentType: "application/json",
@@ -67,12 +70,10 @@ export const uploadTempToS3 = async (
   }
 };
 
-export const downloadFromS3 = async (
-  key: string
-): Promise<Blob | null> => {
+export const downloadFromS3 = async (key: string): Promise<Blob | null> => {
   const s3 = new AWS.S3();
   const params = {
-    Bucket: "sentifiimages",
+    Bucket: "sentifl-public",
     Key: key,
   };
 
@@ -94,7 +95,10 @@ export const downloadFromS3 = async (
   }
 };
 
-export const updateToS3 = async (file: File, postUrl: string): Promise<string> => {
+export const updateToS3 = async (
+  file: File,
+  postUrl: string
+): Promise<string> => {
   const s3 = new AWS.S3();
 
   try {
@@ -107,10 +111,11 @@ export const updateToS3 = async (file: File, postUrl: string): Promise<string> =
 
     const upload = new AWS.S3.ManagedUpload({
       params: {
-        Bucket: "sentifiimages", // 버킷 이름
+        Bucket: "sentifl-public", // 버킷 이름
         Key: fileKey, // 추출된 파일 경로에 덮어쓰기
         Body: file,
         ContentType: file.type,
+        ACL: "public-read",
       },
     });
 
@@ -123,12 +128,10 @@ export const updateToS3 = async (file: File, postUrl: string): Promise<string> =
   }
 };
 
-
-
 export const deleteFromS3 = async (key: string): Promise<void> => {
   const s3 = new AWS.S3();
   const params = {
-    Bucket: "sentifiimages",
+    Bucket: "sentifl-public",
     Key: key,
   };
 

@@ -201,12 +201,16 @@ const ChoosePost = () => {
         if (fastAPIResponse) {
           const { musicUrl, emotion, title } = fastAPIResponse;
 
+          // 해시태그 추가 (필요하다면 적절한 값을 설정)
+          const hashTag = "#GeneratedSong";
+
           // FastAPI에서 받아온 데이터를 스프링 백엔드로 전송
           const springResponse = await axiosInstance.post(
             `/api/v1/music/post/${post.postId}`,
             {
               musicUrl: musicUrl,
               title: title,
+              hashTag: hashTag,
               //임시로 emotion 넣음
               emotion1: emotion,
               emotion2: emotion,

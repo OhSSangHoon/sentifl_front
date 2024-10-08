@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import Sidebar from "../MyBlog/SideBar";
 import * as S from "./Styles/BlogPost.styles";
-import { FaPaperPlane, FaPlay, FaComment } from "react-icons/fa";
+import { FaPaperPlane, FaPlay, FaComment, FaHeart } from "react-icons/fa";
 import { MdGraphicEq } from "react-icons/md";
 
 interface PostData {
@@ -17,11 +17,17 @@ function BlogPost() {
   const { postId } = useParams<{ postId: string }>();
   const { uid, profileImage } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { totalLikes, totalViews } = location.state || {
+    totalLikes: 0,
+    totalViews: 0,
+  }; // state에서 totalLikes와 totalViews 받기
 
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [showCommentInput, setShowCommentInput] = useState(false);
+  const [liked, setLiked] = useState(false);
 
   // 게시글 데이터를 가져오는 함수
   useEffect(() => {
@@ -81,6 +87,31 @@ function BlogPost() {
     }
   }, [postId, uid]);
 
+  // 좋아요 상태를 토글하는 함수 추가
+  const toggleLike = async () => {
+    try {
+      if (liked) {
+        // 좋아요 취소 (DELETE 요청)
+        const response = await axiosInstance.delete(
+          `/api/v1/post/${postId}/like`
+        );
+        if (response.status === 204) {
+          setLiked(false); // 좋아요 취소 후 상태 업데이트
+        }
+      } else {
+        // 좋아요 추가 (POST 요청)
+        const response = await axiosInstance.post(
+          `/api/v1/post/${postId}/like`
+        );
+        if (response.status === 204) {
+          setLiked(true); // 좋아요 추가 후 상태 업데이트
+        }
+      }
+    } catch (error) {
+      console.error("좋아요 상태 변경 중 오류 발생:", error);
+    }
+  };
+
   if (loading) {
     return <p>로딩 중...</p>;
   }
@@ -101,7 +132,7 @@ function BlogPost() {
           alt="Background"
         />
         <S.TopRightContent>
-          <S.ViewCount>조회수 : 0회</S.ViewCount>
+          <S.ViewCount>조회수 : {totalViews}회</S.ViewCount>
         </S.TopRightContent>
         <S.LeftContent>
           <S.SongTitleWrapper>
@@ -128,9 +159,11 @@ function BlogPost() {
         <S.PostContent>
           <div dangerouslySetInnerHTML={{ __html: post.content }} />
           <S.IconWrapper>
-            <S.PostHeartIcon>
-              ❤<S.PostHeartCount>00</S.PostHeartCount>
+            <S.PostHeartIcon onClick={toggleLike}>
+              <FaHeart color={liked ? "red" : "gray"} />
+              <S.PostHeartCount>{totalLikes}</S.PostHeartCount>
             </S.PostHeartIcon>
+            ;
             <S.PostCommentIcon onClick={toggleCommentInput}>
               <FaComment />
               <S.PostCommentCount>00</S.PostCommentCount>

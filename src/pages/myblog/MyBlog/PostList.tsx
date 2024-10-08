@@ -10,6 +10,8 @@ export interface Post {
   thumbnailUrl: string;
   createdTime: string;
   modifiedTime: string;
+  totalLikes: number;
+  totalViews: number;
 }
 
 export interface PostContent {
@@ -46,8 +48,15 @@ const PostList = () => {
   const currentPaginationStart =
     Math.floor(page / paginationSize) * paginationSize;
 
-  const handlePostClick = (postId: number) => {
-    navigate(`/user/${uid}/post/${postId}`);
+  // PostList에서 totalLikes와 totalViews 값 전달
+  const handlePostClick = (
+    postId: number,
+    totalLikes: number,
+    totalViews: number
+  ) => {
+    navigate(`/user/${uid}/post/${postId}`, {
+      state: { totalLikes, totalViews },
+    });
   };
 
   useEffect(() => {
@@ -193,7 +202,15 @@ const PostList = () => {
                 <S.PostContentWrapper>
                   <S.PostInfo>
                     <S.PostHeader>
-                      <S.PostTitle onClick={() => handlePostClick(post.postId)}>
+                      <S.PostTitle
+                        onClick={() =>
+                          handlePostClick(
+                            post.postId,
+                            post.totalLikes,
+                            post.totalViews
+                          )
+                        }
+                      >
                         {postContent?.title || "제목 불러오는 중..."}
                       </S.PostTitle>
                       <S.PostMeta>
@@ -215,7 +232,13 @@ const PostList = () => {
                       </S.PostMeta>
                     </S.PostHeader>
                     <S.PostDescription
-                      onClick={() => handlePostClick(post.postId)}
+                      onClick={() =>
+                        handlePostClick(
+                          post.postId,
+                          post.totalLikes,
+                          post.totalViews
+                        )
+                      }
                     >
                       <PostDescription
                         content={stripHtmlTags(

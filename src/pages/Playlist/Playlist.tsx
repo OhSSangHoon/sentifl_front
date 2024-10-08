@@ -1,16 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as S from "./Styles/Playlist.style";
-import { FaPlay, FaPlus, FaAsterisk } from "react-icons/fa";
+import { FaPlay, FaPlus, FaAsterisk, FaPause } from "react-icons/fa";
 import axiosInstance from "../../axiosInterceptor";
 import { useParams } from "react-router-dom";
 
+interface Song {
+  id: number;
+  musicUrl: string;
+  title: string;
+  hashTag: string;
+  totalLikes: number;
+  emotion1: string;
+  emotion2: string;
+}
+
 function Playlist() {
   const { uid } = useParams();
-  const [songs, setSongs] = useState<any[]>([]);
+  const [songs, setSongs] = useState<Song[]>([]);
   // lastId에 가장 큰 수 할당
   const [lastId, setLastId] = useState<number>(Number.MAX_SAFE_INTEGER);
   const [hasMore, setHasMore] = useState<boolean>(true); // 더 가져올 데이터가 있는지 여부
   const [loading, setLoading] = useState<boolean>(false);
+
+  // 재생 상태와 오디오 관리
+  const [currentSongId, setCurrentSongId] = useState<number | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const fetchSongs = async () => {
     if (loading || !hasMore) return;
@@ -68,6 +83,33 @@ function Playlist() {
     }
   };
 
+  const handlePlayPause = (songId: number, musicUrl: string) => {
+    if (audioRef.current) {
+      // 같은 노래를 다시 클릭한 경우 재생/일시정지
+      if (currentSongId === songId) {
+        if (isPlaying) {
+          audioRef.current.pause();
+        } else {
+          audioRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
+      } else {
+        // 다른 노래 클릭 시 새로운 노래 재생
+        audioRef.current.pause();
+        audioRef.current = new Audio(musicUrl);
+        audioRef.current.play();
+        setCurrentSongId(songId);
+        setIsPlaying(true);
+      }
+    } else {
+      // 첫 재생 시
+      audioRef.current = new Audio(musicUrl);
+      audioRef.current.play();
+      setCurrentSongId(songId);
+      setIsPlaying(true);
+    }
+  };
+
   useEffect(() => {
     fetchSongs();
   }, []);
@@ -87,8 +129,14 @@ function Playlist() {
         <S.SongList>
           {songs.map((song) => (
             <S.SongItem key={song.id}>
-              <S.PlayIcon>
-                <FaPlay size={14} color="#fff" />
+              <S.PlayIcon
+                onClick={() => handlePlayPause(song.id, song.musicUrl)}
+              >
+                {currentSongId === song.id && isPlaying ? (
+                  <FaPause size={14} color="#fff" />
+                ) : (
+                  <FaPlay size={14} color="#fff" />
+                )}
               </S.PlayIcon>
               <S.SongDetails>
                 <S.SongTitle>{song.title}</S.SongTitle>
