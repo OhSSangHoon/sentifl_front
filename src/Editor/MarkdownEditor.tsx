@@ -15,7 +15,6 @@ import {
 import { usePrompt } from "../usePrompt";
 import * as S from "./Styles/Editor.style";
 
-
 Quill.register("modules/imageResize", ImageResize);
 
 AWS.config.update({
@@ -48,8 +47,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const quillRef = useRef<Quill | null>(null);
   const navigate = useNavigate();
   const { uid } = useAuth();
-  const [internalThumbnailUrl, setInternalThumbnailUrl] = useState<string | null>(thumbnailUrl);
+  const [internalThumbnailUrl, setInternalThumbnailUrl] = useState<
+    string | null
+  >(thumbnailUrl);
   const [isDirty, setIsDirty] = useState(false);
+  const [hashTag, setHashTag] = useState<string>("");
 
   usePrompt("페이지를 떠나시겠습니까? 저장되지 않은 글이 있습니다.", isDirty);
 
@@ -96,7 +98,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         },
       });
 
-      quill.on('text-change', () => {
+      quill.on("text-change", () => {
         setIsDirty(true); // 내용이 변경될 때 isDirty를 true로 설정
       });
 
@@ -123,7 +125,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         }
       }
     }
-
   }, [initialDelta]);
 
   // 이미지 업로드 핸들러
@@ -266,14 +267,21 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       );
 
       const postData = {
+        title: title,
         postUrl: s3Url,
         thumbnailUrl: internalThumbnailUrl || "",
+        hashTag: hashTag.trim().replace(/\s+/g, " "),
       };
 
       const response = await axiosInstance.post(
         `/api/v1/post/${uid}`,
         postData,
-        {}
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
       );
 
       if (response.status === 201) {
@@ -285,7 +293,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       }
 
       setIsDirty(false); // 저장 후에 변경 상태를 초기화
-
     } catch (error) {
       console.error("게시물 저장 실패:", error);
       alert("게시물 저장에 실패했습니다.");
@@ -338,6 +345,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       <S.EditorContainer>
         <S.Editor id="editor" />
       </S.EditorContainer>
+      <S.HashTagInput
+        placeholder="해시태그를 입력하세요."
+        value={hashTag} // 현재 상태 값을 입력 필드에 반영
+        onChange={(e) => setHashTag(e.target.value)} // 입력 값이 변경될 때 상태 업데이트
+      />
     </S.EditorWrapper>
   );
 };

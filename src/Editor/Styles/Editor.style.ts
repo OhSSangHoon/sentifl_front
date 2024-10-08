@@ -46,6 +46,10 @@ export const TitleInput = styled.input<{ hasThumbnail: boolean }>`
 
 `;
 
+export const HashTagInput = styled.input`
+    border:1px solid red;
+`
+
 
 export const ThumbnailWrapper = styled.div`
     position: absolute;
