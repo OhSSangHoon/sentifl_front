@@ -22,8 +22,8 @@ const moveCircle = keyframes`
   }
 `;
 
-export const Follow = styled.div`
-  z-index: 1;
+export const HashtagContainer = styled.div`
+  z-index:1;
 `;
 
 export const PageContainer = styled.div`

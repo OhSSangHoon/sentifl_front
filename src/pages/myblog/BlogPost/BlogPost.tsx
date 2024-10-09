@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
+import { FaComment, FaHeart, FaPaperPlane, FaPlay } from "react-icons/fa";
+import { MdGraphicEq } from "react-icons/md";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import Sidebar from "../MyBlog/SideBar";
 import * as S from "./Styles/BlogPost.styles";
-import { FaPaperPlane, FaPlay, FaComment, FaHeart } from "react-icons/fa";
-import { MdGraphicEq } from "react-icons/md";
 
 interface PostData {
   title: string;
   content: string;
   thumbnailUrl: string | null;
+  hashTag: string[];
 }
 
 function BlogPost() {
@@ -25,6 +26,7 @@ function BlogPost() {
 
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hashTags, setHashTag] = useState<string[]>([]);
 
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -59,7 +61,7 @@ function BlogPost() {
         );
 
         if (selectedPost) {
-          const { postUrl, thumbnailUrl } = selectedPost;
+          const { postUrl, thumbnailUrl,hashTag } = selectedPost;
 
           // S3에서 게시글 내용 가져오기
           const postContentResponse = await axiosInstance.get(postUrl);
@@ -70,8 +72,16 @@ function BlogPost() {
               title,
               content,
               thumbnailUrl,
+              hashTag: [],
             });
           }
+
+          const hashTagResponse = await axiosInstance.get(`/api/v1/post/${postId}/hashtag`);
+          if(hashTagResponse.status === 200){
+            const hashtagsArray = hashTagResponse.data[0].split(" ");
+            setHashTag(hashtagsArray);
+          }
+
         } else {
           console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");
         }
@@ -140,8 +150,12 @@ function BlogPost() {
             <MdGraphicEq color="white" />
           </S.SongTitleWrapper>
           <S.CategoryAndTitle>
-            <S.Category>카테고리</S.Category>
             <S.Title>{post.title}</S.Title>
+            <S.Category>
+              {hashTags.map((tag) => (
+                <S.Hash key={tag}>{tag} </S.Hash>
+              ))}
+            </S.Category>
           </S.CategoryAndTitle>
         </S.LeftContent>
         <S.BottomRightContent>

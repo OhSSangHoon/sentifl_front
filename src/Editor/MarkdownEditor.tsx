@@ -286,13 +286,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
       if (response.status === 201) {
         alert("게시물이 성공적으로 저장되었습니다.");
-
-        // await sendToFastAPI(uid, s3Url, accessToken);
-
         navigate(`/user/${uid}/blog`);
       }
-
-      setIsDirty(false); // 저장 후에 변경 상태를 초기화
+      setIsDirty(false);
+      
     } catch (error) {
       console.error("게시물 저장 실패:", error);
       alert("게시물 저장에 실패했습니다.");
@@ -303,6 +300,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     if (quillRef.current && onModify) {
       const content = quillRef.current.root.innerHTML;
       onModify(content, internalThumbnailUrl || "");
+      setIsDirty(false);
     }
   };
 

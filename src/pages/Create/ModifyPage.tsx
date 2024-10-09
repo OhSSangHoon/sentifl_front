@@ -71,37 +71,7 @@ const ModifyPage = () => {
     }
   }, [postId, uid]);
 
-  // useEffect(() => {
-  //   const fetchPostData = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(`/api/v1/post/${uid}`);
-  //       if (response.status === 200) {
-  //         const postList = response.data.content;
-  //         const selectedPost = postList.find(
-  //           (p: any) => p.postId === Number(postId)
-  //         );
-
-  //         if (selectedPost) {
-  //           const { postUrl, thumbnailUrl } = selectedPost;
-  //           const postContentResponse = await axiosInstance.get(postUrl);
-  //           if (postContentResponse.status === 200) {
-  //             const { title, content } = postContentResponse.data;
-  //             setPost({ title, content, thumbnailUrl, postUrl });
-  //           }
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (postId) {
-  //     fetchPostData();
-  //   }
-  // }, [postId, uid]);
-
+  
   const handleModify = async (content: string, thumbnailUrl: string) => {
     try {
       const postUrl = post?.postUrl; // 게시물의 S3 URL을 가져옴

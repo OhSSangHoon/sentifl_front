@@ -98,34 +98,48 @@ function Header() {
   };
   
   
-  // 사용자 검색 API 호출
-  const handleSearch = async (query: string) => {
-    try {
-      const [searchResponse, followResponse] = await Promise.all([
-        axiosInstance.get("/api/v1/auth/user/search", {
-          params: { keyword: query, lastId: 0 },
-        }),
-        axiosInstance.get(`/api/v1/follow/${uid}`),
-      ]);
-  
-      if (searchResponse.status === 200 && followResponse.status === 200) {
-        // 로그인한 사용자가 팔로우한 UID 목록 추출
-        const followedUids = followResponse.data.content.map((user: UserInfoResponse) => user.uid.trim());
-        
-        // 검색 결과에서 자기 자신을 제외하고 팔로우 상태를 설정
-        const searchResults = searchResponse.data
-          .filter((user: UserInfoResponse) => user.uid !== uid)
-          .map((user: UserInfoResponse) => ({
+// 사용자 검색 API 호출
+const handleSearch = async (query: string) => {
+  try {
+    // 로그인한 경우 팔로우 정보를 함께 가져오기
+    const searchResponse = await axiosInstance.get("/api/v1/auth/user/search", {
+      params: { keyword: query, lastId: 0 },
+    });
+
+    if (searchResponse.status === 200) {
+      let searchResults = searchResponse.data;
+
+      // 로그인한 경우, 자기 자신을 제외한 사용자만 필터링
+      if (isLoggedIn && uid) {
+        searchResults = searchResults
+          .filter((user: UserInfoResponse) => user.uid !== uid);
+
+        // 로그인한 사용자의 팔로우 정보 가져오기
+        const followResponse = await axiosInstance.get(`/api/v1/follow/${uid}`);
+        if (followResponse.status === 200) {
+          const followedUids = followResponse.data.content.map((user: UserInfoResponse) => user.uid.trim());
+
+          // 검색 결과에 팔로우 상태를 업데이트
+          searchResults = searchResults.map((user: UserInfoResponse) => ({
             ...user,
             isFollowing: followedUids.includes(user.uid.trim()), // 팔로우한 UID에 포함되면 true, 아니면 false
           }));
-  
-        setSearchResults(searchResults);
+        }
+      } else {
+        // 로그인하지 않은 경우, 모든 사용자 검색 결과 반환 (팔로우 상태는 무시)
+        searchResults = searchResults.map((user: UserInfoResponse) => ({
+          ...user,
+          isFollowing: false,
+        }));
       }
-    } catch (error) {
-      console.error("Error fetching users or follow list:", error);
+
+      setSearchResults(searchResults);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching users or follow list:", error);
+  }
+};
+
   
   // 검색어 변경 시 호출
   useEffect(() => {
