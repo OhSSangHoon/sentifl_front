@@ -356,18 +356,6 @@ export const CommentHeartCount = styled.span`
   color: #aaa;
 `;
 
-export const ReplyButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 12px;
-  color: #aaa;
-  cursor: pointer;
-
-  &:hover {
-    color: #fff;
-  }
-`;
-
 export const LoadMoreButton = styled.button`
   background-color: rgba(217, 217, 217, 0.1);
   color: white;
@@ -385,5 +373,18 @@ export const LoadMoreButton = styled.button`
   &:disabled {
     background-color: #c0c0c0;
     cursor: not-allowed;
+  }
+`;
+
+export const ReplyButton = styled.span`
+  cursor: pointer;
+  color: gray;
+
+  &:hover {
+    color: rgba(256, 256, 256, 0.2);
+  }
+
+  &:active {
+    color: rgba(256, 256, 256, 0.2);
   }
 `;

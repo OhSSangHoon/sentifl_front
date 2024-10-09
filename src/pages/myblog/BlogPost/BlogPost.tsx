@@ -52,6 +52,10 @@ function BlogPost() {
   const [lastId, setLastId] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [commentContent, setCommentContent] = useState<string>("");
+
   useEffect(() => {
     const fetchAllPosts = async () => {
       try {
@@ -191,9 +195,7 @@ function BlogPost() {
         `/api/v1/comment`,
         {
           content: newCommentContent,
-          // 부모 댓글일 때는 false
           childComment: isChildComment,
-          // 부모 댓글일때는 0, 자식 댓글일 때는 부모 댓글 ID 사용
           parentCommentId:
             isChildComment && parentCommentId ? parentCommentId : 0,
         },
@@ -204,8 +206,6 @@ function BlogPost() {
 
       if (response.status === 201) {
         window.location.reload();
-        // fetchComments();
-
         setNewCommentContent("");
         setShowCommentInput(false);
         setParentCommentId(null);
@@ -221,12 +221,8 @@ function BlogPost() {
   const handleDeleteComment = async (commentId: number) => {
     try {
       const response = await axiosInstance.delete(`/api/v1/comment`, {
-        params: {
-          postId: postId,
-        },
-        data: {
-          commentId: commentId,
-        },
+        params: { postId: postId },
+        data: { commentId: commentId },
       });
 
       if (response.status === 204) {
@@ -240,6 +236,46 @@ function BlogPost() {
   };
 
   // 댓글 수정
+  const handleEditComment = (comment: CommentData) => {
+    setIsEditing(true);
+    setEditingCommentId(comment.commentId);
+    setCommentContent(comment.content); // 기존 댓글 내용 세팅
+    setShowCommentInput(true);
+  };
+
+  const submitEditedComment = async () => {
+    try {
+      const response = await axiosInstance.put(
+        `/api/v1/comment`,
+        {
+          content: commentContent,
+          commentId: editingCommentId,
+        },
+        { params: { postId: postId } }
+      );
+
+      if (response.status === 204) {
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment.commentId === editingCommentId
+              ? { ...comment, content: commentContent }
+              : comment
+          )
+        );
+        setIsEditing(false);
+        setEditingCommentId(null);
+        setCommentContent("");
+        setShowCommentInput(false);
+      } else {
+        console.error(
+          "댓글 수정 중 문제가 발생했습니다. 상태 코드:",
+          response.status
+        );
+      }
+    } catch (error) {
+      console.error("댓글 수정 중 오류 발생:", error);
+    }
+  };
 
   // 좋아요
   const handleLikeClick = async () => {
@@ -351,6 +387,16 @@ function BlogPost() {
                     <S.CommentHeartCount>
                       {comment.totalLikes}
                     </S.CommentHeartCount>
+                    <S.ReplyButton
+                      onClick={() =>
+                        handleCommentClick(
+                          comment.commentId,
+                          comment.childComment
+                        )
+                      }
+                    >
+                      답글
+                    </S.ReplyButton>
                   </div>
                   <div
                     style={{
@@ -360,7 +406,11 @@ function BlogPost() {
                     }}
                   >
                     <S.CommentActionButtonWrapper>
-                      <S.CommentActionButton>수정</S.CommentActionButton>
+                      <S.CommentActionButton
+                        onClick={() => handleEditComment(comment)}
+                      >
+                        수정
+                      </S.CommentActionButton>
                       <S.CommentActionButton
                         onClick={() => handleDeleteComment(comment.commentId)}
                       >
@@ -369,11 +419,7 @@ function BlogPost() {
                     </S.CommentActionButtonWrapper>
                   </div>
                 </S.CommentAuthorWrapper>
-                <S.CommentText
-                  onClick={() =>
-                    handleCommentClick(comment.commentId, comment.childComment)
-                  }
-                >
+                <S.CommentText>
                   {comment.childComment && "(대댓글)"} {comment.content}
                 </S.CommentText>
               </S.Comment>
@@ -393,16 +439,22 @@ function BlogPost() {
             </S.Icon>
             <S.InputField
               type="text"
-              placeholder="댓글을 입력하세요"
-              value={newCommentContent}
-              onChange={handleCommentChange}
+              placeholder={
+                isEditing ? "댓글을 수정하세요" : "댓글을 입력하세요"
+              }
+              value={isEditing ? commentContent : newCommentContent} // 수정일 때는 commentContent, 작성일 때는 newCommentContent 사용
+              onChange={
+                isEditing
+                  ? (e) => setCommentContent(e.target.value)
+                  : handleCommentChange
+              } // 수정일 때는 setCommentContent, 작성일 때는 handleCommentChange 사용
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  submitComment();
+                  isEditing ? submitEditedComment() : submitComment();
                 }
               }}
             />
-            <S.Icon onClick={submitComment}>
+            <S.Icon onClick={isEditing ? submitEditedComment : submitComment}>
               <FaPaperPlane />
             </S.Icon>
           </S.FixedBottomBar>
