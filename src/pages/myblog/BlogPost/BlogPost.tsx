@@ -1,11 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import Sidebar from "../MyBlog/SideBar";
 import * as S from "./Styles/BlogPost.styles";
-import { FaPaperPlane, FaPlay, FaComment, FaHeart } from "react-icons/fa";
+import {
+  FaPaperPlane,
+  FaPlay,
+  FaComment,
+  FaHeart,
+  FaPause,
+} from "react-icons/fa";
 import { MdGraphicEq } from "react-icons/md";
+import styled, { keyframes, css } from "styled-components";
 
 interface PostData {
   title: string;
@@ -55,6 +62,9 @@ function BlogPost() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [commentContent, setCommentContent] = useState<string>("");
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const fetchAllPosts = async () => {
@@ -332,6 +342,23 @@ function BlogPost() {
     setNewCommentContent(e.target.value);
   };
 
+  // 음악 재생/일시정지 함수
+  const handlePlayPause = (musicUrl: string) => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play();
+        setIsPlaying(true);
+      }
+    } else {
+      audioRef.current = new Audio(musicUrl);
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
   if (loading) {
     return <p>로딩 중...</p>;
   }
@@ -352,8 +379,13 @@ function BlogPost() {
         </S.TopRightContent>
         <S.LeftContent>
           <S.SongTitleWrapper>
-            <S.SongTitle>노래제목</S.SongTitle> <FaPlay />
-            <MdGraphicEq color="white" />
+            <S.SongTitle>{post.musicTitle}</S.SongTitle>
+            {isPlaying ? (
+              <FaPause onClick={() => handlePlayPause(post.musicUrl)} />
+            ) : (
+              <FaPlay onClick={() => handlePlayPause(post.musicUrl)} />
+            )}
+            <AnimatedGraphicEq isPlaying={isPlaying} />
           </S.SongTitleWrapper>
           <S.CategoryAndTitle>
             <S.Category>카테고리</S.Category>
@@ -490,3 +522,28 @@ function BlogPost() {
 }
 
 export default BlogPost;
+
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
+
+export const AnimatedGraphicEq = styled(MdGraphicEq)<{ isPlaying: boolean }>`
+  color: white;
+  font-size: 24px;
+  ${({ isPlaying }) =>
+    isPlaying &&
+    css`
+      animation: ${pulse} 1.5s infinite ease-in-out;
+    `}
+`;

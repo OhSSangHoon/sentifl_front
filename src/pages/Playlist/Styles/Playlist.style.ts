@@ -122,11 +122,11 @@ export const DeleteButton = styled.button`
   font-size: 12px;
 
   &:hover {
-    color: red;
+    color: white;
   }
 
   &:active {
-    color: red;
+    color: white;
   }
 `;
 
@@ -181,4 +181,19 @@ export const HashTags = styled.div`
   font-size: 12px;
   color: #888;
   margin-top: 5px;
+`;
+
+export const TransparentInput = styled.input`
+  width: 500px;
+  opacity: 0.8;
+  background-color: #121212;
+  border: 0.2px solid gray;
+  border-radius: 25px;
+  color: white;
+  padding: 5px;
+  font-size: 14px;
+
+  &:focus {
+    opacity: 1;
+  }
 `;

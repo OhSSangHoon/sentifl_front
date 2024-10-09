@@ -28,6 +28,10 @@ function Playlist() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const [editSongId, setEditSongId] = useState<number | null>(null);
+  const [editedTitle, setEditedTitle] = useState<string>("");
+  const [editedHashTag, setEditedHashTag] = useState<string>("");
+
   const fetchSongs = async () => {
     if (loading || !hasMore) return;
 
@@ -41,7 +45,6 @@ function Playlist() {
       });
 
       if (response.status === 200) {
-        console.log(response.data);
         const newSongs = response.data.content;
 
         // if (newSongs.length > 0) {
@@ -112,6 +115,36 @@ function Playlist() {
     }
   };
 
+  // songId => postId로 바꾸기
+  // 수정 내용을 서버로 전송
+  const handleSaveEdit = async (songId: number, song: Song) => {
+    try {
+      await axiosInstance.put(`/api/v1/music/post/${songId}`, {
+        musicUrl: song.musicUrl,
+        title: editedTitle,
+        hashTag: editedHashTag,
+        emotion1: song.emotion1,
+        emotion2: song.emotion2,
+      });
+      setSongs((prevSongs) =>
+        prevSongs.map((s) =>
+          s.id === songId
+            ? { ...s, title: editedTitle, hashTag: editedHashTag }
+            : s
+        )
+      );
+      setEditSongId(null);
+    } catch (error) {
+      console.error("노래 수정 중 오류 발생:", error);
+    }
+  };
+
+  const handleEditClick = (song: Song) => {
+    setEditSongId(song.id);
+    setEditedTitle(song.title);
+    setEditedHashTag(song.hashTag);
+  };
+
   const handlePlayPause = (songId: number, musicUrl: string) => {
     if (audioRef.current) {
       // 같은 노래를 다시 클릭한 경우 재생/일시정지
@@ -125,7 +158,7 @@ function Playlist() {
       } else {
         // 다른 노래 클릭 시 새로운 노래 재생
         audioRef.current.pause();
-        audioRef.current = new Audio(musicUrl);
+        audioRef.current.src = musicUrl; // 새로운 노래의 URL로 src 설정
         audioRef.current.play();
         setCurrentSongId(songId);
         setIsPlaying(true);
@@ -168,6 +201,50 @@ function Playlist() {
                 )}
               </S.PlayIcon>
               <S.SongDetails>
+                {editSongId === song.id ? (
+                  <>
+                    <S.TransparentInput
+                      type="text"
+                      value={editedTitle}
+                      onChange={(e) => setEditedTitle(e.target.value)}
+                    />
+                    <S.TransparentInput
+                      type="text"
+                      value={editedHashTag}
+                      onChange={(e) => setEditedHashTag(e.target.value)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <S.SongTitle>{song.title}</S.SongTitle>
+                    <S.HashTags>
+                      {song.hashTags && song.hashTags.length > 0 ? (
+                        song.hashTags.map((tag) => (
+                          <span key={tag}>#{tag} </span>
+                        ))
+                      ) : (
+                        <span>No hashtags</span>
+                      )}
+                    </S.HashTags>
+                  </>
+                )}
+                <S.SongDateAndDelete>
+                  <S.DeleteButton onClick={() => deleteSong(song.id)}>
+                    삭제
+                  </S.DeleteButton>
+                  {editSongId === song.id ? (
+                    <S.DeleteButton
+                      onClick={() => handleSaveEdit(song.id, song)}
+                    >
+                      저장
+                    </S.DeleteButton>
+                  ) : (
+                    <S.DeleteButton onClick={() => handleEditClick(song)}>
+                      수정
+                    </S.DeleteButton>
+                  )}
+                </S.SongDateAndDelete>
+                {/* <S.SongDetails>
                 <S.SongTitle>{song.title}</S.SongTitle>
                 <S.HashTags>
                   {song.hashTags && song.hashTags.length > 0 ? (
@@ -180,7 +257,7 @@ function Playlist() {
                   <S.DeleteButton onClick={() => deleteSong(song.id)}>
                     삭제
                   </S.DeleteButton>
-                </S.SongDateAndDelete>
+                </S.SongDateAndDelete> */}
               </S.SongDetails>
               <S.SongActions>
                 <S.ProducerName>{uid}</S.ProducerName>
