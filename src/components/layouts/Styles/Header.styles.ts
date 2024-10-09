@@ -96,10 +96,22 @@ export const SearchResultItem = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #f0f0f0;
+  justify-content: space-between;
 
   &:hover {
     background-color: #f0f0f0;
   }
+`;
+
+export const FollowButton = styled.button<{ isFollowing: boolean }>`
+  background-color: ${(props) => (props.isFollowing ? "#cccccc" : "#007bff")};
+  color: ${(props) => (props.isFollowing ? "#666666" : "white")};
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor:pointer;
+  opacity: ${(props) => (props.isFollowing ? 0.6 : 1)};
+  
 `;
 
 export const UserLink = styled(Link)`

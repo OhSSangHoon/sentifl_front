@@ -9,8 +9,8 @@ interface UserInfoResponse {
   uid: string;
   nickName: string;
   profile: string;
+  isFollowing: boolean;
 }
-
 
 function Header() {
   const { isLoggedIn, nickname, logout, uid } = useAuth();
@@ -28,20 +28,105 @@ function Header() {
     setIsPopupOpen(false);
   };
 
-  // 사용자 검색 API 호출
-  const handleSearch = async (query: string) => {
+  useEffect(() => {
+    if (isLoggedIn && uid) {
+      fetchFollowList();
+    }
+  }, [isLoggedIn, uid]);
+  
+  const fetchFollowList = async () => {
     try {
-      const response = await axiosInstance.get("/api/v1/auth/user/search", {
-        params: { keyword: query, lastId: 0 },
-      });
+      const response = await axiosInstance.get(`/api/v1/follow/${uid}`);
       if (response.status === 200) {
-        setSearchResults(response.data);
+        // 로그인한 사용자가 팔로우한 UID 목록 추출
+        const followedUids = response.data.content.map((user: UserInfoResponse) => user.uid.trim());
+        // 검색 결과가 있을 경우, 팔로우 상태 업데이트
+        setSearchResults((prevResults) =>
+          prevResults.map((user) => ({
+            ...user,
+            isFollowing: followedUids.includes(user.uid.trim()), // 팔로우한 UID에 포함되면 true, 아니면 false
+          }))
+        );
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching follow list:", error);
+    }
+  };
+  
+  // 팔로우
+  const handleFollow = async (uid: string) => {
+    try {
+      const response = await axiosInstance.post("/api/v1/follow", { uid });
+      if (response.status === 200 || response.status === 204) {
+        // 클릭한 사용자만 상태 변경
+        setSearchResults((prevResults) =>
+          prevResults.map((user) =>
+            user.uid === uid ? { ...user, isFollowing: true } : user
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error following user:", error);
     }
   };
 
+  // 언팔로우
+  const handleUnfollow = async (uid: string) => {
+    try {
+      const response = await axiosInstance.delete("/api/v1/follow", {
+        data: { uid },
+      });
+      if (response.status === 200 || response.status === 204) {
+        // 클릭한 사용자만 상태 변경
+        setSearchResults((prevResults) =>
+          prevResults.map((user) =>
+            user.uid === uid ? { ...user, isFollowing: false } : user
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error unfollowing user:", error);
+    }
+  };
+  
+  const handleFollowToggle = (uid: string, isFollowing: boolean) => {
+    if (isFollowing) {
+      handleUnfollow(uid);
+    } else {
+      handleFollow(uid);
+    }
+  };
+  
+  
+  // 사용자 검색 API 호출
+  const handleSearch = async (query: string) => {
+    try {
+      const [searchResponse, followResponse] = await Promise.all([
+        axiosInstance.get("/api/v1/auth/user/search", {
+          params: { keyword: query, lastId: 0 },
+        }),
+        axiosInstance.get(`/api/v1/follow/${uid}`),
+      ]);
+  
+      if (searchResponse.status === 200 && followResponse.status === 200) {
+        // 로그인한 사용자가 팔로우한 UID 목록 추출
+        const followedUids = followResponse.data.content.map((user: UserInfoResponse) => user.uid.trim());
+        
+        // 검색 결과에서 자기 자신을 제외하고 팔로우 상태를 설정
+        const searchResults = searchResponse.data
+          .filter((user: UserInfoResponse) => user.uid !== uid)
+          .map((user: UserInfoResponse) => ({
+            ...user,
+            isFollowing: followedUids.includes(user.uid.trim()), // 팔로우한 UID에 포함되면 true, 아니면 false
+          }));
+  
+        setSearchResults(searchResults);
+      }
+    } catch (error) {
+      console.error("Error fetching users or follow list:", error);
+    }
+  };
+  
   // 검색어 변경 시 호출
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -66,9 +151,6 @@ function Header() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        {/* <S.SearchIcon>
-          <FaSearch />
-        </S.SearchIcon> */}
         {searchResults.length > 0 && (
           <S.SearchResults>
             {searchResults.map((user) => (
@@ -81,12 +163,18 @@ function Header() {
                   />
                   <span>{user.nickName}</span>
                 </S.UserLink>
+                <S.FollowButton
+                  onClick={() => handleFollowToggle(user.uid, user.isFollowing)}
+                  disabled={false}
+                  isFollowing={user.isFollowing}
+                >
+                  {user.isFollowing ? "Following" : "Follow"}
+                </S.FollowButton>
               </S.SearchResultItem>
             ))}
           </S.SearchResults>
         )}
       </S.SearchContainer>
-      
       {isLoggedIn ? (
         <S.ProfileLink onClick={togglePopup}>
           <img
