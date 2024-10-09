@@ -220,6 +220,7 @@ function BlogPost() {
   // 댓글 삭제
   const handleDeleteComment = async (commentId: number) => {
     try {
+      console.log(commentId, postId);
       const response = await axiosInstance.delete(`/api/v1/comment`, {
         params: { postId: postId },
         data: { commentId: commentId },
@@ -420,6 +421,7 @@ function BlogPost() {
                   </div>
                 </S.CommentAuthorWrapper>
                 <S.CommentText>
+                  {comment.commentId}
                   {comment.childComment && "(대댓글)"} {comment.content}
                 </S.CommentText>
               </S.Comment>
