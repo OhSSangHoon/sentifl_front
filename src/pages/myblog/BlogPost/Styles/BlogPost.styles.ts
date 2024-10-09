@@ -367,3 +367,23 @@ export const ReplyButton = styled.button`
     color: #fff;
   }
 `;
+
+export const LoadMoreButton = styled.button`
+  background-color: rgba(217, 217, 217, 0.1);
+  color: white;
+  border: 0.1px solid #ffffff;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  font-size: 16px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(217, 217, 217, 0.2);
+  }
+  &:disabled {
+    background-color: #c0c0c0;
+    cursor: not-allowed;
+  }
+`;

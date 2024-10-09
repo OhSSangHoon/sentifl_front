@@ -149,7 +149,7 @@ const ChoosePost = () => {
         `/create/music`, // baseURL을 무시하고 수동으로 FastAPI의 URL을 사용
         {
           user_id: uid,
-          html_url: postUrl,
+          post_url: postUrl,
           token: accessToken,
         },
         {
