@@ -102,6 +102,9 @@ function BlogPost() {
             setLikesCount(totalLikes);
             setViewsCount(totalViews);
 
+            // 댓글 총 개수 가져오기 호출
+            await fetchTotalCommentCount(); // 댓글 총 개수 가져오기
+
             // 좋아요 상태 확인
             const likeResponse = await axiosInstance.get(
               `/api/v1/post/${postId}/like`
@@ -144,6 +147,7 @@ function BlogPost() {
       });
 
       if (response.status === 200) {
+        console.log(response.data);
         const newComments = response.data.content;
 
         if (newComments.length > 0) {
@@ -161,6 +165,23 @@ function BlogPost() {
       console.error("댓글을 불러오는 중 오류 발생:", error);
     } finally {
       setLoadingComments(false);
+    }
+  };
+
+  // 댓글 총 개수 가져오기 함수
+  const fetchTotalCommentCount = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/v1/comment/total/${postId}`
+      );
+      if (response.status === 200) {
+        console.log(postId, response.data.count);
+        setTotalCommentCount(response.data.count);
+      } else {
+        console.error("댓글 개수를 불러오는 중 오류 발생");
+      }
+    } catch (error) {
+      console.error("댓글 개수를 불러오는 중 오류 발생:", error);
     }
   };
 
@@ -227,7 +248,7 @@ function BlogPost() {
       });
 
       if (response.status === 204) {
-        fetchComments();
+        window.location.reload();
       } else {
         console.error("댓글 삭제 중 오류 발생");
       }
@@ -371,7 +392,12 @@ function BlogPost() {
           <S.CommentSection>
             <S.CommentTitle>댓글 {totalCommentCount}개</S.CommentTitle>
             {comments.map((comment) => (
-              <S.Comment key={comment.commentId}>
+              <S.Comment
+                key={comment.commentId}
+                style={{
+                  marginLeft: comment.childComment ? "20px" : "0px", // 대댓글일 경우 들여쓰기 적용
+                }}
+              >
                 <S.CommentAuthorWrapper>
                   <div
                     style={{
@@ -420,10 +446,7 @@ function BlogPost() {
                     </S.CommentActionButtonWrapper>
                   </div>
                 </S.CommentAuthorWrapper>
-                <S.CommentText>
-                  {comment.commentId}
-                  {comment.childComment && "(대댓글)"} {comment.content}
-                </S.CommentText>
+                <S.CommentText>{comment.content}</S.CommentText>
               </S.Comment>
             ))}
           </S.CommentSection>

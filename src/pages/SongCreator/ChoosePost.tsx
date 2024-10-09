@@ -29,7 +29,8 @@ const ChoosePost = () => {
   const [page, setPage] = useState(0);
   const pageSize = 5;
   const paginationSize = 5;
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null); // 단일 선택으로 변경
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [hashTags, setHashTags] = useState<{ [key: number]: string }>({});
 
   const { uid } = useAuth();
   const navigate = useNavigate();
@@ -201,8 +202,7 @@ const ChoosePost = () => {
         if (fastAPIResponse) {
           const { musicUrl, emotion, title } = fastAPIResponse;
 
-          // 해시태그 추가 (필요하다면 적절한 값을 설정)
-          const hashTag = "#GeneratedSong";
+          const hashTag = hashTags[post.postId] || ""; // 해시태그를 추가
 
           // FastAPI에서 받아온 데이터를 스프링 백엔드로 전송
           const springResponse = await axiosInstance.post(
@@ -210,7 +210,7 @@ const ChoosePost = () => {
             {
               musicUrl: musicUrl,
               title: title,
-              hashTag: hashTag,
+              hashTag: hashTag.trim().replace(/\s+/g, " "),
               //임시로 emotion 넣음
               emotion1: emotion,
               emotion2: emotion,
@@ -221,6 +221,12 @@ const ChoosePost = () => {
           if (springResponse.status === 204) {
             alert("노래 제작이 성공적으로 완료되었습니다!");
             console.log("스프링 백엔드 응답:", springResponse.data);
+
+            // 해시태그 초기화
+            setHashTags((prevHashTags) => ({
+              ...prevHashTags,
+              [selectedPostId as number]: "",
+            }));
 
             navigate("/song-result", {
               state: { title, emotion1: emotion, emotion2: emotion, musicUrl },
@@ -238,6 +244,14 @@ const ChoosePost = () => {
         alert("노래 제작 중 오류가 발생했습니다.");
       }
     }
+  };
+
+  // 해시태그 입력 핸들러
+  const handleHashTagChange = (postId: number, value: string) => {
+    setHashTags((prevHashTags) => ({
+      ...prevHashTags,
+      [postId]: value,
+    }));
   };
 
   if (loading) {
@@ -276,6 +290,16 @@ const ChoosePost = () => {
                     />
                   </S.CheckBoxWrapper>
                 </S.PostContentWrapper>
+                {/* 해시태그 입력 필드 */}
+                {isChecked && (
+                  <S.HashTagInput
+                    placeholder="해시태그를 입력하세요."
+                    value={hashTags[post.postId] || ""}
+                    onChange={(e) =>
+                      handleHashTagChange(post.postId, e.target.value)
+                    }
+                  />
+                )}
               </S.Post>
             );
           })

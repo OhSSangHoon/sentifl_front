@@ -176,3 +176,9 @@ export const LoadMoreButton = styled.button`
     cursor: not-allowed;
   }
 `;
+
+export const HashTags = styled.div`
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+`;

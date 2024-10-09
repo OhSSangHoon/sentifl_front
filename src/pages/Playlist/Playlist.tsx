@@ -12,6 +12,7 @@ interface Song {
   totalLikes: number;
   emotion1: string;
   emotion2: string;
+  hashTags?: string[];
 }
 
 function Playlist() {
@@ -43,8 +44,19 @@ function Playlist() {
         console.log(response.data);
         const newSongs = response.data.content;
 
+        // if (newSongs.length > 0) {
+        //   setSongs((prevSongs) => [...prevSongs, ...newSongs]);
+        //   setLastId(newSongs[newSongs.length - 1].id);
+        // }
+
         if (newSongs.length > 0) {
-          setSongs((prevSongs) => [...prevSongs, ...newSongs]);
+          const songsWithHashTags = await Promise.all(
+            newSongs.map(async (song: Song) => {
+              const hashTags = await fetchHashTags(song.id);
+              return { ...song, hashTags }; // 해시태그 추가
+            })
+          );
+          setSongs((prevSongs) => [...prevSongs, ...songsWithHashTags]);
           setLastId(newSongs[newSongs.length - 1].id);
         }
 
@@ -80,6 +92,23 @@ function Playlist() {
         console.error("노래 삭제 중 오류 발생:", error);
         alert("노래 삭제에 실패했습니다.");
       }
+    }
+  };
+
+  const fetchHashTags = async (musicId: number) => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/v1/music/${musicId}/hashtag`
+      );
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(`Failed to fetch hashtags for musicId: ${musicId}`);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching hashtags:", error);
+      return [];
     }
   };
 
@@ -124,7 +153,7 @@ function Playlist() {
       <S.Content>
         <S.Sidebar>
           <S.SidebarHeader>MY PLAYLIST</S.SidebarHeader>
-          <S.Button>재생목록 이름</S.Button>
+          <S.Button>재생목록</S.Button>
         </S.Sidebar>
         <S.SongList>
           {songs.map((song) => (
@@ -140,6 +169,13 @@ function Playlist() {
               </S.PlayIcon>
               <S.SongDetails>
                 <S.SongTitle>{song.title}</S.SongTitle>
+                <S.HashTags>
+                  {song.hashTags && song.hashTags.length > 0 ? (
+                    song.hashTags.map((tag) => <span key={tag}>#{tag} </span>)
+                  ) : (
+                    <span>No hashtags</span>
+                  )}
+                </S.HashTags>
                 <S.SongDateAndDelete>
                   <S.DeleteButton onClick={() => deleteSong(song.id)}>
                     삭제

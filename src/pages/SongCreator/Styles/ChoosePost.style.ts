@@ -150,3 +150,19 @@ export const CreateButton = styled.button`
     background-color: #333;
   }
 `;
+
+export const HashTagInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #1e1e1e;
+  color: #fff;
+  font-size: 14px;
+
+  &:focus {
+    outline: none;
+    border-color: #777;
+  }
+`;
