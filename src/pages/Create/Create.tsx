@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from "../../AuthProvider";
-import Editor from '../../Editor/MarkdownEditor';
+import MarkdownEditor from '../../Editor/MarkdownEditor';
 import { deleteFromS3, downloadFromS3 } from '../../services/s3Service';
 import * as S from './Styles/Create.style';
 
@@ -11,6 +11,7 @@ function Create() {
     const [initialDelta, setInitialDelta] = useState<any>(null);
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
     const [images, setImages] = useState<Array<{ imageName: string; imageUrl: string }>>([]);
+    const [hashTag, setHashTag] = useState<string>('');
     const { uid } = useAuth();
 
     useEffect(() => {
@@ -28,9 +29,11 @@ function Create() {
                         setHasTempSave(false);
                     }
                 } else {
+                    console.log("임시 저장 파일이 없습니다.");
                     setHasTempSave(false);
                 }
             } catch (error) {
+                console.error("임시 저장 파일을 확인하는 중 오류가 발생했습니다:", error);
                 setHasTempSave(false);
             } finally {
                 setIsLoading(false);
@@ -49,10 +52,16 @@ function Create() {
             if (jsonData.thumbnailUrl) {
                 setThumbnailUrl(jsonData.thumbnailUrl);
             }
+
+            if (jsonData.hashTag){
+                setHashTag(jsonData.hashTag);
+            }
         };
         
-        checkForTempSave();
-    }, [uid]);
+        if(!hasTempSave){
+            checkForTempSave();
+        }
+    }, [uid, hasTempSave]);
 
     if (isLoading) {
         return <></>;
@@ -60,7 +69,7 @@ function Create() {
 
     return (
         <S.Main>
-            <Editor
+            <MarkdownEditor
                 loadFromTempSave={hasTempSave}
                 initialDelta={initialDelta}
                 title={title}
@@ -68,6 +77,8 @@ function Create() {
                 images={images}
                 thumbnailUrl={thumbnailUrl}
                 isCreatePage={true}
+                hashTag={hashTag}
+                setHashTag={setHashTag}
             />
         </S.Main>
     );
