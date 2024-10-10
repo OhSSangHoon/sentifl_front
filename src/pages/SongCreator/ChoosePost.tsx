@@ -296,14 +296,21 @@ const ChoosePost = () => {
                     />
                   </S.CheckBoxWrapper>
                 </S.PostContentWrapper>
-                {/* 해시태그 입력 필드 */}
+
                 {isChecked && (
                   <S.HashTagInput
                     placeholder="해시태그를 입력하세요."
-                    value={hashTags[post.postId] || ""}
+                    value={`#${hashTags[post.postId]?.replace(/^#/, "") || ""}`}
                     onChange={(e) =>
-                      handleHashTagChange(post.postId, e.target.value)
+                      handleHashTagChange(
+                        post.postId,
+                        e.target.value.replace(/^#/, "")
+                      )
                     }
+                    // value={hashTags[post.postId] || ""}
+                    // onChange={(e) =>
+                    //   handleHashTagChange(post.postId, e.target.value)
+                    // }
                   />
                 )}
               </S.Post>

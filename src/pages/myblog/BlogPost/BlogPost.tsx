@@ -46,7 +46,7 @@ function BlogPost() {
   const [loading, setLoading] = useState(true);
   const [loadingComments, setLoadingComments] = useState(false);
 
-  const [liked, setLiked] = useState(false);
+  const [likeStatus, setLikeStatus] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [viewsCount, setViewsCount] = useState(0);
 
@@ -113,19 +113,7 @@ function BlogPost() {
             setViewsCount(totalViews);
 
             // 댓글 총 개수 가져오기 호출
-            await fetchTotalCommentCount(); // 댓글 총 개수 가져오기
-
-            // 좋아요 상태 확인
-            const likeResponse = await axiosInstance.get(
-              `/api/v1/post/${postId}/like`
-            );
-            if (likeResponse.status === 200) {
-              setLiked(true);
-            } else if (likeResponse.status === 404) {
-              setLiked(false);
-            } else {
-              console.error("좋아요 상태를 불러오는 중 문제가 발생했습니다.");
-            }
+            await fetchTotalCommentCount();
           }
         } else {
           console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");
@@ -157,7 +145,6 @@ function BlogPost() {
       });
 
       if (response.status === 200) {
-        console.log(response.data);
         const newComments = response.data.content;
 
         if (newComments.length > 0) {
@@ -185,7 +172,6 @@ function BlogPost() {
         `/api/v1/comment/total/${postId}`
       );
       if (response.status === 200) {
-        console.log(postId, response.data.count);
         setTotalCommentCount(response.data.count);
       } else {
         console.error("댓글 개수를 불러오는 중 오류 발생");
@@ -251,7 +237,6 @@ function BlogPost() {
   // 댓글 삭제
   const handleDeleteComment = async (commentId: number) => {
     try {
-      console.log(commentId, postId);
       const response = await axiosInstance.delete(`/api/v1/comment`, {
         params: { postId: postId },
         data: { commentId: commentId },
@@ -309,34 +294,52 @@ function BlogPost() {
     }
   };
 
-  // 좋아요
+  // 좋아요 클릭
   const handleLikeClick = async () => {
     try {
-      if (liked) {
+      if (likeStatus) {
+        // 좋아요 취소
         const response = await axiosInstance.delete(
           `/api/v1/post/${postId}/like`
         );
         if (response.status === 204) {
+          setLikeStatus(false);
           setLikesCount((prev) => prev - 1);
-          setLiked(false);
-        } else {
-          console.error("좋아요 취소 중 문제가 발생했습니다.");
         }
       } else {
+        // 좋아요 추가
         const response = await axiosInstance.post(
           `/api/v1/post/${postId}/like`
         );
         if (response.status === 204) {
+          setLikeStatus(true);
           setLikesCount((prev) => prev + 1);
-          setLiked(true);
-        } else {
-          console.error("좋아요 처리 중 문제가 발생했습니다.");
         }
       }
     } catch (error) {
       console.error("좋아요 처리 중 오류 발생:", error);
     }
   };
+
+  // 좋아요 상태 관리
+  useEffect(() => {
+    const fetchLike = async () => {
+      try {
+        const likeResponse = await axiosInstance.get(
+          `/api/v1/post/${postId}/like`
+        );
+        if (likeResponse.status === 200) {
+          setLikeStatus(likeResponse.data.like);
+        }
+      } catch (error) {
+        console.error("좋아요 상태를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    if (postId) {
+      fetchLike();
+    }
+  }, [postId]);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewCommentContent(e.target.value);
@@ -412,7 +415,7 @@ function BlogPost() {
           <div dangerouslySetInnerHTML={{ __html: post.content }} />
           <S.IconWrapper>
             <S.PostHeartIcon onClick={handleLikeClick}>
-              <FaHeart color={liked ? "red" : "gray"} />
+              <FaHeart color={likeStatus ? "red" : "gray"} />
               <S.PostHeartCount>{likesCount}</S.PostHeartCount>
             </S.PostHeartIcon>
 
