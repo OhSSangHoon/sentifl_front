@@ -214,7 +214,6 @@ const ChoosePost = () => {
               musicUrl: musicUrl,
               title: title,
               hashTag: hashTag.trim().replace(/\s+/g, " "),
-              //임시로 emotion 넣음
               emotion1: emotion1,
               emotion2: emotion2,
             }

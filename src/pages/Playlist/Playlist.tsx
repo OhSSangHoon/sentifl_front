@@ -5,7 +5,7 @@ import axiosInstance from "../../axiosInterceptor";
 import { useParams } from "react-router-dom";
 
 interface Song {
-  id: number;
+  musicId: number;
   postId: number;
   musicUrl: string;
   title: string;
@@ -13,7 +13,6 @@ interface Song {
   totalLikes: number;
   emotion1: string;
   emotion2: string;
-  hashTags?: string[];
 }
 
 function Playlist() {
@@ -48,23 +47,22 @@ function Playlist() {
       if (response.status === 200) {
         const newSongs = response.data.content;
 
-        // if (newSongs.length > 0) {
-        //   setSongs((prevSongs) => [...prevSongs, ...newSongs]);
-        //   setLastId(newSongs[newSongs.length - 1].id);
-        // }
-
         if (newSongs.length > 0) {
-          const songsWithHashTags = await Promise.all(
-            newSongs.map(async (song: Song) => {
-              const hashTags = await fetchHashTags(song.id);
-              return { ...song, hashTags }; // 해시태그 추가
-            })
-          );
-          setSongs((prevSongs) => [...prevSongs, ...songsWithHashTags]);
+          setSongs((prevSongs) => [...prevSongs, ...newSongs]);
           setLastId(newSongs[newSongs.length - 1].id);
         }
 
-        // 서버에서 반환된 last 값에 따라 처리
+        // if (newSongs.length > 0) {
+        //   const songsWithHashTags = await Promise.all(
+        //     newSongs.map(async (song: Song) => {
+        //       const hashTags = await fetchHashTags(song.id);
+        //       return { ...song, hashTags }; // 해시태그 추가
+        //     })
+        //   );
+        //   setSongs((prevSongs) => [...prevSongs, ...songsWithHashTags]);
+        //   setLastId(newSongs[newSongs.length - 1].id);
+        // }
+
         if (response.data.last) {
           setHasMore(false);
         }
@@ -85,7 +83,7 @@ function Playlist() {
 
         if (response.status === 204) {
           setSongs((prevSongs) =>
-            prevSongs.filter((song) => song.id !== songId)
+            prevSongs.filter((song) => song.musicId !== songId)
           );
 
           alert("노래가 삭제되었습니다.");
@@ -99,22 +97,23 @@ function Playlist() {
     }
   };
 
-  const fetchHashTags = async (musicId: number) => {
-    try {
-      const response = await axiosInstance.get(
-        `/api/v1/music/${musicId}/hashtag`
-      );
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        console.error(`Failed to fetch hashtags for musicId: ${musicId}`);
-        return [];
-      }
-    } catch (error) {
-      console.error("Error fetching hashtags:", error);
-      return [];
-    }
-  };
+  // 해시태그?
+  // const fetchHashTags = async (musicId: number) => {
+  //   try {
+  //     const response = await axiosInstance.get(
+  //       `/api/v1/music/${musicId}/hashtag`
+  //     );
+  //     if (response.status === 200) {
+  //       return response.data;
+  //     } else {
+  //       console.error(`Failed to fetch hashtags for musicId: ${musicId}`);
+  //       return [];
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching hashtags:", error);
+  //     return [];
+  //   }
+  // };
 
   // 노래 수정
   const handleSaveEdit = async (postId: number, song: Song) => {
@@ -128,7 +127,7 @@ function Playlist() {
       });
       setSongs((prevSongs) =>
         prevSongs.map((s) =>
-          s.id === postId
+          s.postId === postId
             ? { ...s, title: editedTitle, hashTag: editedHashTag }
             : s
         )
@@ -140,7 +139,7 @@ function Playlist() {
   };
 
   const handleEditClick = (song: Song) => {
-    setEditSongId(song.id);
+    setEditSongId(song.musicId);
     setEditedTitle(song.title);
     setEditedHashTag(song.hashTag);
   };
@@ -190,18 +189,18 @@ function Playlist() {
         </S.Sidebar>
         <S.SongList>
           {songs.map((song) => (
-            <S.SongItem key={song.id}>
+            <S.SongItem key={song.musicId}>
               <S.PlayIcon
-                onClick={() => handlePlayPause(song.id, song.musicUrl)}
+                onClick={() => handlePlayPause(song.musicId, song.musicUrl)}
               >
-                {currentSongId === song.id && isPlaying ? (
+                {currentSongId === song.musicId && isPlaying ? (
                   <FaPause size={14} color="#fff" />
                 ) : (
                   <FaPlay size={14} color="#fff" />
                 )}
               </S.PlayIcon>
               <S.SongDetails>
-                {editSongId === song.id ? (
+                {editSongId === song.musicId ? (
                   <>
                     <S.TransparentInput
                       type="text"
@@ -218,10 +217,8 @@ function Playlist() {
                   <>
                     <S.SongTitle>{song.title}</S.SongTitle>
                     <S.HashTags>
-                      {song.hashTags && song.hashTags.length > 0 ? (
-                        song.hashTags.map((tag) => (
-                          <span key={tag}>#{tag} </span>
-                        ))
+                      {song.hashTag && song.hashTag.length > 0 ? (
+                        <span>#{song.hashTag}</span>
                       ) : (
                         <span>No hashtags</span>
                       )}
@@ -229,10 +226,10 @@ function Playlist() {
                   </>
                 )}
                 <S.SongDateAndDelete>
-                  <S.DeleteButton onClick={() => deleteSong(song.id)}>
+                  <S.DeleteButton onClick={() => deleteSong(song.musicId)}>
                     삭제
                   </S.DeleteButton>
-                  {editSongId === song.id ? (
+                  {editSongId === song.musicId ? (
                     <S.DeleteButton
                       onClick={() => handleSaveEdit(song.postId, song)}
                     >
