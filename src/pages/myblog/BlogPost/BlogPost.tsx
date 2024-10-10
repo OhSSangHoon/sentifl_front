@@ -13,29 +13,7 @@ import {
 } from "react-icons/fa";
 import { MdGraphicEq } from "react-icons/md";
 import styled, { keyframes, css } from "styled-components";
-
-interface PostData {
-  title: string;
-  content: string;
-  thumbnailUrl: string | null;
-  musicTitle: string;
-  musicUrl: string;
-  totalLikes: number;
-  totalViews: number;
-  modifiedTime: string;
-  createdTime: string;
-}
-
-interface CommentData {
-  commentId: number;
-  nickName: string;
-  uid: string;
-  content: string;
-  totalLikes: number;
-  time: string;
-  isDelete: boolean;
-  childComment: boolean;
-}
+import { CommentData, PostData, pulse } from "./Styles/BlogPost.styles";
 
 function BlogPost() {
   const { postId } = useParams<{ postId: string }>();
@@ -73,7 +51,6 @@ function BlogPost() {
         let currentPage = 0;
         let lastPage = false;
 
-        // 페이지네이션을 이용해 모든 게시글 가져오기
         while (!lastPage) {
           const response = await axiosInstance.get(`/api/v1/post/${uid}`, {
             params: { page: currentPage, size: 10 },
@@ -109,11 +86,10 @@ function BlogPost() {
               content,
             });
 
+            increasePostView();
+
             setLikesCount(totalLikes);
             setViewsCount(totalViews);
-
-            // 댓글 총 개수 가져오기 호출
-            await fetchTotalCommentCount();
           }
         } else {
           console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");
@@ -165,7 +141,7 @@ function BlogPost() {
     }
   };
 
-  // 댓글 총 개수 가져오기 함수
+  // 댓글 총 개수 가져오기
   const fetchTotalCommentCount = async () => {
     try {
       const response = await axiosInstance.get(
@@ -181,10 +157,10 @@ function BlogPost() {
     }
   };
 
-  // 초기 댓글 불러오기
   useEffect(() => {
     if (postId) {
       fetchComments();
+      fetchTotalCommentCount();
     }
   }, [postId]);
 
@@ -194,15 +170,18 @@ function BlogPost() {
     setIsChildComment(false); // 부모 댓글로 설정
   };
 
-  // 대댓글 작성 시 (childComment가 true인 경우 입력창이 뜨지 않도록 설정)
+  // 대댓글 작성 시
   const handleCommentClick = (commentId: number, childComment: boolean) => {
-    if (!childComment) {
-      setShowCommentInput(true);
-      setIsChildComment(true); // 자식 댓글 설정
-      setParentCommentId(commentId); // 부모 댓글 ID 설정
-    } else {
-      setShowCommentInput(false); // 대댓글인 경우 입력창을 비활성화
-    }
+    // if (!childComment) {
+    //   setShowCommentInput(true);
+    //   setIsChildComment(true); // 자식 댓글 설정
+    //   setParentCommentId(commentId); // 부모 댓글 ID 설정
+    // } else {
+    //   setShowCommentInput(false); // 대댓글인 경우 입력창을 비활성화
+    // }
+    setShowCommentInput(true);
+    setIsChildComment(true); // 자식 댓글 설정
+    setParentCommentId(commentId); // 부모 댓글 ID 설정
   };
 
   // 댓글 작성
@@ -235,20 +214,26 @@ function BlogPost() {
   };
 
   // 댓글 삭제
-  const handleDeleteComment = async (commentId: number) => {
-    try {
-      const response = await axiosInstance.delete(`/api/v1/comment`, {
-        params: { postId: postId },
-        data: { commentId: commentId },
-      });
+  const handleDeleteComment = async (
+    commentId: number,
+    childComment: boolean
+  ) => {
+    if (window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
+      try {
+        const response = await axiosInstance.delete(`/api/v1/comment`, {
+          params: { postId: postId },
+          data: { commentId: commentId, childComment: childComment },
+        });
 
-      if (response.status === 204) {
-        window.location.reload();
-      } else {
-        console.error("댓글 삭제 중 오류 발생");
+        if (response.status === 204) {
+          alert("댓글이 삭제되었습니다.");
+          window.location.reload();
+        } else {
+          console.error("댓글 삭제 중 오류 발생");
+        }
+      } catch (error) {
+        console.error("댓글 삭제 중 오류 발생:", error);
       }
-    } catch (error) {
-      console.error("댓글 삭제 중 오류 발생:", error);
     }
   };
 
@@ -298,7 +283,6 @@ function BlogPost() {
   const handleLikeClick = async () => {
     try {
       if (likeStatus) {
-        // 좋아요 취소
         const response = await axiosInstance.delete(
           `/api/v1/post/${postId}/like`
         );
@@ -307,7 +291,6 @@ function BlogPost() {
           setLikesCount((prev) => prev - 1);
         }
       } else {
-        // 좋아요 추가
         const response = await axiosInstance.post(
           `/api/v1/post/${postId}/like`
         );
@@ -343,6 +326,15 @@ function BlogPost() {
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewCommentContent(e.target.value);
+  };
+
+  // 조회수
+  const increasePostView = async () => {
+    try {
+      await axiosInstance.post(`/api/v1/post/view/${postId}`);
+    } catch (error) {
+      console.error("조회수를 증가시키는 중 오류 발생:", error);
+    }
   };
 
   // 음악 재생/일시정지 함수
@@ -382,11 +374,15 @@ function BlogPost() {
         </S.TopRightContent>
         <S.LeftContent>
           <S.SongTitleWrapper>
-            <S.SongTitle>{post.musicTitle}</S.SongTitle>
-            {isPlaying ? (
-              <FaPause onClick={() => handlePlayPause(post.musicUrl)} />
+            <S.SongTitle>{post.musicTitle || "No music"}</S.SongTitle>
+            {post.musicUrl ? (
+              isPlaying ? (
+                <FaPause onClick={() => handlePlayPause(post.musicUrl)} />
+              ) : (
+                <FaPlay onClick={() => handlePlayPause(post.musicUrl)} />
+              )
             ) : (
-              <FaPlay onClick={() => handlePlayPause(post.musicUrl)} />
+              <FaPlay style={{ color: "gray", cursor: "not-allowed" }} />
             )}
             <AnimatedGraphicEq isPlaying={isPlaying} />
           </S.SongTitleWrapper>
@@ -430,7 +426,7 @@ function BlogPost() {
               <S.Comment
                 key={comment.commentId}
                 style={{
-                  marginLeft: comment.childComment ? "20px" : "0px", // 대댓글일 경우 들여쓰기 적용
+                  marginLeft: comment.childComment ? "20px" : "0px",
                 }}
               >
                 <S.CommentAuthorWrapper>
@@ -449,16 +445,18 @@ function BlogPost() {
                     <S.CommentHeartCount>
                       {comment.totalLikes}
                     </S.CommentHeartCount>
-                    <S.ReplyButton
-                      onClick={() =>
-                        handleCommentClick(
-                          comment.commentId,
-                          comment.childComment
-                        )
-                      }
-                    >
-                      답글
-                    </S.ReplyButton>
+                    {!comment.childComment && (
+                      <S.ReplyButton
+                        onClick={() =>
+                          handleCommentClick(
+                            comment.commentId,
+                            comment.childComment
+                          )
+                        }
+                      >
+                        답글
+                      </S.ReplyButton>
+                    )}
                   </div>
                   <div
                     style={{
@@ -474,7 +472,12 @@ function BlogPost() {
                         수정
                       </S.CommentActionButton>
                       <S.CommentActionButton
-                        onClick={() => handleDeleteComment(comment.commentId)}
+                        onClick={() =>
+                          handleDeleteComment(
+                            comment.commentId,
+                            comment.childComment
+                          )
+                        }
                       >
                         삭제
                       </S.CommentActionButton>
@@ -491,12 +494,12 @@ function BlogPost() {
         </S.PostContent>
         {showCommentInput && (
           <S.FixedBottomBar>
-            <S.Icon>
+            {/* <S.Icon>
               <FaHeart />
             </S.Icon>
             <S.Icon>
               <FaComment />
-            </S.Icon>
+            </S.Icon> */}
             <S.InputField
               type="text"
               placeholder={
@@ -525,21 +528,6 @@ function BlogPost() {
 }
 
 export default BlogPost;
-
-const pulse = keyframes`
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-`;
 
 export const AnimatedGraphicEq = styled(MdGraphicEq)<{ isPlaying: boolean }>`
   color: white;

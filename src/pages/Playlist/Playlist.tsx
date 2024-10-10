@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 
 interface Song {
   id: number;
+  postId: number;
   musicUrl: string;
   title: string;
   hashTag: string;
@@ -115,11 +116,10 @@ function Playlist() {
     }
   };
 
-  // songId => postId로 바꾸기
-  // 수정 내용을 서버로 전송
-  const handleSaveEdit = async (songId: number, song: Song) => {
+  // 노래 수정
+  const handleSaveEdit = async (postId: number, song: Song) => {
     try {
-      await axiosInstance.put(`/api/v1/music/post/${songId}`, {
+      await axiosInstance.put(`/api/v1/music/post/${postId}`, {
         musicUrl: song.musicUrl,
         title: editedTitle,
         hashTag: editedHashTag,
@@ -128,7 +128,7 @@ function Playlist() {
       });
       setSongs((prevSongs) =>
         prevSongs.map((s) =>
-          s.id === songId
+          s.id === postId
             ? { ...s, title: editedTitle, hashTag: editedHashTag }
             : s
         )
@@ -158,7 +158,7 @@ function Playlist() {
       } else {
         // 다른 노래 클릭 시 새로운 노래 재생
         audioRef.current.pause();
-        audioRef.current.src = musicUrl; // 새로운 노래의 URL로 src 설정
+        audioRef.current.src = musicUrl;
         audioRef.current.play();
         setCurrentSongId(songId);
         setIsPlaying(true);
@@ -234,7 +234,7 @@ function Playlist() {
                   </S.DeleteButton>
                   {editSongId === song.id ? (
                     <S.DeleteButton
-                      onClick={() => handleSaveEdit(song.id, song)}
+                      onClick={() => handleSaveEdit(song.postId, song)}
                     >
                       저장
                     </S.DeleteButton>
@@ -244,20 +244,6 @@ function Playlist() {
                     </S.DeleteButton>
                   )}
                 </S.SongDateAndDelete>
-                {/* <S.SongDetails>
-                <S.SongTitle>{song.title}</S.SongTitle>
-                <S.HashTags>
-                  {song.hashTags && song.hashTags.length > 0 ? (
-                    song.hashTags.map((tag) => <span key={tag}>#{tag} </span>)
-                  ) : (
-                    <span>No hashtags</span>
-                  )}
-                </S.HashTags>
-                <S.SongDateAndDelete>
-                  <S.DeleteButton onClick={() => deleteSong(song.id)}>
-                    삭제
-                  </S.DeleteButton>
-                </S.SongDateAndDelete> */}
               </S.SongDetails>
               <S.SongActions>
                 <S.ProducerName>{uid}</S.ProducerName>

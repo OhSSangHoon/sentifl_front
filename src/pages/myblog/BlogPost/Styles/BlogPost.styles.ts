@@ -1,5 +1,28 @@
 import styled, { keyframes } from "styled-components";
 
+export interface PostData {
+  title: string;
+  content: string;
+  thumbnailUrl: string | null;
+  musicTitle: string;
+  musicUrl: string;
+  totalLikes: number;
+  totalViews: number;
+  modifiedTime: string;
+  createdTime: string;
+}
+
+export interface CommentData {
+  commentId: number;
+  nickName: string;
+  uid: string;
+  content: string;
+  totalLikes: number;
+  time: string;
+  isDelete: boolean;
+  childComment: boolean;
+}
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -386,5 +409,20 @@ export const ReplyButton = styled.span`
 
   &:active {
     color: rgba(256, 256, 256, 0.2);
+  }
+`;
+
+export const pulse = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 `;
