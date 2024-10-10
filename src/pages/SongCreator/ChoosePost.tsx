@@ -137,14 +137,18 @@ const ChoosePost = () => {
   // 하나의 체크박스만 선택 가능하도록 설정
   const handleCheckboxChange = (postId: number) => {
     setSelectedPostId(postId); // 단일 선택
-    console.log(postId);
   };
 
   const sendToFastAPI = async (
     uid: string,
     postUrl: string,
     accessToken: string
-  ): Promise<{ musicUrl: string; emotion: string; title: string } | null> => {
+  ): Promise<{
+    musicUrl: string;
+    emotion1: string;
+    emotion2: string;
+    title: string;
+  } | null> => {
     try {
       const response = await axiosInstance.post(
         `/create/music`, // baseURL을 무시하고 수동으로 FastAPI의 URL을 사용
@@ -162,16 +166,15 @@ const ChoosePost = () => {
       );
 
       if (response.status === 200) {
-        const { url: musicUrl, emotion, title } = response.data;
+        const { url: musicUrl, emotion1, emotion2, title } = response.data;
         console.log("FastAPI 응답:", response.data);
-        return { musicUrl, emotion, title }; // 필요한 데이터를 반환
+        return { musicUrl, emotion1, emotion2, title }; // 필요한 데이터를 반환
       } else {
         console.error("FastAPI 응답 실패:", response.status, response.data);
         return null;
       }
     } catch (error) {
       console.error("FastAPI로 데이터 전송 실패:", error);
-      console.log("FastAPI URL:", process.env.REACT_APP_FASTAPI_BASE_URL);
 
       return null;
     }
@@ -200,7 +203,7 @@ const ChoosePost = () => {
         );
 
         if (fastAPIResponse) {
-          const { musicUrl, emotion, title } = fastAPIResponse;
+          const { musicUrl, emotion1, emotion2, title } = fastAPIResponse;
 
           const hashTag = hashTags[post.postId] || ""; // 해시태그를 추가
 
@@ -212,15 +215,13 @@ const ChoosePost = () => {
               title: title,
               hashTag: hashTag.trim().replace(/\s+/g, " "),
               //임시로 emotion 넣음
-              emotion1: emotion,
-              emotion2: emotion,
+              emotion1: emotion1,
+              emotion2: emotion2,
             }
           );
-          console.log(post.postId);
 
           if (springResponse.status === 204) {
             alert("노래 제작이 성공적으로 완료되었습니다!");
-            console.log("스프링 백엔드 응답:", springResponse.data);
 
             // 해시태그 초기화
             setHashTags((prevHashTags) => ({
@@ -229,7 +230,12 @@ const ChoosePost = () => {
             }));
 
             navigate("/song-result", {
-              state: { title, emotion1: emotion, emotion2: emotion, musicUrl },
+              state: {
+                title,
+                emotion1: emotion1,
+                emotion2: emotion2,
+                musicUrl,
+              },
             });
           } else {
             console.error("노래 제작 실패:", springResponse);
