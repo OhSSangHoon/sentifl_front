@@ -92,7 +92,7 @@ export const HeartIcon = styled.span`
   }
 `;
 
-export const PostDescription = styled.p`
+export const PostDescription = styled.div`
   font-size: 14px;
   color: #b5b5b5;
   line-height: 1.5;
