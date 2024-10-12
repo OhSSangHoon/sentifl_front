@@ -140,7 +140,7 @@ function BlogPost() {
           setLastId(newComments[newComments.length - 1].commentId);
         }
 
-        if (newComments.length === 0) {
+        if (newComments.length < 10) {
           setHasMore(false);
         }
       } else {

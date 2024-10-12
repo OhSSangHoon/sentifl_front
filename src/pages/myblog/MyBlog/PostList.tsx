@@ -158,6 +158,12 @@ const PostList = () => {
         await axiosInstance.delete(`/api/v1/post/${uid}/${postId}`);
         const updatedPosts = allPosts.filter((post) => post.postId !== postId);
         setAllPosts(updatedPosts);
+
+        // 페이지에 남은 게시물이 없을 경우 이전 페이지로 이동
+        if (updatedPosts.length <= page * pageSize && page > 0) {
+          setPage((prevPage) => prevPage - 1);
+        }
+
         alert("게시물이 삭제되었습니다.");
       } catch (err) {
         console.error("게시물을 삭제하는 중 오류 발생:", err);

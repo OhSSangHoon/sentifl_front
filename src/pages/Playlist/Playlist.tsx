@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as S from "./Styles/Playlist.style";
 import { FaPlay, FaPlus, FaAsterisk, FaPause } from "react-icons/fa";
 import axiosInstance from "../../axiosInterceptor";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface Song {
   musicId: number;
@@ -175,11 +175,16 @@ function Playlist() {
     fetchSongs();
   }, []);
 
+  const navigate = useNavigate();
+  const goToCreateSong = () => {
+    navigate("/create-song");
+  };
+
   return (
     <S.PlaylistContainer>
       <S.TopBar>
         <S.IconWrapper>
-          <FaAsterisk size={18} color="#fff" />
+          <FaAsterisk size={18} onClick={goToCreateSong} />
         </S.IconWrapper>
       </S.TopBar>
       <S.Content>

@@ -21,7 +21,9 @@ function Home() {
     // 인기 해시태그 가져오기
     const fetchPopularHashtags = async () => {
       try {
-        const response = await axiosInstance.get("/api/v1/post/search/hashtags");
+        const response = await axiosInstance.get(
+          "/api/v1/post/search/hashtags"
+        );
         setHashtags(response.data);
       } catch (error) {
         console.error("Failed to fetch popular hashtags:", error);
@@ -52,7 +54,10 @@ function Home() {
       });
     };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
 
     if (homeRef.current) observer.observe(homeRef.current);
     if (musicRecommendRef.current) observer.observe(musicRecommendRef.current);
@@ -81,8 +86,8 @@ function Home() {
         scrollToNewPost={() => scrollToSection(newPostRef)}
         activeSection={activeSection}
       />
-      <S.Background ref={homeRef}>
-        <S.CircleContainer>
+      <S.Section ref={homeRef}>
+        <S.Background>
           <S.Circle
             size="800px"
             top="70%"
@@ -99,20 +104,18 @@ function Home() {
             translateY="-50%"
             gradient="linear-gradient(135deg, #2B8DBE 0%, #C06AEA 100%)"
           />
-        </S.CircleContainer>
-        <S.HashtagContainer>
-          <h2>Popular Hashtags</h2>
+          <S.HashtagContainer>
+            <h2>Popular Hashtags</h2>
             {hashtags.length > 0 ? (
               hashtags
-              .filter((hashtag) => hashtag.trim() !== "")
-              .map((hashtag, index) => (
-                <span key={index}>#{hashtag}</span>
-              ))
+                .filter((hashtag) => hashtag.trim() !== "")
+                .map((hashtag, index) => <span key={index}>#{hashtag}</span>)
             ) : (
               <p>No popular hashtags available</p>
             )}
-        </S.HashtagContainer>
-      </S.Background>
+          </S.HashtagContainer>
+        </S.Background>
+      </S.Section>
 
       <S.Section ref={musicRecommendRef}>
         <MusicRecommend />
