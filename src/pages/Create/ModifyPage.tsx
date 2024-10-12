@@ -14,50 +14,42 @@ interface PostData {
 }
 
 const ModifyPage = () => {
-  const { postId } = useParams<{ postId: string }>(); // URL에서 postId 추출
-  const { uid } = useAuth(); // 사용자의 uid 가져오기
+  const { postId } = useParams<{ postId: string }>();
+  const { uid } = useAuth();
   const navigate = useNavigate();
 
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [hashTag, setHashTag] = useState<string>("");
 
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        let allPosts: any[] = [];
-        let currentPage = 0;
-        let lastPage = false;
+        const response = await axiosInstance.get(`/api/v1/post/${uid}`, {
+          params: { page: 0, size: 10 },
+        });
 
-        // 페이지네이션을 이용해 모든 게시글 가져오기
-        while (!lastPage) {
-          const response = await axiosInstance.get(`/api/v1/post/${uid}`, {
-            params: { page: currentPage, size: 10 },
-          });
+        if (response.status === 200) {
+          const selectedPost = response.data.content.find(
+            (p: any) => p.postId === Number(postId)
+          );
 
-          if (response.status === 200) {
-            allPosts = [...allPosts, ...response.data.content];
-            lastPage = response.data.last; // 마지막 페이지 여부 확인
-            currentPage += 1;
-          } else {
-            console.error("게시물 목록을 불러오는 중 오류 발생");
-            break;
+          if (selectedPost) {
+            const { postUrl, thumbnailUrl } = selectedPost;
+
+            const postContentResponse = await axiosInstance.get(postUrl);
+            if (postContentResponse.status === 200) {
+              const { title, content } = postContentResponse.data;
+              setPost({ title, content, thumbnailUrl, postUrl });
+            }
+
+            const hashtagResponse = await axiosInstance.get(
+              `/api/v1/post/${postId}/hashtag`
+            );
+            if (hashtagResponse.status === 200) {
+              setHashTag(hashtagResponse.data.join(" "));
+            }
           }
-        }
-
-        // postId에 해당하는 게시물 찾기
-        const selectedPost = allPosts.find(
-          (p: any) => p.postId === Number(postId)
-        );
-
-        if (selectedPost) {
-          const { postUrl, thumbnailUrl } = selectedPost;
-          const postContentResponse = await axiosInstance.get(postUrl);
-          if (postContentResponse.status === 200) {
-            const { title, content } = postContentResponse.data;
-            setPost({ title, content, thumbnailUrl, postUrl });
-          }
-        } else {
-          console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");
         }
       } catch (error) {
         console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
@@ -71,67 +63,37 @@ const ModifyPage = () => {
     }
   }, [postId, uid]);
 
-  // useEffect(() => {
-  //   const fetchPostData = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(`/api/v1/post/${uid}`);
-  //       if (response.status === 200) {
-  //         const postList = response.data.content;
-  //         const selectedPost = postList.find(
-  //           (p: any) => p.postId === Number(postId)
-  //         );
-
-  //         if (selectedPost) {
-  //           const { postUrl, thumbnailUrl } = selectedPost;
-  //           const postContentResponse = await axiosInstance.get(postUrl);
-  //           if (postContentResponse.status === 200) {
-  //             const { title, content } = postContentResponse.data;
-  //             setPost({ title, content, thumbnailUrl, postUrl });
-  //           }
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (postId) {
-  //     fetchPostData();
-  //   }
-  // }, [postId, uid]);
-
   const handleModify = async (content: string, thumbnailUrl: string) => {
     try {
-      const postUrl = post?.postUrl; // 게시물의 S3 URL을 가져옴
-
-      if (!postUrl) {
-        console.error("postUrl is not valid:", postUrl);
-        alert("유효하지 않은 postUrl입니다. 게시물 수정에 실패했습니다.");
-        return; // postUrl이 유효하지 않으면 함수 종료
+      if (!post || !post.postUrl) {
+        alert("게시물 URL이 유효하지 않습니다.");
+        return;
       }
 
-      // 수정된 게시물 내용을 JSON으로 구성
       const jsonContent = {
-        title: post?.title || "",
+        title: post.title,
         content,
         thumbnailUrl,
+        hashTag,
       };
 
-      // 1. S3에 수정된 파일 덮어쓰기
-      const jsonBlob = new Blob([JSON.stringify(jsonContent, null, 2)], {
+      const jsonBlob = new Blob([JSON.stringify(jsonContent)], {
         type: "application/json",
       });
+      await updateToS3(new File([jsonBlob], "updated_post.json"), post.postUrl);
 
-      await updateToS3(new File([jsonBlob], "updated_post.json"), postUrl);
-
-      // 2. 서버로 PUT 요청 보내기
       const response = await axiosInstance.put(
         `/api/v1/post/${uid}/${postId}`,
         {
-          postUrl,
+          title: post.title,
+          postUrl: post.postUrl,
           thumbnailUrl,
+          hashTag,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+          },
         }
       );
 
@@ -162,10 +124,12 @@ const ModifyPage = () => {
         initialDelta={post.content}
         title={post.title}
         setTitle={(newTitle) => setPost({ ...post, title: newTitle })}
-        images={[]} // 필요에 따라 이미지 처리
+        images={[]}
         thumbnailUrl={post.thumbnailUrl}
-        onModify={handleModify} // 수정 핸들러 전달
+        onModify={handleModify}
         isCreatePage={false}
+        hashTag={hashTag}
+        setHashTag={setHashTag}
       />
     </S.Main>
   );

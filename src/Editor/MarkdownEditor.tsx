@@ -32,6 +32,8 @@ interface MarkdownEditorProps {
   thumbnailUrl: string | null;
   onModify?: (content: string, thumbnailUrl: string) => void;
   isCreatePage?: boolean;
+  hashTag: string;
+  setHashTag: (newHashTag: string) => void;
 }
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
@@ -43,6 +45,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   thumbnailUrl, // 썸네일 URL을 props로 받음
   onModify,
   isCreatePage,
+  hashTag,
+  setHashTag,
 }) => {
   const quillRef = useRef<Quill | null>(null);
   const navigate = useNavigate();
@@ -51,9 +55,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     string | null
   >(thumbnailUrl);
   const [isDirty, setIsDirty] = useState(false);
-  const [hashTag, setHashTag] = useState<string>("");
+  const [isSaving, setIsSaving] = useState(false);
 
-  usePrompt("페이지를 떠나시겠습니까? 저장되지 않은 글이 있습니다.", isDirty);
+  usePrompt("페이지를 떠나시겠습니까? 저장되지 않은 글이 있습니다.", isDirty && !isSaving);
 
   // 썸네일 URL이 업데이트되면 내부 상태도 업데이트
   useEffect(() => {
@@ -257,6 +261,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     };
 
     try {
+      setIsSaving(true);
+
       const jsonBlob = new Blob([JSON.stringify(jsonContent, null, 2)], {
         type: "application/json",
       });
@@ -286,16 +292,15 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
       if (response.status === 201) {
         alert("게시물이 성공적으로 저장되었습니다.");
-
-        // await sendToFastAPI(uid, s3Url, accessToken);
-
+        setIsDirty(false);
         navigate(`/user/${uid}/blog`);
       }
-
-      setIsDirty(false); // 저장 후에 변경 상태를 초기화
+      
     } catch (error) {
       console.error("게시물 저장 실패:", error);
       alert("게시물 저장에 실패했습니다.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -303,8 +308,19 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     if (quillRef.current && onModify) {
       const content = quillRef.current.root.innerHTML;
       onModify(content, internalThumbnailUrl || "");
+      setIsSaving(true);
+      try{
+        setIsDirty(false);
+      } finally {
+        setIsSaving(false);
+      }
+      
     }
   };
+
+  useEffect(() => {
+    setHashTag(hashTag);
+  }, [hashTag]);
 
   return (
     <S.EditorWrapper>
@@ -347,8 +363,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       </S.EditorContainer>
       <S.HashTagInput
         placeholder="해시태그를 입력하세요."
-        value={hashTag} // 현재 상태 값을 입력 필드에 반영
-        onChange={(e) => setHashTag(e.target.value)} // 입력 값이 변경될 때 상태 업데이트
+        value={hashTag}
+        onChange={(e) => setHashTag(e.target.value)}
       />
     </S.EditorWrapper>
   );

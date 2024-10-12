@@ -95,7 +95,7 @@ export const SongTitle = styled.div`
 
 export const CategoryAndTitle = styled.div`
   position: absolute;
-  top: 60%;
+  top: 75%;
   left: 20px;
   transform: translateY(-50%);
   display: flex;
@@ -107,7 +107,24 @@ export const CategoryAndTitle = styled.div`
 export const Category = styled.div`
   font-size: 16px;
   color: white;
-  margin-bottom: 5px;
+`;
+
+export const Hash = styled.div`
+  margin-top: 50px;
+  display: flex;
+  float: left;
+  width: 100px;
+  height: 40px;
+  margin-right: 5px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    color: gray;
+  }
 `;
 
 export const Title = styled.h1`

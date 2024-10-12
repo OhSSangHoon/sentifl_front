@@ -44,6 +44,8 @@ function BlogPost() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const [hashTags, setHashTag] = useState<string[]>([]);
+
   useEffect(() => {
     const fetchAllPosts = async () => {
       try {
@@ -72,7 +74,7 @@ function BlogPost() {
         );
 
         if (selectedPost) {
-          const { postUrl, totalLikes, totalViews, musicTitle, musicUrl } =
+          const { postUrl, totalLikes, totalViews, thumbnailUrl } =
             selectedPost;
 
           // S3에서 게시글 내용 가져오기
@@ -84,12 +86,22 @@ function BlogPost() {
               ...selectedPost,
               title,
               content,
+              thumbnailUrl,
+              hashTag: [],
             });
 
             increasePostView();
 
             setLikesCount(totalLikes);
             setViewsCount(totalViews);
+          }
+
+          const hashTagResponse = await axiosInstance.get(
+            `/api/v1/post/${postId}/hashtag`
+          );
+          if (hashTagResponse.status === 200) {
+            const hashtagsArray = hashTagResponse.data[0].split(" ");
+            setHashTag(hashtagsArray);
           }
         } else {
           console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");
@@ -387,8 +399,12 @@ function BlogPost() {
             <AnimatedGraphicEq isPlaying={isPlaying} />
           </S.SongTitleWrapper>
           <S.CategoryAndTitle>
-            <S.Category>카테고리</S.Category>
             <S.Title>{post.title}</S.Title>
+            <S.Category>
+              {hashTags.map((tag) => (
+                <S.Hash key={tag}>{tag} </S.Hash>
+              ))}
+            </S.Category>
           </S.CategoryAndTitle>
         </S.LeftContent>
         <S.BottomRightContent>

@@ -115,7 +115,7 @@ export const updateToS3 = async (
         Key: fileKey, // 추출된 파일 경로에 덮어쓰기
         Body: file,
         ContentType: file.type,
-        ACL: "public-read",
+        // ACL: "public-read",
       },
     });
 
