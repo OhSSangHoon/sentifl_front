@@ -25,12 +25,15 @@ const ChoosePost = () => {
   const [postContents, setPostContents] = useState<{
     [key: number]: PostContent;
   }>({});
-  const [loading, setLoading] = useState(true);
+
   const [page, setPage] = useState(0);
   const pageSize = 5;
   const paginationSize = 5;
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [hashTags, setHashTags] = useState<{ [key: number]: string }>({});
+
+  const [creatingMusic, setCreatingMusic] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { uid } = useAuth();
   const navigate = useNavigate();
@@ -189,6 +192,8 @@ const ChoosePost = () => {
 
     if (post) {
       try {
+        setCreatingMusic(true);
+
         const accessToken = localStorage.getItem("accessToken");
         if (!accessToken) {
           alert("로그인이 필요합니다.");
@@ -227,7 +232,6 @@ const ChoosePost = () => {
           if (springResponse.status === 204) {
             alert("노래 제작이 성공적으로 완료되었습니다!");
 
-            // 해시태그 초기화
             setHashTags((prevHashTags) => ({
               ...prevHashTags,
               [selectedPostId as number]: "",
@@ -252,6 +256,8 @@ const ChoosePost = () => {
       } catch (error) {
         console.error("노래 제작 중 오류 발생:", error);
         alert("노래 제작 중 오류가 발생했습니다.");
+      } finally {
+        setCreatingMusic(false);
       }
     }
   };
@@ -262,6 +268,17 @@ const ChoosePost = () => {
       [postId]: value,
     }));
   };
+
+  if (creatingMusic) {
+    return (
+      <S.LoadingScreen>
+        <S.LoadingTitle>MAKE SENTIFL</S.LoadingTitle> <S.LoadingCircle />
+        <S.LoadingText>
+          노래를 생성 중입니다. 멋진 음악을 만들어 드릴게요.
+        </S.LoadingText>
+      </S.LoadingScreen>
+    );
+  }
 
   if (loading) {
     return <p>로딩 중...</p>;

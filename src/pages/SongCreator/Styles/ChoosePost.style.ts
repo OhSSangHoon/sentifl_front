@@ -166,3 +166,45 @@ export const HashTagInput = styled.input`
     border-color: #777;
   }
 `;
+
+export const LoadingScreen = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 100px;
+  align-items: center;
+  height: 100vh;
+  background-color: #000;
+  color: #fff;
+`;
+
+export const LoadingTitle = styled.h1`
+  font-size: 36px;
+  margin-bottom: 40px;
+  font-weight: bold;
+`;
+
+export const LoadingText = styled.p`
+  font-size: 16px;
+  color: #b5b5b5;
+  margin-top: 40px;
+`;
+
+export const LoadingCircle = styled.div`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  border-top: 5px solid #4caf50;
+  margin: 100px 0;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
