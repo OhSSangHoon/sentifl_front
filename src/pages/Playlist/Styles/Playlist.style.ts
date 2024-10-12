@@ -177,10 +177,27 @@ export const LoadMoreButton = styled.button`
   }
 `;
 
+// export const HashTags = styled.div`
+//   font-size: 12px;
+//   color: #888;
+//   margin-top: 5px;
+// `;
+
 export const HashTags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+`;
+
+export const HashTagBubble = styled.span`
+  background-color: #282828;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 25px;
   font-size: 12px;
-  color: #888;
-  margin-top: 5px;
+  display: inline-block;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 export const TransparentInput = styled.input`

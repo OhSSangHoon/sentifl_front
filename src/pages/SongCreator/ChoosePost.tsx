@@ -205,7 +205,8 @@ const ChoosePost = () => {
         if (fastAPIResponse) {
           const { musicUrl, emotion1, emotion2, title } = fastAPIResponse;
 
-          const hashTag = hashTags[post.postId] || ""; // 해시태그를 추가
+          let hashTag = hashTags[post.postId] || "";
+          hashTag = hashTag.replace(/#/g, "");
 
           // FastAPI에서 받아온 데이터를 스프링 백엔드로 전송
           const springResponse = await axiosInstance.post(
@@ -253,11 +254,28 @@ const ChoosePost = () => {
 
   // 해시태그 입력 핸들러
   const handleHashTagChange = (postId: number, value: string) => {
+    const processedValue = value
+      .split(" ") // 공백을 기준으로 해시태그 분리
+      .map((tag) => (tag.startsWith("#") || tag === "" ? tag : `#${tag}`)) // 각 태그에 #을 붙이지만 공백이면 #을 추가하지 않음
+      .join(" "); // 다시 공백으로 연결
+
     setHashTags((prevHashTags) => ({
       ...prevHashTags,
-      [postId]: value,
+      [postId]: processedValue,
     }));
   };
+
+  // const handleHashTagChange = (postId: number, value: string) => {
+  //   const processedValue = value
+  //     .split(" ") // 공백을 기준으로 해시태그 분리
+  //     .map((tag) => (tag.startsWith("#") ? tag : `#${tag}`)) // 각 태그에 #을 붙임
+  //     .join(" "); // 다시 공백으로 연결
+
+  //   setHashTags((prevHashTags) => ({
+  //     ...prevHashTags,
+  //     [postId]: processedValue,
+  //   }));
+  // };
 
   if (loading) {
     return <p>로딩 중...</p>;
@@ -298,7 +316,6 @@ const ChoosePost = () => {
 
                 {isChecked && (
                   <S.HashTagInput
-                    placeholder="해시태그를 입력하세요."
                     value={`#${hashTags[post.postId]?.replace(/^#/, "") || ""}`}
                     onChange={(e) =>
                       handleHashTagChange(
@@ -306,10 +323,6 @@ const ChoosePost = () => {
                         e.target.value.replace(/^#/, "")
                       )
                     }
-                    // value={hashTags[post.postId] || ""}
-                    // onChange={(e) =>
-                    //   handleHashTagChange(post.postId, e.target.value)
-                    // }
                   />
                 )}
               </S.Post>

@@ -97,7 +97,7 @@ function Playlist() {
     }
   };
 
-  // 해시태그?
+  // 해시태그
   // const fetchHashTags = async (musicId: number) => {
   //   try {
   //     const response = await axiosInstance.get(
@@ -218,11 +218,31 @@ function Playlist() {
                     <S.SongTitle>{song.title}</S.SongTitle>
                     <S.HashTags>
                       {song.hashTag && song.hashTag.length > 0 ? (
-                        <span>#{song.hashTag}</span>
+                        song.hashTag
+                          .split(" ")
+                          .map((tag, index) => (
+                            <S.HashTagBubble key={index}>
+                              #{tag}
+                            </S.HashTagBubble>
+                          ))
                       ) : (
                         <span>No hashtags</span>
                       )}
                     </S.HashTags>
+                    {/* <S.HashTags>
+                      {song.hashTag && song.hashTag.length > 0 ? (
+                        song.hashTag.split(" ").map((tag, index) => (
+                          <span key={index}>
+                            #{tag}
+                            {index < song.hashTag.split(" ").length - 1
+                              ? " "
+                              : ""}
+                          </span>
+                        ))
+                      ) : (
+                        <span>No hashtags</span>
+                      )}
+                    </S.HashTags> */}
                   </>
                 )}
                 <S.SongDateAndDelete>
