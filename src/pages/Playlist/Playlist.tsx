@@ -229,20 +229,6 @@ function Playlist() {
                         <span>No hashtags</span>
                       )}
                     </S.HashTags>
-                    {/* <S.HashTags>
-                      {song.hashTag && song.hashTag.length > 0 ? (
-                        song.hashTag.split(" ").map((tag, index) => (
-                          <span key={index}>
-                            #{tag}
-                            {index < song.hashTag.split(" ").length - 1
-                              ? " "
-                              : ""}
-                          </span>
-                        ))
-                      ) : (
-                        <span>No hashtags</span>
-                      )}
-                    </S.HashTags> */}
                   </>
                 )}
                 <S.SongDateAndDelete>

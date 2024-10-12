@@ -134,9 +134,8 @@ const ChoosePost = () => {
     setPage(pageIndex);
   };
 
-  // 하나의 체크박스만 선택 가능하도록 설정
   const handleCheckboxChange = (postId: number) => {
-    setSelectedPostId(postId); // 단일 선택
+    setSelectedPostId(postId);
   };
 
   const sendToFastAPI = async (
@@ -168,7 +167,7 @@ const ChoosePost = () => {
       if (response.status === 200) {
         const { url: musicUrl, emotion1, emotion2, title } = response.data;
         console.log("FastAPI 응답:", response.data);
-        return { musicUrl, emotion1, emotion2, title }; // 필요한 데이터를 반환
+        return { musicUrl, emotion1, emotion2, title };
       } else {
         console.error("FastAPI 응답 실패:", response.status, response.data);
         return null;
@@ -206,7 +205,12 @@ const ChoosePost = () => {
           const { musicUrl, emotion1, emotion2, title } = fastAPIResponse;
 
           let hashTag = hashTags[post.postId] || "";
-          hashTag = hashTag.replace(/#/g, "");
+          // hashTag = hashTag.replace(/#/g, "");
+          hashTag = hashTag
+            .split("#")
+            .filter((tag) => tag.trim() !== "")
+            .join(" ");
+          console.log("해시태그", hashTag);
 
           // FastAPI에서 받아온 데이터를 스프링 백엔드로 전송
           const springResponse = await axiosInstance.post(
@@ -252,30 +256,12 @@ const ChoosePost = () => {
     }
   };
 
-  // 해시태그 입력 핸들러
   const handleHashTagChange = (postId: number, value: string) => {
-    const processedValue = value
-      .split(" ") // 공백을 기준으로 해시태그 분리
-      .map((tag) => (tag.startsWith("#") || tag === "" ? tag : `#${tag}`)) // 각 태그에 #을 붙이지만 공백이면 #을 추가하지 않음
-      .join(" "); // 다시 공백으로 연결
-
     setHashTags((prevHashTags) => ({
       ...prevHashTags,
-      [postId]: processedValue,
+      [postId]: value,
     }));
   };
-
-  // const handleHashTagChange = (postId: number, value: string) => {
-  //   const processedValue = value
-  //     .split(" ") // 공백을 기준으로 해시태그 분리
-  //     .map((tag) => (tag.startsWith("#") ? tag : `#${tag}`)) // 각 태그에 #을 붙임
-  //     .join(" "); // 다시 공백으로 연결
-
-  //   setHashTags((prevHashTags) => ({
-  //     ...prevHashTags,
-  //     [postId]: processedValue,
-  //   }));
-  // };
 
   if (loading) {
     return <p>로딩 중...</p>;
