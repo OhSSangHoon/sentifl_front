@@ -108,15 +108,8 @@ function Home() {
             <h2>Popular Hashtags</h2>
             {hashtags.length > 0 ? (
               hashtags
-<<<<<<< HEAD
-              .filter((hashtag) => hashtag.trim() !== "")
-              .map((hashtag, index) => (
-                <span key={index}>#{hashtag} </span>
-              ))
-=======
                 .filter((hashtag) => hashtag.trim() !== "")
                 .map((hashtag, index) => <span key={index}>#{hashtag}</span>)
->>>>>>> origin/develop
             ) : (
               <p>No popular hashtags available</p>
             )}
