@@ -25,11 +25,15 @@ const ChoosePost = () => {
   const [postContents, setPostContents] = useState<{
     [key: number]: PostContent;
   }>({});
-  const [loading, setLoading] = useState(true);
+
   const [page, setPage] = useState(0);
   const pageSize = 5;
   const paginationSize = 5;
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null); // 단일 선택으로 변경
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [hashTags, setHashTags] = useState<{ [key: number]: string }>({});
+
+  const [creatingMusic, setCreatingMusic] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { uid } = useAuth();
   const navigate = useNavigate();
@@ -133,23 +137,26 @@ const ChoosePost = () => {
     setPage(pageIndex);
   };
 
-  // 하나의 체크박스만 선택 가능하도록 설정
   const handleCheckboxChange = (postId: number) => {
-    setSelectedPostId(postId); // 단일 선택
-    console.log(postId);
+    setSelectedPostId(postId);
   };
 
   const sendToFastAPI = async (
     uid: string,
     postUrl: string,
     accessToken: string
-  ): Promise<{ musicUrl: string; emotion: string; title: string } | null> => {
+  ): Promise<{
+    musicUrl: string;
+    emotion1: string;
+    emotion2: string;
+    title: string;
+  } | null> => {
     try {
       const response = await axiosInstance.post(
         `/create/music`, // baseURL을 무시하고 수동으로 FastAPI의 URL을 사용
         {
           user_id: uid,
-          html_url: postUrl,
+          post_url: postUrl,
           token: accessToken,
         },
         {
@@ -161,16 +168,15 @@ const ChoosePost = () => {
       );
 
       if (response.status === 200) {
-        const { url: musicUrl, emotion, title } = response.data;
+        const { url: musicUrl, emotion1, emotion2, title } = response.data;
         console.log("FastAPI 응답:", response.data);
-        return { musicUrl, emotion, title }; // 필요한 데이터를 반환
+        return { musicUrl, emotion1, emotion2, title };
       } else {
         console.error("FastAPI 응답 실패:", response.status, response.data);
         return null;
       }
     } catch (error) {
       console.error("FastAPI로 데이터 전송 실패:", error);
-      console.log("FastAPI URL:", process.env.REACT_APP_FASTAPI_BASE_URL);
 
       return null;
     }
@@ -186,6 +192,8 @@ const ChoosePost = () => {
 
     if (post) {
       try {
+        setCreatingMusic(true);
+
         const accessToken = localStorage.getItem("accessToken");
         if (!accessToken) {
           alert("로그인이 필요합니다.");
@@ -199,10 +207,15 @@ const ChoosePost = () => {
         );
 
         if (fastAPIResponse) {
-          const { musicUrl, emotion, title } = fastAPIResponse;
+          const { musicUrl, emotion1, emotion2, title } = fastAPIResponse;
 
-          // 해시태그 추가 (필요하다면 적절한 값을 설정)
-          const hashTag = "#GeneratedSong";
+          let hashTag = hashTags[post.postId] || "";
+          // hashTag = hashTag.replace(/#/g, "");
+          hashTag = hashTag
+            .split("#")
+            .filter((tag) => tag.trim() !== "")
+            .join(" ");
+          console.log("해시태그", hashTag);
 
           // FastAPI에서 받아온 데이터를 스프링 백엔드로 전송
           const springResponse = await axiosInstance.post(
@@ -210,20 +223,27 @@ const ChoosePost = () => {
             {
               musicUrl: musicUrl,
               title: title,
-              hashTag: hashTag,
-              //임시로 emotion 넣음
-              emotion1: emotion,
-              emotion2: emotion,
+              hashTag: hashTag.trim().replace(/\s+/g, " "),
+              emotion1: emotion1,
+              emotion2: emotion2,
             }
           );
-          console.log(post.postId);
 
           if (springResponse.status === 204) {
             alert("노래 제작이 성공적으로 완료되었습니다!");
-            console.log("스프링 백엔드 응답:", springResponse.data);
+
+            setHashTags((prevHashTags) => ({
+              ...prevHashTags,
+              [selectedPostId as number]: "",
+            }));
 
             navigate("/song-result", {
-              state: { title, emotion1: emotion, emotion2: emotion, musicUrl },
+              state: {
+                title,
+                emotion1: emotion1,
+                emotion2: emotion2,
+                musicUrl,
+              },
             });
           } else {
             console.error("노래 제작 실패:", springResponse);
@@ -236,9 +256,29 @@ const ChoosePost = () => {
       } catch (error) {
         console.error("노래 제작 중 오류 발생:", error);
         alert("노래 제작 중 오류가 발생했습니다.");
+      } finally {
+        setCreatingMusic(false);
       }
     }
   };
+
+  const handleHashTagChange = (postId: number, value: string) => {
+    setHashTags((prevHashTags) => ({
+      ...prevHashTags,
+      [postId]: value,
+    }));
+  };
+
+  if (creatingMusic) {
+    return (
+      <S.LoadingScreen>
+        <S.LoadingTitle>MAKE SENTIFL</S.LoadingTitle> <S.LoadingCircle />
+        <S.LoadingText>
+          노래를 생성 중입니다. 멋진 음악을 만들어 드릴게요.
+        </S.LoadingText>
+      </S.LoadingScreen>
+    );
+  }
 
   if (loading) {
     return <p>로딩 중...</p>;
@@ -276,6 +316,18 @@ const ChoosePost = () => {
                     />
                   </S.CheckBoxWrapper>
                 </S.PostContentWrapper>
+
+                {isChecked && (
+                  <S.HashTagInput
+                    value={`#${hashTags[post.postId]?.replace(/^#/, "") || ""}`}
+                    onChange={(e) =>
+                      handleHashTagChange(
+                        post.postId,
+                        e.target.value.replace(/^#/, "")
+                      )
+                    }
+                  />
+                )}
               </S.Post>
             );
           })

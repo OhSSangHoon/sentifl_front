@@ -68,6 +68,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate(`/user/${uid}/playlist`);
   };
 
+  const goToCreateSong = () => {
+    navigate("/create-song");
+  };
+
   return (
     <S.SidebarContainer>
       <S.SidebarTopBar>
@@ -81,7 +85,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         )}
         {isPostUrl ? (
           <S.RightIcons>
-            <FaAsterisk size={18} /> <FaCog size={18} />
+            <FaAsterisk size={18} onClick={goToCreateSong} />
           </S.RightIcons>
         ) : (
           <S.RightIcons>

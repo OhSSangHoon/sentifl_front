@@ -48,15 +48,8 @@ const PostList = () => {
   const currentPaginationStart =
     Math.floor(page / paginationSize) * paginationSize;
 
-  // PostList에서 totalLikes와 totalViews 값 전달
-  const handlePostClick = (
-    postId: number,
-    totalLikes: number,
-    totalViews: number
-  ) => {
-    navigate(`/user/${uid}/post/${postId}`, {
-      state: { totalLikes, totalViews },
-    });
+  const handlePostClick = (postId: number) => {
+    navigate(`/user/${uid}/post/${postId}`, {});
   };
 
   useEffect(() => {
@@ -165,6 +158,12 @@ const PostList = () => {
         await axiosInstance.delete(`/api/v1/post/${uid}/${postId}`);
         const updatedPosts = allPosts.filter((post) => post.postId !== postId);
         setAllPosts(updatedPosts);
+
+        // 페이지에 남은 게시물이 없을 경우 이전 페이지로 이동
+        if (updatedPosts.length <= page * pageSize && page > 0) {
+          setPage((prevPage) => prevPage - 1);
+        }
+
         alert("게시물이 삭제되었습니다.");
       } catch (err) {
         console.error("게시물을 삭제하는 중 오류 발생:", err);
@@ -202,20 +201,14 @@ const PostList = () => {
                 <S.PostContentWrapper>
                   <S.PostInfo>
                     <S.PostHeader>
-                      <S.PostTitle
-                        onClick={() =>
-                          handlePostClick(
-                            post.postId,
-                            post.totalLikes,
-                            post.totalViews
-                          )
-                        }
-                      >
+                      <S.PostTitle onClick={() => handlePostClick(post.postId)}>
                         {postContent?.title || "제목 불러오는 중..."}
                       </S.PostTitle>
                       <S.PostMeta>
                         <S.PostDate>
-                          {new Date(post.createdTime).toLocaleDateString()}
+                          {post.modifiedTime
+                            ? new Date(post.modifiedTime).toLocaleDateString()
+                            : new Date(post.createdTime).toLocaleDateString()}
                         </S.PostDate>
                         <S.ActionButton onClick={() => editPost(post.postId)}>
                           수정
@@ -228,17 +221,10 @@ const PostList = () => {
                         >
                           삭제
                         </S.ActionButton>
-                        <S.HeartIcon>❤</S.HeartIcon>
                       </S.PostMeta>
                     </S.PostHeader>
                     <S.PostDescription
-                      onClick={() =>
-                        handlePostClick(
-                          post.postId,
-                          post.totalLikes,
-                          post.totalViews
-                        )
-                      }
+                      onClick={() => handlePostClick(post.postId)}
                     >
                       <PostDescription
                         content={stripHtmlTags(

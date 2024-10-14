@@ -16,7 +16,6 @@ export const PostListWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   // min-height: 700px;
-  z-index: 900;
 `;
 
 export const Post = styled.div`
@@ -119,8 +118,14 @@ export const PlaySection = styled.div`
   justify-content: center;
   padding: 20px;
   position: fixed; /* 고정된 위치에 배치 */
-  right: 20px;
+  right: 70px;
   top: 100px;
+
+  @media (max-width: 1000px) {
+    position: static;
+    width: 100%;
+    margin-top: 20px;
+  }
 `;
 
 export const PlayButton = styled.div`
@@ -148,5 +153,63 @@ export const CreateButton = styled.button`
 
   &:hover {
     background-color: #333;
+  }
+`;
+
+export const HashTagInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #1e1e1e;
+  color: #fff;
+  font-size: 14px;
+
+  &:focus {
+    outline: none;
+    border-color: #777;
+  }
+`;
+
+export const LoadingScreen = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 100px;
+  align-items: center;
+  height: 100vh;
+  background-color: #000;
+  color: #fff;
+`;
+
+export const LoadingTitle = styled.h1`
+  font-size: 36px;
+  margin-bottom: 40px;
+  font-weight: bold;
+`;
+
+export const LoadingText = styled.p`
+  font-size: 16px;
+  color: #b5b5b5;
+  margin-top: 40px;
+`;
+
+export const LoadingCircle = styled.div`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  border-top: 5px solid #4caf50;
+  margin: 100px 0;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;

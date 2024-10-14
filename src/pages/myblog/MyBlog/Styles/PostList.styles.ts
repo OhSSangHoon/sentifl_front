@@ -140,7 +140,7 @@ export const Overlay = styled.div`
 `;
 
 export const OverlayImage = styled.img`
-  max-width: 90%;
-  max-height: 90%;
+  min-width: 400px;
+  min-height: 400px;
   border-radius: 10px;
 `;

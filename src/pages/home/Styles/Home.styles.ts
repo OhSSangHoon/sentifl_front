@@ -23,40 +23,34 @@ const moveCircle = keyframes`
 `;
 
 export const HashtagContainer = styled.div`
-  z-index:1;
+  z-index: 1;
 `;
 
 export const PageContainer = styled.div`
   height: auto;
   overflow-x: hidden;
-`;
-
-export const Background = styled.div`
-  height: auto;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #080808, #202020);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow-y: hidden;
 
   ::-webkit-scrollbar {
     display: none;
   }
 `;
 
-export const Section = styled.div`
+export const Background = styled.div`
+  width: 100%;
+  // height: auto;
+  // min-height: 100vh;
   height: 100vh;
+  background: linear-gradient(135deg, #080808, #202020);
+  position: relative;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-export const CircleContainer = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
+export const Section = styled.div`
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

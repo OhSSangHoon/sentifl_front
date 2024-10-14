@@ -1,4 +1,27 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+export interface PostData {
+  title: string;
+  content: string;
+  thumbnailUrl: string | null;
+  musicTitle: string;
+  musicUrl: string;
+  totalLikes: number;
+  totalViews: number;
+  modifiedTime: string;
+  createdTime: string;
+}
+
+export interface CommentData {
+  commentId: number;
+  nickName: string;
+  uid: string;
+  content: string;
+  totalLikes: number;
+  time: string;
+  isDelete: boolean;
+  childComment: boolean;
+}
 
 export const Container = styled.div`
   display: flex;
@@ -87,23 +110,22 @@ export const Category = styled.div`
 `;
 
 export const Hash = styled.div`
-  margin-top:50px;
-  display:flex;
-  float:left;
-  width:100px;
-  height:40px;
-  margin-right:5px;
-  background:rgba(0, 0, 0, 0.7);
+  margin-top: 50px;
+  display: flex;
+  float: left;
+  width: 100px;
+  height: 40px;
+  margin-right: 5px;
+  background: rgba(0, 0, 0, 0.7);
   border-radius: 15px;
   justify-content: center;
   align-items: center;
-  cursor:pointer;
+  cursor: pointer;
 
-  &:hover{
-    color:gray;
+  &:hover {
+    color: gray;
   }
-`
-
+`;
 
 export const Title = styled.h1`
   font-size: 28px;
@@ -374,14 +396,50 @@ export const CommentHeartCount = styled.span`
   color: #aaa;
 `;
 
-export const ReplyButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 12px;
-  color: #aaa;
+export const LoadMoreButton = styled.button`
+  background-color: rgba(217, 217, 217, 0.1);
+  color: white;
+  border: 0.1px solid #ffffff;
+  padding: 10px 20px;
   cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  font-size: 16px;
+  border-radius: 5px;
 
   &:hover {
-    color: #fff;
+    background-color: rgba(217, 217, 217, 0.2);
+  }
+  &:disabled {
+    background-color: #c0c0c0;
+    cursor: not-allowed;
+  }
+`;
+
+export const ReplyButton = styled.span`
+  cursor: pointer;
+  color: gray;
+
+  &:hover {
+    color: rgba(256, 256, 256, 0.2);
+  }
+
+  &:active {
+    color: rgba(256, 256, 256, 0.2);
+  }
+`;
+
+export const pulse = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 `;

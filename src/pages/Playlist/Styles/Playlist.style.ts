@@ -122,11 +122,11 @@ export const DeleteButton = styled.button`
   font-size: 12px;
 
   &:hover {
-    color: red;
+    color: white;
   }
 
   &:active {
-    color: red;
+    color: white;
   }
 `;
 
@@ -174,5 +174,43 @@ export const LoadMoreButton = styled.button`
   &:disabled {
     background-color: #c0c0c0;
     cursor: not-allowed;
+  }
+`;
+
+// export const HashTags = styled.div`
+//   font-size: 12px;
+//   color: #888;
+//   margin-top: 5px;
+// `;
+
+export const HashTags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+`;
+
+export const HashTagBubble = styled.span`
+  background-color: #282828;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 25px;
+  font-size: 12px;
+  display: inline-block;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+`;
+
+export const TransparentInput = styled.input`
+  width: 500px;
+  opacity: 0.8;
+  background-color: #121212;
+  border: 0.2px solid gray;
+  border-radius: 25px;
+  color: white;
+  padding: 5px;
+  font-size: 14px;
+
+  &:focus {
+    opacity: 1;
   }
 `;
