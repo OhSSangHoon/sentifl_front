@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaAngleDown,
+  FaAsterisk,
   FaBell,
+  FaCalendarAlt,
   FaCog,
   FaParking,
   FaPen,
-  FaCalendarAlt,
-  FaAsterisk,
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
+import axiosInstance from "../../../axiosInterceptor";
 import * as S from "./Styles/Sidebar.styles";
 
 export interface SidebarProps {
@@ -32,6 +33,32 @@ const Sidebar: React.FC<SidebarProps> = ({
   // URL에 따라 SidebarTopBar 다르게 관리
   const isPostUrl = location.pathname.includes("post");
   const isBlogUrl = location.pathname.includes("blog");
+
+  const [followCount, setFollowCount] = useState<number>(0);
+  const [followingCount, setFollowingCount] = useState<number>(0);
+
+  useEffect(() => {
+    // 팔로우 및 팔로잉 정보 불러오기
+    const fetchFollowInfo = async () => {
+      try {
+        // 나를 팔로우한 사용자 수 불러오기
+        const followedByResponse = await axiosInstance.get(
+          `/api/v1/followedby/${uid}`
+        );
+        const followedByCount = followedByResponse.data.content.length; // content 배열의 길이를 사용해 팔로우 수 계산
+        setFollowCount(followedByCount);
+
+        // 내가 팔로우한 사용자 수 불러오기
+        const followingResponse = await axiosInstance.get(`/api/v1/follow/${uid}`);
+        const followingCount = followingResponse.data.content.length; // content 배열의 길이를 사용해 팔로잉 수 계산
+        setFollowingCount(followingCount);
+      } catch (error) {
+        console.error("팔로우 정보 불러오기에 실패했습니다.", error);
+      }
+    };
+
+    fetchFollowInfo();
+  }, [uid]);
 
   const handlePenClick = () => {
     navigate("/Create");
@@ -79,12 +106,12 @@ const Sidebar: React.FC<SidebarProps> = ({
           <S.ProfileStats>
             <S.ProfileStatItem onClick={toggleFollowPopup}>
               <small>follow</small>
-              <strong>0</strong>
+              <strong>{followCount}</strong>
             </S.ProfileStatItem>
             <S.Separator>|</S.Separator>
             <S.ProfileStatItem onClick={toggleFollowingPopup}>
               <small>following</small>
-              <strong>0</strong>
+              <strong>{followingCount}</strong>
             </S.ProfileStatItem>
           </S.ProfileStats>
         </S.ProfileInfo>

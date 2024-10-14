@@ -106,7 +106,7 @@ function Home() {
               hashtags
               .filter((hashtag) => hashtag.trim() !== "")
               .map((hashtag, index) => (
-                <span key={index}>#{hashtag}</span>
+                <span key={index}>#{hashtag} </span>
               ))
             ) : (
               <p>No popular hashtags available</p>
