@@ -1,9 +1,12 @@
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
 
 interface DotNavigationProps {
-  scrollToHome: () => void;
-  scrollToMusicRecommend: () => void;
-  scrollToNewPost: () => void;
+  scrollToHome?: () => void;
+  scrollToMusicRecommend?: () => void;
+  scrollToNewPost?: () => void;
+  scrollToSection1?: () => void;
+  scrollToSection2?: () => void;
   activeSection: string;
 }
 
@@ -11,16 +14,35 @@ const DotNavigation = ({
   scrollToHome,
   scrollToMusicRecommend,
   scrollToNewPost,
+  scrollToSection1,
+  scrollToSection2,
   activeSection,
 }: DotNavigationProps) => {
+  const location = useLocation();
+
   return (
     <DotContainer>
-      <Dot onClick={scrollToHome} active={activeSection === "home"} />
-      <Dot
-        onClick={scrollToMusicRecommend}
-        active={activeSection === "musicRecommend"}
-      />
-      <Dot onClick={scrollToNewPost} active={activeSection === "newPost"} />
+      {location.pathname === "/" ? (
+        <>
+          <Dot onClick={scrollToHome} active={activeSection === "home"} />
+          <Dot
+            onClick={scrollToMusicRecommend}
+            active={activeSection === "musicRecommend"}
+          />
+          <Dot onClick={scrollToNewPost} active={activeSection === "newPost"} />
+        </>
+      ) : location.pathname === "/precreate-song" ? (
+        <>
+          <Dot
+            onClick={scrollToSection1}
+            active={activeSection === "section1"}
+          />
+          <Dot
+            onClick={scrollToSection2}
+            active={activeSection === "section2"}
+          />
+        </>
+      ) : null}
     </DotContainer>
   );
 };

@@ -33,13 +33,15 @@ function Header() {
       fetchFollowList();
     }
   }, [isLoggedIn, uid]);
-  
+
   const fetchFollowList = async () => {
     try {
       const response = await axiosInstance.get(`/api/v1/follow/${uid}`);
       if (response.status === 200) {
         // 로그인한 사용자가 팔로우한 UID 목록 추출
-        const followedUids = response.data.content.map((user: UserInfoResponse) => user.uid.trim());
+        const followedUids = response.data.content.map(
+          (user: UserInfoResponse) => user.uid.trim()
+        );
         // 검색 결과가 있을 경우, 팔로우 상태 업데이트
         setSearchResults((prevResults) =>
           prevResults.map((user) => ({
@@ -52,7 +54,7 @@ function Header() {
       console.error("Error fetching follow list:", error);
     }
   };
-  
+
   // 팔로우
   const handleFollow = async (uid: string) => {
     try {
@@ -88,7 +90,7 @@ function Header() {
       console.error("Error unfollowing user:", error);
     }
   };
-  
+
   const handleFollowToggle = (uid: string, isFollowing: boolean) => {
     if (isFollowing) {
       handleUnfollow(uid);
@@ -96,51 +98,57 @@ function Header() {
       handleFollow(uid);
     }
   };
-  
-  
-// 사용자 검색 API 호출
-const handleSearch = async (query: string) => {
-  try {
-    // 로그인한 경우 팔로우 정보를 함께 가져오기
-    const searchResponse = await axiosInstance.get("/api/v1/auth/user/search", {
-      params: { keyword: query, lastId: 0 },
-    });
 
-    if (searchResponse.status === 200) {
-      let searchResults = searchResponse.data;
+  // 사용자 검색 API 호출
+  const handleSearch = async (query: string) => {
+    try {
+      // 로그인한 경우 팔로우 정보를 함께 가져오기
+      const searchResponse = await axiosInstance.get(
+        "/api/v1/auth/user/search",
+        {
+          params: { keyword: query, lastId: 0 },
+        }
+      );
 
-      // 로그인한 경우, 자기 자신을 제외한 사용자만 필터링
-      if (isLoggedIn && uid) {
-        searchResults = searchResults
-          .filter((user: UserInfoResponse) => user.uid !== uid);
+      if (searchResponse.status === 200) {
+        let searchResults = searchResponse.data;
 
-        // 로그인한 사용자의 팔로우 정보 가져오기
-        const followResponse = await axiosInstance.get(`/api/v1/follow/${uid}`);
-        if (followResponse.status === 200) {
-          const followedUids = followResponse.data.content.map((user: UserInfoResponse) => user.uid.trim());
+        // 로그인한 경우, 자기 자신을 제외한 사용자만 필터링
+        if (isLoggedIn && uid) {
+          searchResults = searchResults.filter(
+            (user: UserInfoResponse) => user.uid !== uid
+          );
 
-          // 검색 결과에 팔로우 상태를 업데이트
+          // 로그인한 사용자의 팔로우 정보 가져오기
+          const followResponse = await axiosInstance.get(
+            `/api/v1/follow/${uid}`
+          );
+          if (followResponse.status === 200) {
+            const followedUids = followResponse.data.content.map(
+              (user: UserInfoResponse) => user.uid.trim()
+            );
+
+            // 검색 결과에 팔로우 상태를 업데이트
+            searchResults = searchResults.map((user: UserInfoResponse) => ({
+              ...user,
+              isFollowing: followedUids.includes(user.uid.trim()), // 팔로우한 UID에 포함되면 true, 아니면 false
+            }));
+          }
+        } else {
+          // 로그인하지 않은 경우, 모든 사용자 검색 결과 반환 (팔로우 상태는 무시)
           searchResults = searchResults.map((user: UserInfoResponse) => ({
             ...user,
-            isFollowing: followedUids.includes(user.uid.trim()), // 팔로우한 UID에 포함되면 true, 아니면 false
+            isFollowing: false,
           }));
         }
-      } else {
-        // 로그인하지 않은 경우, 모든 사용자 검색 결과 반환 (팔로우 상태는 무시)
-        searchResults = searchResults.map((user: UserInfoResponse) => ({
-          ...user,
-          isFollowing: false,
-        }));
+
+        setSearchResults(searchResults);
       }
-
-      setSearchResults(searchResults);
+    } catch (error) {
+      console.error("Error fetching users or follow list:", error);
     }
-  } catch (error) {
-    console.error("Error fetching users or follow list:", error);
-  }
-};
+  };
 
-  
   // 검색어 변경 시 호출
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -156,7 +164,7 @@ const handleSearch = async (query: string) => {
         <img src="/path" alt="logo" />
       </S.Logo>
       <S.Nav>
-        <S.StyledNavLink to="/create-song">Create</S.StyledNavLink>
+        <S.StyledNavLink to="/precreate-song">Create</S.StyledNavLink>
         <S.StyledNavLink to="/">Home</S.StyledNavLink>
       </S.Nav>
       <S.SearchContainer>
@@ -173,7 +181,11 @@ const handleSearch = async (query: string) => {
                   <img
                     src={user.profile || "/default-profile.png"}
                     alt={user.nickName}
-                    style={{ width: "30px", height: "30px", borderRadius: "50%" }}
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "50%",
+                    }}
                   />
                   <span>{user.nickName}</span>
                 </S.UserLink>
