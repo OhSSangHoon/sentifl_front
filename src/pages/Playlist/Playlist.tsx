@@ -193,6 +193,7 @@ function Playlist() {
           <S.Button>재생목록</S.Button>
         </S.Sidebar>
         <S.SongList>
+          ``
           {songs.map((song) => (
             <S.SongItem key={song.musicId}>
               <S.PlayIcon

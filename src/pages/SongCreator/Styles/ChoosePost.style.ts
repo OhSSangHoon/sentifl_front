@@ -132,7 +132,7 @@ export const PlayButton = styled.div`
   width: 250px;
   height: 250px;
   border-radius: 50%;
-  background: radial-gradient(circle, #3a3a3a, #000);
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -140,6 +140,27 @@ export const PlayButton = styled.div`
   font-size: 24px;
   margin-bottom: 20px;
   cursor: pointer;
+  overflow: hidden;
+  z-index: 0;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 230px;
+    height: 230px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: linear-gradient(
+      90deg,
+      rgba(47, 90, 241, 0.7) 0%,
+      rgba(178, 234, 106, 0.7) 100%
+    );
+    filter: blur(40px);
+    opacity: 0.8;
+    z-index: -1;
+  }
 `;
 
 export const CreateButton = styled.button`
