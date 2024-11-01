@@ -1,19 +1,13 @@
-import styled from "styled-components";
 import { useLocation } from "react-router-dom";
+import styled from "styled-components";
 
 interface DotNavigationProps {
-<<<<<<< HEAD
-  scrollToHome: () => void;
-  scrollToHashTags: () => void;
-  scrollToMusicRecommend: () => void;
-  scrollToNewPost: () => void;
-=======
   scrollToHome?: () => void;
+  scrollToHashTags?: () => void;
   scrollToMusicRecommend?: () => void;
   scrollToNewPost?: () => void;
   scrollToSection1?: () => void;
   scrollToSection2?: () => void;
->>>>>>> 7b327693fd0918bd4c88d8cb71b844407f0f4878
   activeSection: string;
 }
 
@@ -30,18 +24,10 @@ const DotNavigation = ({
 
   return (
     <DotContainer>
-<<<<<<< HEAD
-      <Dot onClick={scrollToHome} active={activeSection === "home"} />
-      <Dot onClick={scrollToHashTags} active={activeSection === "Hashtags"} />
-      <Dot
-        onClick={scrollToMusicRecommend}
-        active={activeSection === "musicRecommend"}
-      />
-      <Dot onClick={scrollToNewPost} active={activeSection === "newPost"} />
-=======
       {location.pathname === "/" ? (
         <>
           <Dot onClick={scrollToHome} active={activeSection === "home"} />
+          <Dot onClick={scrollToHashTags} active={activeSection === "Hashtags"} />
           <Dot
             onClick={scrollToMusicRecommend}
             active={activeSection === "musicRecommend"}
@@ -60,7 +46,6 @@ const DotNavigation = ({
           />
         </>
       ) : null}
->>>>>>> 7b327693fd0918bd4c88d8cb71b844407f0f4878
     </DotContainer>
   );
 };
