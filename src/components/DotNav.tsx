@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 interface DotNavigationProps {
   scrollToHome: () => void;
+  scrollToHashTags: () => void;
   scrollToMusicRecommend: () => void;
   scrollToNewPost: () => void;
   activeSection: string;
@@ -9,6 +10,7 @@ interface DotNavigationProps {
 
 const DotNavigation = ({
   scrollToHome,
+  scrollToHashTags,
   scrollToMusicRecommend,
   scrollToNewPost,
   activeSection,
@@ -16,6 +18,7 @@ const DotNavigation = ({
   return (
     <DotContainer>
       <Dot onClick={scrollToHome} active={activeSection === "home"} />
+      <Dot onClick={scrollToHashTags} active={activeSection === "Hashtags"} />
       <Dot
         onClick={scrollToMusicRecommend}
         active={activeSection === "musicRecommend"}
