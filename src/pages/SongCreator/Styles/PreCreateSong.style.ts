@@ -66,6 +66,7 @@ export const S2Description = styled.p`
   font-size: 18px;
   color: white;
   margin-top: 36px;
+  user-select: none;
 `;
 
 export const ImageContainer = styled.div`
@@ -84,6 +85,8 @@ export const ImageSection = styled.div`
   align-items: center;
   width: 500px;
   height: 350px;
+  user-select: none;
+  pointer-events: none;
 `;
 
 export const ArrowLeft = styled(FaArrowLeft)`

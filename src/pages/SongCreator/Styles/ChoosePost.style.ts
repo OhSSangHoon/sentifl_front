@@ -3,8 +3,8 @@ import styled from "styled-components";
 export const Content = styled.main`
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  gap: 40px;
+  padding: 20px 40px;
+  gap: 20px;
 `;
 
 export const PostListWrapper = styled.div`
@@ -15,6 +15,7 @@ export const PostListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin: 0;
   // min-height: 700px;
 `;
 
@@ -221,7 +222,7 @@ export const LoadingCircle = styled.div`
   height: 100px;
   border-radius: 50%;
   border: 5px solid #fff;
-  border-top: 5px solid #4caf50;
+  border-top: 5px solid #698dbf;
   margin: 100px 0;
   animation: spin 1s linear infinite;
 
@@ -233,4 +234,21 @@ export const LoadingCircle = styled.div`
       transform: rotate(360deg);
     }
   }
+`;
+
+export const HeaderWrapper = styled.div`
+  text-align: left;
+  color: #ffffff;
+  margin-bottom: 20px;
+  margin-left: 40px;
+`;
+
+export const HeaderTitle = styled.h1`
+  font-size: 24px;
+  font-weight: bold;
+`;
+
+export const HeaderSubtitle = styled.p`
+  font-size: 14px;
+  color: #777777;
 `;

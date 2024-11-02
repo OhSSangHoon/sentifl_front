@@ -1,7 +1,7 @@
 // 글 선택하여 노래 제작하는 페이지
 
 import { useEffect, useState } from "react";
-import { FaPlay } from "react-icons/fa";
+import { FaPlay, FaMusic } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
@@ -337,6 +337,12 @@ const ChoosePost = () => {
 
   return (
     <S.Content>
+      <S.HeaderWrapper>
+        <S.HeaderTitle>노래로 만들 게시글을 선택해 주세요.</S.HeaderTitle>
+        <S.HeaderSubtitle>
+          센티플이 어울리는 음악을 만들어 드릴게요.
+        </S.HeaderSubtitle>
+      </S.HeaderWrapper>
       <S.PostListWrapper>
         {displayedPosts.length === 0 ? (
           <p>게시물이 없습니다.</p>
@@ -416,12 +422,14 @@ const ChoosePost = () => {
           </S.PageButton>
         </S.PaginationWrapper>
       </S.PostListWrapper>
-
       <S.PlaySection>
         <S.PlayButton>
           <FaPlay />
         </S.PlayButton>
-        <S.CreateButton onClick={handleCreateMusic}>노래 제작</S.CreateButton>
+        <S.CreateButton onClick={handleCreateMusic}>
+          {" "}
+          <FaMusic /> 노래 제작
+        </S.CreateButton>
       </S.PlaySection>
     </S.Content>
   );
