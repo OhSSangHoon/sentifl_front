@@ -30,7 +30,7 @@ const ChoosePost = () => {
   const pageSize = 5;
   const paginationSize = 5;
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
-  const [hashTags, setHashTags] = useState<{ [key: number]: string }>({});
+  // const [hashTags, setHashTags] = useState<{ [key: number]: string }>({});
 
   const [creatingMusic, setCreatingMusic] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -209,46 +209,15 @@ const ChoosePost = () => {
         if (fastAPIResponse) {
           const { musicUrl, emotion1, emotion2, title } = fastAPIResponse;
 
-          let hashTag = hashTags[post.postId] || "";
-          // hashTag = hashTag.replace(/#/g, "");
-          hashTag = hashTag
-            .split("#")
-            .filter((tag) => tag.trim() !== "")
-            .join(" ");
-          console.log("해시태그", hashTag);
-
-          // FastAPI에서 받아온 데이터를 스프링 백엔드로 전송
-          const springResponse = await axiosInstance.post(
-            `/api/v1/music/post/${post.postId}`,
-            {
-              musicUrl: musicUrl,
-              title: title,
-              hashTag: hashTag.trim().replace(/\s+/g, " "),
+          navigate("/song-result", {
+            state: {
+              title,
               emotion1: emotion1,
               emotion2: emotion2,
-            }
-          );
-
-          if (springResponse.status === 204) {
-            alert("노래 제작이 성공적으로 완료되었습니다!");
-
-            setHashTags((prevHashTags) => ({
-              ...prevHashTags,
-              [selectedPostId as number]: "",
-            }));
-
-            navigate("/song-result", {
-              state: {
-                title,
-                emotion1: emotion1,
-                emotion2: emotion2,
-                musicUrl,
-              },
-            });
-          } else {
-            console.error("노래 제작 실패:", springResponse);
-            alert("노래 제작에 실패했습니다.");
-          }
+              musicUrl,
+              postId: post.postId, // 전달할 postId
+            },
+          });
         } else {
           console.error("FastAPI로부터 데이터를 받아오지 못했습니다.");
           alert("노래 제작 중 오류가 발생했습니다.");
@@ -262,12 +231,92 @@ const ChoosePost = () => {
     }
   };
 
-  const handleHashTagChange = (postId: number, value: string) => {
-    setHashTags((prevHashTags) => ({
-      ...prevHashTags,
-      [postId]: value,
-    }));
-  };
+  // const handleCreateMusic = async () => {
+  //   if (!selectedPostId) {
+  //     alert("노래 제작을 위해 게시물을 선택해주세요.");
+  //     return;
+  //   }
+
+  //   const post = allPosts.find((p) => p.postId === selectedPostId);
+
+  //   if (post) {
+  //     try {
+  //       setCreatingMusic(true);
+
+  //       const accessToken = localStorage.getItem("accessToken");
+  //       if (!accessToken) {
+  //         alert("로그인이 필요합니다.");
+  //         return;
+  //       }
+
+  //       const fastAPIResponse = await sendToFastAPI(
+  //         uid,
+  //         post.postUrl,
+  //         accessToken
+  //       );
+
+  //       if (fastAPIResponse) {
+  //         const { musicUrl, emotion1, emotion2, title } = fastAPIResponse;
+
+  //         // let hashTag = hashTags[post.postId] || "";
+  //         // // hashTag = hashTag.replace(/#/g, "");
+  //         // hashTag = hashTag
+  //         //   .split("#")
+  //         //   .filter((tag) => tag.trim() !== "")
+  //         //   .join(" ");
+  //         // console.log("해시태그", hashTag);
+
+  //         // FastAPI에서 받아온 데이터를 스프링 백엔드로 전송
+  //         const springResponse = await axiosInstance.post(
+  //           `/api/v1/music/post/${post.postId}`,
+  //           {
+  //             musicUrl: musicUrl,
+  //             title: title,
+  //             // hashTag: hashTag.trim().replace(/\s+/g, " "),
+  //             emotion1: emotion1,
+  //             emotion2: emotion2,
+  //           }
+  //         );
+
+  //         if (springResponse.status === 204) {
+  //           alert("노래 제작이 성공적으로 완료되었습니다!");
+
+  //           // setHashTags((prevHashTags) => ({
+  //           //   ...prevHashTags,
+  //           //   [selectedPostId as number]: "",
+  //           // }));
+
+  //           navigate("/song-result", {
+  //             state: {
+  //               title,
+  //               emotion1: emotion1,
+  //               emotion2: emotion2,
+  //               musicUrl,
+  //             },
+  //           });
+  //         } else {
+  //           console.error("노래 제작 실패:", springResponse);
+  //           alert("노래 제작에 실패했습니다.");
+  //         }
+  //       } else {
+  //         console.error("FastAPI로부터 데이터를 받아오지 못했습니다.");
+  //         alert("노래 제작 중 오류가 발생했습니다.");
+  //       }
+  //     } catch (error) {
+  //       console.error("노래 제작 중 오류 발생:", error);
+  //       alert("노래 제작 중 오류가 발생했습니다.");
+  //     } finally {
+  //       setCreatingMusic(false);
+  //     }
+  //   }
+  // };
+
+  // const handleHashTagChange = (postId: number, value: string) => {
+  //   setHashTags((prevHashTags) => ({
+  //     ...prevHashTags,
+  //     [postId]: value,
+  //   }));
+  // };
 
   if (creatingMusic) {
     return (
@@ -317,7 +366,7 @@ const ChoosePost = () => {
                   </S.CheckBoxWrapper>
                 </S.PostContentWrapper>
 
-                {isChecked && (
+                {/* {isChecked && (
                   <S.HashTagInput
                     value={`#${hashTags[post.postId]?.replace(/^#/, "") || ""}`}
                     onChange={(e) =>
@@ -327,7 +376,7 @@ const ChoosePost = () => {
                       )
                     }
                   />
-                )}
+                )} */}
               </S.Post>
             );
           })

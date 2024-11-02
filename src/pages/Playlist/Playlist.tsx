@@ -97,23 +97,23 @@ function Playlist() {
     }
   };
 
-  // 해시태그
-  // const fetchHashTags = async (musicId: number) => {
-  //   try {
-  //     const response = await axiosInstance.get(
-  //       `/api/v1/music/${musicId}/hashtag`
-  //     );
-  //     if (response.status === 200) {
-  //       return response.data;
-  //     } else {
-  //       console.error(`Failed to fetch hashtags for musicId: ${musicId}`);
-  //       return [];
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching hashtags:", error);
-  //     return [];
-  //   }
-  // };
+  // 해시태그 불러오기
+  const fetchHashTags = async (musicId: number) => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/v1/music/${musicId}/hashtag`
+      );
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(`Failed to fetch hashtags for musicId: ${musicId}`);
+        return "";
+      }
+    } catch (error) {
+      console.error("Error fetching hashtags:", error);
+      return "";
+    }
+  };
 
   // 노래 수정
   const handleSaveEdit = async (postId: number, song: Song) => {
@@ -121,7 +121,7 @@ function Playlist() {
       await axiosInstance.put(`/api/v1/music/post/${postId}`, {
         musicUrl: song.musicUrl,
         title: editedTitle,
-        hashTag: editedHashTag,
+        // hashTag: editedHashTag,
         emotion1: song.emotion1,
         emotion2: song.emotion2,
       });
