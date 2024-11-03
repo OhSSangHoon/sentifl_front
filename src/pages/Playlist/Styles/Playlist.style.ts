@@ -73,11 +73,18 @@ export const SongList = styled.div`
 export const SongItem = styled.div`
   display: flex;
   justify-content: space-between;
+  border-radius: 15px;
   align-items: center;
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    background-color: linear-gradient(90deg, #001aff 10%, #00ffb2 100%);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  }
 `;
 
 export const PlayIcon = styled.div`
@@ -177,12 +184,6 @@ export const LoadMoreButton = styled.button`
   }
 `;
 
-// export const HashTags = styled.div`
-//   font-size: 12px;
-//   color: #888;
-//   margin-top: 5px;
-// `;
-
 export const HashTags = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -213,4 +214,43 @@ export const TransparentInput = styled.input`
   &:focus {
     opacity: 1;
   }
+`;
+
+export const LikeButton = styled.button<{ liked: boolean }>`
+  background: transparent;
+  border: none;
+  color: ${(props) => (props.liked ? "red" : "#aaa")};
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
+
+  &:hover {
+    color: ${(props) => (props.liked ? "darkred" : "white")};
+  }
+
+  &:active {
+    color: white;
+  }
+`;
+
+export const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+`;
+
+export const CharacterImage = styled.img`
+  width: 150px;
+  height: auto;
+  margin-bottom: 20px;
+`;
+
+export const EmptyText = styled.p`
+  font-size: 14px;
+  color: #dbdbdb;
+  margin-top: 10px;
 `;

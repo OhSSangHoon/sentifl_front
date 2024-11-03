@@ -222,8 +222,13 @@ const ChoosePost = () => {
           console.error("FastAPI로부터 데이터를 받아오지 못했습니다.");
           alert("노래 제작 중 오류가 발생했습니다.");
         }
-      } catch (error) {
-        console.error("노래 제작 중 오류 발생:", error);
+      } catch (error: any) {
+        const errorCode = error.response?.data?.errorCode;
+        if (errorCode === "CE1") {
+          console.error("엘라스틱서치 요청 실패");
+        } else {
+          console.error("노래 제작 중 오류 발생:", error);
+        }
         alert("노래 제작 중 오류가 발생했습니다.");
       } finally {
         setCreatingMusic(false);
@@ -347,12 +352,13 @@ const ChoosePost = () => {
         {displayedPosts.length === 0 ? (
           <p>게시물이 없습니다.</p>
         ) : (
-          displayedPosts.map((post) => {
+          displayedPosts.map((post, index) => {
             const postContent = postContents[post.postId];
             const isChecked = selectedPostId === post.postId;
             return (
               <S.Post key={post.postId}>
                 <S.PostContentWrapper isChecked={isChecked}>
+                  <S.PostNumber>{index + 1 + page * pageSize}</S.PostNumber>
                   <S.PostInfo>
                     <S.PostHeader>
                       <S.PostTitle onClick={() => handlePostClick(post.postId)}>
@@ -371,18 +377,6 @@ const ChoosePost = () => {
                     />
                   </S.CheckBoxWrapper>
                 </S.PostContentWrapper>
-
-                {/* {isChecked && (
-                  <S.HashTagInput
-                    value={`#${hashTags[post.postId]?.replace(/^#/, "") || ""}`}
-                    onChange={(e) =>
-                      handleHashTagChange(
-                        post.postId,
-                        e.target.value.replace(/^#/, "")
-                      )
-                    }
-                  />
-                )} */}
               </S.Post>
             );
           })

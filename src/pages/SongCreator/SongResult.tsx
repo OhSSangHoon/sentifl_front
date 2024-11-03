@@ -13,15 +13,13 @@ const SongResult: React.FC = () => {
 
   // navigate로 전달된 데이터 받기
   const { title, emotion1, emotion2, musicUrl } = location.state || {};
+  const [musicId, setMusicId] = useState<number | null>(null);
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
 
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false);
   // const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
-
-  const [isInputVisible, setIsInputVisible] = useState(false);
-  const [inputGenre, setInputGenre] = useState("");
 
   const handleGenreClick = (genre: string) => {
     setSelectedGenres((prev) =>
@@ -47,8 +45,7 @@ const SongResult: React.FC = () => {
         }
 
         const hashtagResponse = await axiosInstance.post(
-          // `/api/v1/music/${musicId}/hashtag`
-          `/api/v1/music/1/hashtag`,
+          `/api/v1/music/${musicId}/hashtag`,
           {
             hashTag: hashTagString,
           },
@@ -63,11 +60,21 @@ const SongResult: React.FC = () => {
           alert("해시태그가 성공적으로 저장되었습니다!");
           navigate(`/user/${uid}/playlist`);
         } else {
-          console.error("해시태그 저장 실패:", hashtagResponse);
+          const errorCode = hashtagResponse.data?.errorCode;
+          if (errorCode === "CE1") {
+            console.error("엘라스틱서치 요청 실패");
+          } else {
+            console.error("해시태그 저장 실패:", hashtagResponse);
+          }
           alert("해시태그 저장에 실패했습니다.");
         }
-      } catch (error) {
-        console.error("해시태그 저장 중 오류 발생:", error);
+      } catch (error: any) {
+        const errorCode = error.response?.data?.errorCode;
+        if (errorCode === "CE1") {
+          console.error("엘라스틱서치 요청 실패");
+        } else {
+          console.error("해시태그 저장 중 오류 발생:", error);
+        }
         alert("해시태그 저장에 실패했습니다.");
       }
     }
@@ -111,15 +118,26 @@ const SongResult: React.FC = () => {
         }
       );
 
-      if (springResponse.status === 204) {
+      if (springResponse.status === 200 || springResponse.status === 204) {
         alert("노래가 플레이리스트에 성공적으로 저장되었습니다!");
         setIsDropdownVisible(true);
+        setMusicId(springResponse.data.id);
       } else {
-        console.error("노래 저장 실패:", springResponse);
+        const errorCode = springResponse.data?.errorCode;
+        if (errorCode === "CE1") {
+          console.error("엘라스틱서치 요청 실패");
+        } else {
+          console.error("노래 저장 실패:", springResponse);
+        }
         alert("노래 저장에 실패했습니다.");
       }
-    } catch (error) {
-      console.error("노래 저장 중 오류 발생:", error);
+    } catch (error: any) {
+      const errorCode = error.response?.data?.errorCode;
+      if (errorCode === "CE1") {
+        console.error("엘라스틱서치 요청 실패");
+      } else {
+        console.error("노래 저장 중 오류 발생:", error);
+      }
       alert("노래 저장 중 오류가 발생했습니다.");
     }
   };
@@ -163,7 +181,7 @@ const SongResult: React.FC = () => {
 
       <S.PlayButtonWrapper>
         <S.PlayButton onClick={handlePlayPause}>
-          {isPlaying ? <FaPause size={40} /> : <FaPlay size={40} />}{" "}
+          {isPlaying ? <FaPause size={40} /> : <FaPlay size={40} />}
         </S.PlayButton>
       </S.PlayButtonWrapper>
 

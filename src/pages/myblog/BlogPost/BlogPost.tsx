@@ -63,11 +63,15 @@ function BlogPost() {
             lastPage = response.data.last;
             currentPage += 1;
           } else {
-            console.error("게시물 목록을 불러오는 중 오류 발생");
+            const errorCode = response.data?.errorCode;
+            if (errorCode === "CE1") {
+              console.error("엘라스틱서치 요청 실패");
+            } else {
+              console.error("게시물 목록을 불러오는 중 오류 발생");
+            }
             break;
           }
         }
-
         // postId에 해당하는 게시물 찾기
         const selectedPost = allPosts.find(
           (p: any) => p.postId === Number(postId)
@@ -94,6 +98,15 @@ function BlogPost() {
 
             setLikesCount(totalLikes);
             setViewsCount(totalViews);
+          } else {
+            const errorCode = postContentResponse.data?.errorCode;
+            if (errorCode === "SP3") {
+              console.error("게시물 다큐먼트 없음");
+            } else if (errorCode === "CE1") {
+              console.error("엘라스틱서치 요청 실패");
+            } else {
+              console.error("게시글 내용을 불러오는 중 오류 발생");
+            }
           }
 
           const hashTagResponse = await axiosInstance.get(
@@ -102,6 +115,13 @@ function BlogPost() {
           if (hashTagResponse.status === 200) {
             const hashtagsArray = hashTagResponse.data[0].split(" ");
             setHashTag(hashtagsArray);
+          } else {
+            const errorCode = hashTagResponse.data?.errorCode;
+            if (errorCode === "CE1") {
+              console.error("엘라스틱서치 요청 실패");
+            } else {
+              console.error("해시태그를 불러오는 중 오류 발생");
+            }
           }
         } else {
           console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");
@@ -311,8 +331,13 @@ function BlogPost() {
           setLikesCount((prev) => prev + 1);
         }
       }
-    } catch (error) {
-      console.error("좋아요 처리 중 오류 발생:", error);
+    } catch (error: any) {
+      const errorCode = error.response?.data?.errorCode;
+      if (errorCode === "CE1") {
+        console.error("엘라스틱서치 요청 실패");
+      } else {
+        console.error("좋아요 처리 중 오류 발생:", error);
+      }
     }
   };
 
@@ -344,8 +369,15 @@ function BlogPost() {
   const increasePostView = async () => {
     try {
       await axiosInstance.post(`/api/v1/post/view/${postId}`);
-    } catch (error) {
-      console.error("조회수를 증가시키는 중 오류 발생:", error);
+    } catch (error: any) {
+      const errorCode = error.response?.data?.errorCode;
+      if (errorCode === "SP3") {
+        console.error("게시물 다큐먼트 없음");
+      } else if (errorCode === "CE1") {
+        console.error("엘라스틱서치 요청 실패");
+      } else {
+        console.error("조회수를 증가시키는 중 오류 발생:", error);
+      }
     }
   };
 

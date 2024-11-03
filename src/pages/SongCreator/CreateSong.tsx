@@ -26,9 +26,8 @@ const CreateSong = () => {
       </S.Sidebar>
 
       <S.MainContent>
-        <PostListWrapper>
-          <ChoosePost />
-        </PostListWrapper>
+        <ChoosePost />
+        {/* <PostListWrapper> <ChoosePost /></PostListWrapper> */}
       </S.MainContent>
     </S.Container>
   );

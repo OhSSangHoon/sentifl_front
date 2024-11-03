@@ -80,7 +80,12 @@ const PostList = () => {
 
             currentPage += 1;
           } else {
-            console.log("게시물을 불러올 수 없습니다.");
+            const errorCode = response.data?.errorCode;
+            if (errorCode === "CE1") {
+              console.error("엘라스틱서치 요청 실패");
+            } else {
+              console.error("게시물을 불러올 수 없습니다.");
+            }
             break;
           }
         }
@@ -165,8 +170,13 @@ const PostList = () => {
         }
 
         alert("게시물이 삭제되었습니다.");
-      } catch (err) {
-        console.error("게시물을 삭제하는 중 오류 발생:", err);
+      } catch (error: any) {
+        const errorCode = error.response?.data?.errorCode;
+        if (errorCode === "SP3") {
+          console.error("게시물 다큐먼트 없음");
+        } else {
+          console.error("게시물 삭제 중 오류 발생:", error);
+        }
         alert("게시물 삭제에 실패했습니다.");
       }
     }

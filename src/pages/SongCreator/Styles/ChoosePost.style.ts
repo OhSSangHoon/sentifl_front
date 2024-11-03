@@ -16,7 +16,16 @@ export const PostListWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   margin: 0;
+  width: 100%;
   // min-height: 700px;
+`;
+
+export const PostNumber = styled.span`
+  font-size: 16px;
+  color: #777;
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
 `;
 
 export const Post = styled.div`
