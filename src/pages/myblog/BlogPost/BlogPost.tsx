@@ -115,13 +115,6 @@ function BlogPost() {
           if (hashTagResponse.status === 200) {
             const hashtagsArray = hashTagResponse.data[0].split(" ");
             setHashTag(hashtagsArray);
-          } else {
-            const errorCode = hashTagResponse.data?.errorCode;
-            if (errorCode === "CE1") {
-              console.error("엘라스틱서치 요청 실패");
-            } else {
-              console.error("해시태그를 불러오는 중 오류 발생");
-            }
           }
         } else {
           console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");
@@ -164,7 +157,13 @@ function BlogPost() {
           setHasMore(false);
         }
       } else {
-        console.error("댓글을 불러오는 중 문제가 발생했습니다.");
+        const errorCode = response.data?.errorCode;
+        if (errorCode === "SP1") {
+          console.error("게시물 없음");
+          alert("게시물이 존재하지 않습니다.");
+        } else {
+          console.error("댓글을 불러오는 중 문제가 발생했습니다:", response);
+        }
       }
     } catch (error) {
       console.error("댓글을 불러오는 중 오류 발생:", error);
@@ -238,7 +237,19 @@ function BlogPost() {
         setShowCommentInput(false);
         setParentCommentId(null);
       } else {
-        console.error("댓글 작성 중 오류 발생");
+        const errorCode = response.data?.errorCode;
+        if (errorCode === "SC1") {
+          console.error("해당 댓글 없음");
+          alert("해당 댓글이 존재하지 않습니다.");
+        } else if (errorCode === "SP1") {
+          console.error("게시물 없음");
+          alert("게시물이 존재하지 않습니다.");
+        } else if (errorCode === "SA9") {
+          console.error("사용자 정보 없음");
+          alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
+        } else {
+          console.error("댓글 작성 중 알 수 없는 오류 발생:", response);
+        }
       }
     } catch (error) {
       console.error("댓글 작성 중 오류 발생:", error);
@@ -261,7 +272,16 @@ function BlogPost() {
           alert("댓글이 삭제되었습니다.");
           window.location.reload();
         } else {
-          console.error("댓글 삭제 중 오류 발생");
+          const errorCode = response.data?.errorCode;
+          if (errorCode === "SP1") {
+            console.error("게시물 없음");
+            alert("게시물이 존재하지 않습니다.");
+          } else if (errorCode === "SA9") {
+            console.error("사용자 정보 없음");
+            alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
+          } else {
+            console.error("댓글 삭제 실패:", response);
+          }
         }
       } catch (error) {
         console.error("댓글 삭제 중 오류 발생:", error);
@@ -301,10 +321,16 @@ function BlogPost() {
         setCommentContent("");
         setShowCommentInput(false);
       } else {
-        console.error(
-          "댓글 수정 중 문제가 발생했습니다. 상태 코드:",
-          response.status
-        );
+        const errorCode = response.data?.errorCode;
+        if (errorCode === "SP1") {
+          console.error("게시물 없음");
+          alert("게시물이 존재하지 않습니다.");
+        } else if (errorCode === "SA9") {
+          console.error("사용자 정보 없음");
+          alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
+        } else {
+          console.error("댓글 수정 중 알 수 없는 오류 발생:", response);
+        }
       }
     } catch (error) {
       console.error("댓글 수정 중 오류 발생:", error);
@@ -321,6 +347,19 @@ function BlogPost() {
         if (response.status === 204) {
           setLikeStatus(false);
           setLikesCount((prev) => prev - 1);
+        } else {
+          const errorCode = response.data?.errorCode;
+          if (errorCode === "SP1") {
+            console.error("게시물 없음");
+            alert("게시물이 존재하지 않습니다.");
+          } else if (errorCode === "SA9") {
+            console.error("사용자 정보 없음");
+            alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
+          } else if (errorCode === "CE1") {
+            console.error("엘라스틱서치 요청 실패");
+          } else {
+            console.error("좋아요 취소 실패:", response);
+          }
         }
       } else {
         const response = await axiosInstance.post(
@@ -329,15 +368,23 @@ function BlogPost() {
         if (response.status === 204) {
           setLikeStatus(true);
           setLikesCount((prev) => prev + 1);
+        } else {
+          const errorCode = response.data?.errorCode;
+          if (errorCode === "SP1") {
+            console.error("게시물 없음");
+            alert("게시물이 존재하지 않습니다.");
+          } else if (errorCode === "SA9") {
+            console.error("사용자 정보 없음");
+            alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
+          } else if (errorCode === "CE1") {
+            console.error("엘라스틱서치 요청 실패");
+          } else {
+            console.error("좋아요 추가 실패:", response);
+          }
         }
       }
     } catch (error: any) {
-      const errorCode = error.response?.data?.errorCode;
-      if (errorCode === "CE1") {
-        console.error("엘라스틱서치 요청 실패");
-      } else {
-        console.error("좋아요 처리 중 오류 발생:", error);
-      }
+      console.error("좋아요 처리 중 예기치 못한 오류 발생:", error);
     }
   };
 
@@ -350,6 +397,14 @@ function BlogPost() {
         );
         if (likeResponse.status === 200) {
           setLikeStatus(likeResponse.data.like);
+        } else {
+          const errorCode = likeResponse.data?.errorCode;
+          if (errorCode === "SP2") {
+            console.error("좋아요 기록 없음");
+            alert("좋아요 기록이 없습니다.");
+          } else {
+            console.error("좋아요 상태 조회 실패:", likeResponse);
+          }
         }
       } catch (error) {
         console.error("좋아요 상태를 가져오는 중 오류 발생:", error);

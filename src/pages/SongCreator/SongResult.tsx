@@ -30,6 +30,7 @@ const SongResult: React.FC = () => {
         : prev
     );
   };
+
   const handleSaveButtonClick = async () => {
     setIsSaveButtonClicked(true);
 
@@ -63,19 +64,20 @@ const SongResult: React.FC = () => {
           const errorCode = hashtagResponse.data?.errorCode;
           if (errorCode === "CE1") {
             console.error("엘라스틱서치 요청 실패");
+          } else if (errorCode === "SA9") {
+            alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
+          } else if (errorCode === "SM1") {
+            alert("존재하지 않는 노래입니다.");
           } else {
             console.error("해시태그 저장 실패:", hashtagResponse);
           }
           alert("해시태그 저장에 실패했습니다.");
         }
       } catch (error: any) {
-        const errorCode = error.response?.data?.errorCode;
-        if (errorCode === "CE1") {
-          console.error("엘라스틱서치 요청 실패");
-        } else {
-          console.error("해시태그 저장 중 오류 발생:", error);
-        }
-        alert("해시태그 저장에 실패했습니다.");
+        console.error(
+          "해시태그 저장 중 네트워크 오류 또는 예기치 않은 오류 발생:",
+          error
+        );
       }
     }
   };
@@ -92,7 +94,7 @@ const SongResult: React.FC = () => {
   };
 
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef(new Audio(musicUrl)); // 플레이리스트에 저장 버튼 클릭 핸들러
+  const audioRef = useRef(new Audio(musicUrl));
 
   const handleSaveToPlaylist = async () => {
     try {
@@ -122,22 +124,24 @@ const SongResult: React.FC = () => {
         alert("노래가 플레이리스트에 성공적으로 저장되었습니다!");
         setIsDropdownVisible(true);
         setMusicId(springResponse.data.id);
+      } else if (springResponse.data?.errorCode === "CE1") {
+        console.error("엘라스틱서치 요청 실패");
+        alert("엘라스틱서치 요청 실패로 노래 저장에 실패했습니다.");
+      } else if (springResponse.data?.errorCode === "SP1") {
+        console.error("게시물 없음");
+        alert("해당 게시물이 존재하지 않습니다.");
+      } else if (springResponse.data?.errorCode === "SA9") {
+        console.error("사용자 정보 없음");
+        alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
       } else {
-        const errorCode = springResponse.data?.errorCode;
-        if (errorCode === "CE1") {
-          console.error("엘라스틱서치 요청 실패");
-        } else {
-          console.error("노래 저장 실패:", springResponse);
-        }
+        console.error("노래 저장 실패:", springResponse);
         alert("노래 저장에 실패했습니다.");
       }
     } catch (error: any) {
-      const errorCode = error.response?.data?.errorCode;
-      if (errorCode === "CE1") {
-        console.error("엘라스틱서치 요청 실패");
-      } else {
-        console.error("노래 저장 중 오류 발생:", error);
-      }
+      console.error(
+        "노래 저장 중 네트워크 오류 또는 예기치 않은 오류 발생:",
+        error
+      );
       alert("노래 저장 중 오류가 발생했습니다.");
     }
   };

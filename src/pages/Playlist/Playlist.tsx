@@ -25,7 +25,6 @@ function Playlist() {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // 재생 상태와 오디오 관리
   const [currentSongId, setCurrentSongId] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -33,6 +32,7 @@ function Playlist() {
   const [editSongId, setEditSongId] = useState<number | null>(null);
   const [editedTitle, setEditedTitle] = useState<string>("");
   const [editedHashTag, setEditedHashTag] = useState<string>("");
+
   const fetchSongs = async () => {
     if (loading || !hasMore) return;
 
@@ -59,6 +59,10 @@ function Playlist() {
                 );
                 if (hashTagResponse.status === 200) {
                   hashTags = hashTagResponse.data;
+                } else if (hashTagResponse.data?.errorCode === "SM1") {
+                  console.error(
+                    `노래가 존재하지 않습니다 (musicId: ${song.musicId})`
+                  );
                 }
               } catch (error) {
                 console.error(
@@ -75,6 +79,12 @@ function Playlist() {
                 );
                 if (likeResponse.status === 200) {
                   isLiked = likeResponse.data.like;
+                } else if (likeResponse.data?.errorCode === "SM4") {
+                  console.error("음악 좋아요 기록 없음");
+                } else {
+                  console.error(
+                    `Unexpected response status for like: ${likeResponse.status}`
+                  );
                 }
               } catch (error) {
                 console.error(
@@ -110,6 +120,7 @@ function Playlist() {
         const response = await axiosInstance.delete(
           `/api/v1/music/${song.musicId}/like`
         );
+
         if (response.status === 204) {
           setSongs((prevSongs) =>
             prevSongs.map((s) =>
@@ -119,7 +130,16 @@ function Playlist() {
             )
           );
         } else {
-          console.error("좋아요 취소 중 오류 발생");
+          const errorCode = response.data?.errorCode;
+          if (errorCode === "SA9") {
+            alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
+          } else if (errorCode === "SM1") {
+            alert("존재하지 않는 노래입니다.");
+          } else if (errorCode === "CE1") {
+            console.error("엘라스틱서치 요청 실패");
+          } else {
+            console.error("좋아요 취소 중 알 수 없는 오류 발생:", response);
+          }
         }
       } else {
         const response = await axiosInstance.post(
@@ -134,18 +154,23 @@ function Playlist() {
             )
           );
         } else {
-          console.error("좋아요 중 오류 발생");
+          const errorCode = response.data?.errorCode;
+          if (errorCode === "SA9") {
+            alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
+          } else if (errorCode === "SM1") {
+            alert("존재하지 않는 노래입니다.");
+          } else if (errorCode === "CE1") {
+            console.error("엘라스틱서치 요청 실패");
+          } else {
+            console.error("좋아요 취소 중 알 수 없는 오류 발생:", response);
+          }
         }
       }
     } catch (error: any) {
-      const errorCode = error.response?.data?.errorCode;
-      if (errorCode === "CE1") {
-        console.error("엘라스틱서치 요청 실패");
-      } else {
-        console.error("좋아요 처리 중 오류 발생:", error);
-      }
+      console.error("좋아요 처리 중 오류 발생:", error);
     }
   };
+
   const deleteSong = async (songId: number) => {
     if (window.confirm("정말로 이 노래를 삭제하시겠습니까?")) {
       try {
@@ -160,38 +185,72 @@ function Playlist() {
         } else {
           alert("노래 삭제에 실패했습니다.");
         }
-      } catch (error) {
-        console.error("노래 삭제 중 오류 발생:", error);
-        alert("노래 삭제에 실패했습니다.");
+      } catch (error: any) {
+        const errorCode = error.response?.data?.errorCode;
+        if (errorCode === "SM1") {
+          alert("존재하지 않는 노래입니다.");
+        } else {
+          console.error("노래 삭제 중 오류 발생:", error);
+          alert("노래 삭제에 실패했습니다.");
+        }
       }
     }
   };
 
   // 노래 수정
-  const handleSaveEdit = async (postId: number, song: Song) => {
+  const handleSaveEdit = async (song: Song) => {
     try {
-      await axiosInstance.put(`/api/v1/music/post/${postId}`, {
-        musicUrl: song.musicUrl,
-        title: editedTitle,
-        emotion1: song.emotion1,
-        emotion2: song.emotion2,
-      });
-
-      // 해시태그 수정
-      await axiosInstance.put(`/api/v1/music/${song.musicId}/hashtag`, {
-        hashTag: editedHashTag,
-      });
-
-      const updatedHashTags = editedHashTag.split(" ");
-      setSongs((prevSongs) =>
-        prevSongs.map((s) =>
-          s.postId === postId
-            ? { ...s, title: editedTitle, hashTags: updatedHashTags }
-            : s
-        )
+      const response = await axiosInstance.put(
+        `/api/v1/music/post/${song.postId}`,
+        {
+          musicUrl: song.musicUrl,
+          title: editedTitle,
+          emotion1: song.emotion1,
+          emotion2: song.emotion2,
+        }
       );
 
-      setEditSongId(null);
+      if (response.status === 204) {
+        // 해시태그 수정
+        const HashtagResponse = await axiosInstance.put(
+          `/api/v1/music/${song.musicId}/hashtag`,
+          {
+            hashTag: editedHashTag,
+          }
+        );
+
+        if (HashtagResponse.status === 204) {
+          const updatedHashTags = editedHashTag.split(" ");
+          setSongs((prevSongs) =>
+            prevSongs.map((s) =>
+              s.postId === song.postId
+                ? { ...s, title: editedTitle, hashTags: updatedHashTags }
+                : s
+            )
+          );
+          setEditSongId(null);
+        } else {
+          const errorCode = HashtagResponse.data?.errorCode;
+          if (errorCode === "SA9") {
+            alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
+          } else if (errorCode === "SM1") {
+            alert("존재하지 않는 노래입니다.");
+          } else if (errorCode === "CE1") {
+            console.error("엘라스틱서치 요청 실패");
+          } else {
+            console.error("해시태그 수정 중 알 수 없는 오류 발생");
+          }
+        }
+      } else {
+        const errorCode = response.data?.errorCode;
+        if (errorCode === "SP1") {
+          alert("존재하지 않는 게시물입니다.");
+        } else if (errorCode === "CE1") {
+          console.error("엘라스틱서치 요청 실패");
+        } else {
+          console.error("노래 수정 중 알 수 없는 오류 발생");
+        }
+      }
     } catch (error) {
       console.error("노래 수정 중 오류 발생:", error);
     }
@@ -306,9 +365,7 @@ function Playlist() {
                         삭제
                       </S.DeleteButton>
                       {editSongId === song.musicId ? (
-                        <S.DeleteButton
-                          onClick={() => handleSaveEdit(song.postId, song)}
-                        >
+                        <S.DeleteButton onClick={() => handleSaveEdit(song)}>
                           저장
                         </S.DeleteButton>
                       ) : (

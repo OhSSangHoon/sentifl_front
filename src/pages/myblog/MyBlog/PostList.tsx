@@ -160,23 +160,30 @@ const PostList = () => {
   const deletePost = async (postId: number) => {
     if (window.confirm("정말로 이 게시물을 삭제하시겠습니까?")) {
       try {
-        await axiosInstance.delete(`/api/v1/post/${uid}/${postId}`);
-        const updatedPosts = allPosts.filter((post) => post.postId !== postId);
-        setAllPosts(updatedPosts);
+        const response = await axiosInstance.delete(
+          `/api/v1/post/${uid}/${postId}`
+        );
+        if (response.status === 200) {
+          const updatedPosts = allPosts.filter(
+            (post) => post.postId !== postId
+          );
+          setAllPosts(updatedPosts);
 
-        // 페이지에 남은 게시물이 없을 경우 이전 페이지로 이동
-        if (updatedPosts.length <= page * pageSize && page > 0) {
-          setPage((prevPage) => prevPage - 1);
-        }
+          // 페이지에 남은 게시물이 없을 경우 이전 페이지로 이동
+          if (updatedPosts.length <= page * pageSize && page > 0) {
+            setPage((prevPage) => prevPage - 1);
+          }
 
-        alert("게시물이 삭제되었습니다.");
-      } catch (error: any) {
-        const errorCode = error.response?.data?.errorCode;
-        if (errorCode === "SP3") {
+          alert("게시물이 삭제되었습니다.");
+        } else if (response.data?.errorCode === "SP3") {
           console.error("게시물 다큐먼트 없음");
+          alert("해당 게시물이 없습니다.");
         } else {
-          console.error("게시물 삭제 중 오류 발생:", error);
+          console.error("게시물 삭제 실패:", response);
+          alert("게시물 삭제에 실패했습니다.");
         }
+      } catch (error) {
+        console.error("게시물 삭제 중 오류 발생:", error);
         alert("게시물 삭제에 실패했습니다.");
       }
     }
