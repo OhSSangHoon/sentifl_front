@@ -20,6 +20,7 @@ const SongResult: React.FC = () => {
 
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false);
   // const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(title || "");
 
   const handleGenreClick = (genre: string) => {
     setSelectedGenres((prev) =>
@@ -34,16 +35,65 @@ const SongResult: React.FC = () => {
   const handleSaveButtonClick = async () => {
     setIsSaveButtonClicked(true);
 
-    if (selectedGenres.length > 0) {
-      const hashTagString = selectedGenres.join(" ").trim();
-      console.log("선택된 장르 (문자열):", hashTagString);
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
 
-      try {
-        const accessToken = localStorage.getItem("accessToken");
-        if (!accessToken) {
-          alert("로그인이 필요합니다.");
-          return;
+    try {
+      const postId = location.state?.postId;
+      if (!postId) {
+        alert("게시물 ID를 찾을 수 없습니다.");
+        return;
+      }
+
+      let titleChanged = false;
+      let hashtagsChanged = false;
+
+      if (editedTitle !== (title || "")) {
+        titleChanged = true;
+      }
+
+      if (selectedGenres.length > 0) {
+        hashtagsChanged = true;
+      }
+
+      // 제목이 변경되었을 경우 노래 정보 수정 API 호출
+      if (titleChanged) {
+        const updateResponse = await axiosInstance.put(
+          `/api/v1/music/post/${postId}`,
+          {
+            musicUrl: musicUrl,
+            title: editedTitle,
+            emotion1: emotion1,
+            emotion2: emotion2,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (updateResponse.status === 204) {
+          console.log("노래 정보가 성공적으로 수정되었습니다!");
+        } else {
+          const errorCode = updateResponse.data?.errorCode;
+          if (errorCode === "CE1") {
+            console.error("엘라스틱서치 요청 실패");
+          } else if (errorCode === "sp1") {
+            alert("존재하지 않는 게시물입니다.");
+          } else {
+            console.error("노래 정보 수정 실패:", updateResponse);
+          }
+          alert("노래 정보 수정에 실패했습니다.");
         }
+      }
+
+      // 해시태그가 선택된 경우 해시태그 저장 API 호출
+      if (hashtagsChanged) {
+        const hashTagString = selectedGenres.join(" ").trim();
 
         const hashtagResponse = await axiosInstance.post(
           `/api/v1/music/${musicId}/hashtag`,
@@ -58,8 +108,7 @@ const SongResult: React.FC = () => {
         );
 
         if (hashtagResponse.status === 204) {
-          alert("해시태그가 성공적으로 저장되었습니다!");
-          navigate(`/user/${uid}/playlist`);
+          console.log("해시태그가 성공적으로 저장되었습니다!");
         } else {
           const errorCode = hashtagResponse.data?.errorCode;
           if (errorCode === "CE1") {
@@ -73,14 +122,117 @@ const SongResult: React.FC = () => {
           }
           alert("해시태그 저장에 실패했습니다.");
         }
-      } catch (error: any) {
-        console.error(
-          "해시태그 저장 중 네트워크 오류 또는 예기치 않은 오류 발생:",
-          error
-        );
       }
+
+      if (titleChanged && hashtagsChanged) {
+        alert("해시태그와 제목이 성공적으로 저장되었습니다!");
+      } else if (titleChanged) {
+        alert("노래 제목이 성공적으로 수정되었습니다!");
+      } else if (hashtagsChanged) {
+        alert("해시태그가 성공적으로 저장되었습니다!");
+      } else {
+        alert("변경사항 없이 성공적으로 저장되었습니다!");
+      }
+
+      navigate(`/user/${uid}/playlist`);
+    } catch (error) {
+      console.error(
+        "노래 정보 저장 중 네트워크 오류 또는 예기치 않은 오류 발생:",
+        error
+      );
+      alert("노래 정보 저장 중 오류가 발생했습니다.");
     }
   };
+
+  // const handleSaveButtonClick = async () => {
+  //   setIsSaveButtonClicked(true);
+
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   if (!accessToken) {
+  //     alert("로그인이 필요합니다.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const postId = location.state?.postId;
+  //     if (!postId) {
+  //       alert("게시물 ID를 찾을 수 없습니다.");
+  //       return;
+  //     }
+
+  //     const updateResponse = await axiosInstance.put(
+  //       `/api/v1/music/post/${postId}`,
+  //       {
+  //         musicUrl: musicUrl,
+  //         title: editedTitle,
+  //         emotion1: emotion1,
+  //         emotion2: emotion2,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //         },
+  //       }
+  //     );
+
+  //     if (updateResponse.status === 204) {
+  //       alert("노래 정보가 성공적으로 수정되었습니다!");
+  //     } else {
+  //       const errorCode = updateResponse.data?.errorCode;
+  //       if (errorCode === "CE1") {
+  //         console.error("엘라스틱서치 요청 실패");
+  //       } else if (errorCode === "sp1") {
+  //         alert("존재하지 않는 게시물입니다.");
+  //       } else {
+  //         console.error("노래 정보 수정 실패:", updateResponse);
+  //       }
+  //       alert("노래 정보 수정에 실패했습니다.");
+  //     }
+
+  //     if (selectedGenres.length > 0) {
+  //       const hashTagString = selectedGenres.join(" ").trim();
+  //       // console.log("선택된 장르 (문자열):", hashTagString);
+
+  //       const hashtagResponse = await axiosInstance.post(
+  //         `/api/v1/music/${musicId}/hashtag`,
+  //         {
+  //           hashTag: hashTagString,
+  //         },
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${accessToken}`,
+  //           },
+  //         }
+  //       );
+
+  //       if (hashtagResponse.status === 204) {
+  //         alert("해시태그가 성공적으로 저장되었습니다!");
+  //         navigate(`/user/${uid}/playlist`);
+  //       } else {
+  //         const errorCode = hashtagResponse.data?.errorCode;
+  //         if (errorCode === "CE1") {
+  //           console.error("엘라스틱서치 요청 실패");
+  //         } else if (errorCode === "SA9") {
+  //           alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
+  //         } else if (errorCode === "SM1") {
+  //           alert("존재하지 않는 노래입니다.");
+  //         } else {
+  //           console.error("해시태그 저장 실패:", hashtagResponse);
+  //         }
+  //         alert("해시태그 저장에 실패했습니다.");
+  //       }
+  //     } else {
+  //       // 해시태그를 선택하지 않은 경우 바로 플레이리스트로 이동
+  //       navigate(`/user/${uid}/playlist`);
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       "노래 정보 저장 중 네트워크 오류 또는 예기치 않은 오류 발생:",
+  //       error
+  //     );
+  //     alert("노래 정보 저장 중 오류가 발생했습니다.");
+  //   }
+  // };
 
   // const handleCheckboxChange = () => {
   //   setIsCheckboxChecked(!isCheckboxChecked);
@@ -88,10 +240,6 @@ const SongResult: React.FC = () => {
   //     console.log("Selected genres:", selectedGenres);
   //   }
   // };
-
-  const toggleDropdown = () => {
-    setIsDropdownVisible(!isDropdownVisible);
-  };
 
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(new Audio(musicUrl));
@@ -204,16 +352,14 @@ const SongResult: React.FC = () => {
               MY PLAYLIST 에 저장
             </S.BottomLeftButton>
             <S.BottomCenterText>
-              * 생성한 음악을 내 플레이리스트에 저장 후 해시태그를 설정하세요
+              * 생성한 음악을 내 플레이리스트에 저장 후 제목과 해시태그를
+              설정하세요
             </S.BottomCenterText>
           </S.BottomLeftGroup>
           <S.BottomRightGroup>
             <S.BottomRightButton onClick={() => navigate(`/user/${uid}/blog`)}>
               내 블로그로 가기
             </S.BottomRightButton>
-            {/* <S.UpArrowButton>
-              <FaChevronUp />
-            </S.UpArrowButton> */}
           </S.BottomRightGroup>
         </S.BottomContainer>
       )}
@@ -227,20 +373,25 @@ const SongResult: React.FC = () => {
         >
           <S.DropdownContainer isVisible={isDropdownVisible}>
             <S.LeftContainer>
-              <S.DropdownText>분위기 및 장르</S.DropdownText>
+              <S.DropdownText>제목 및 장르</S.DropdownText>
               <S.DropdownSubText>
-                * 최대 5개까지 선택 가능합니다.
+                * 제목을 수정해주세요 <br />* 장르는 최대 5개까지 선택
+                가능합니다.
               </S.DropdownSubText>
-              <S.CheckboxContainer>
-                <S.SaveButton onClick={handleSaveButtonClick}>
-                  내 게시글에 바로 사용
-                </S.SaveButton>
-                {/* <S.Checkbox
-                checked={isCheckboxChecked}
-                onChange={handleCheckboxChange}
+              <S.LabelText>제목</S.LabelText>
+              <S.TitleInput
+                type="text"
+                value={editedTitle}
+                onChange={(e) => setEditedTitle(e.target.value)}
+                placeholder="제목을 입력하세요"
               />
-              <span>내 게시글에 바로 사용</span> */}
-              </S.CheckboxContainer>
+              {/* <S.CheckboxContainer>
+                <S.Checkbox
+                  checked={isCheckboxChecked}
+                  onChange={handleCheckboxChange}
+                />
+                <span>내 게시글에 바로 사용</span>
+              </S.CheckboxContainer> */}
             </S.LeftContainer>
 
             <S.GenreOptions>
@@ -254,13 +405,17 @@ const SongResult: React.FC = () => {
                 </S.GenreButton>
               ))}
             </S.GenreOptions>
-            <S.PlaylistButton onClick={() => navigate(`/user/${uid}/playlist`)}>
-              플레이리스트로 이동
-            </S.PlaylistButton>
-            {/* 
-          <S.ChevronDownButton onClick={toggleDropdown}>
-            <FaChevronDown />
-          </S.ChevronDownButton> */}
+
+            <S.RightButtonGroup>
+              <S.SaveButton onClick={handleSaveButtonClick}>
+                노래 정보 저장
+              </S.SaveButton>
+              <S.PlaylistButton
+                onClick={() => navigate(`/user/${uid}/playlist`)}
+              >
+                플레이리스트 이동
+              </S.PlaylistButton>
+            </S.RightButtonGroup>
           </S.DropdownContainer>
         </CSSTransition>
       )}

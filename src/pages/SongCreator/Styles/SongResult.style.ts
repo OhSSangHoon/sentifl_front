@@ -199,14 +199,14 @@ export const DropdownContainer = styled.div<{ isVisible: boolean }>`
   right: 0;
   border-top: 1px solid white;
   background-color: rgba(28, 28, 30, 0.5);
-  padding: 20px;
+  padding: 30px 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   width: 100%;
   display: flex;
   justify-content: space-between;
-  height: ${({ isVisible }) => (isVisible ? "200px" : "0")};
+  height: ${({ isVisible }) => (isVisible ? "auto" : "0")};
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   overflow: hidden;
 
@@ -216,21 +216,29 @@ export const DropdownContainer = styled.div<{ isVisible: boolean }>`
 export const LeftContainer = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1;
   overflow: hidden;
+`;
+
+export const RightButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 80px;
 `;
 
 export const DropdownText = styled.p`
   color: #fffff;
   font-size: 24px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   overflow: hidden;
 `;
 
 export const DropdownSubText = styled.p`
   color: #aaa;
   font-size: 12px;
-  margin-top: -8px;
-  margin-bottom: 15px;
+  margin-bottom: 30px;
   overflow: hidden;
 `;
 
@@ -238,8 +246,9 @@ export const GenreOptions = styled.div`
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   justify-content: center;
-  gap: 4px;
+  margin-top: 30px;
   overflow: hidden;
+  // height: 150px;
 `;
 
 export const GenreButton = styled.button<{ selected: boolean }>`
@@ -284,40 +293,18 @@ export const Checkbox = styled.input.attrs({ type: "checkbox" })`
   margin-right: 10px;
   accent-color: white;
   border-radius: 4px;
-`;
-
-export const ChevronDownButton = styled.button`
-  width: 40px;
-  height: 40px;
-  top: 10px;
-  right: 10px;
-  background-color: transparent;
-  border: 1px solid #fff;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-
-  svg {
-    color: #ccc;
-    font-size: 24px;
-  }
+  overflow: hidden;
 `;
 
 export const PlaylistButton = styled.button`
+  padding: 10px 20px;
   font-size: 14px;
-  height: 40px;
-  padding: 4px 12px;
-  background-color: #ffffff;
-  color: #3a3a3c;
-  border: 1px solid white;
+  background-color: #fff;
+  border: none;
   border-radius: 20px;
+  color: #3a3a3c;
   cursor: pointer;
+  margin-top: 10px;
   overflow: hidden;
 
   &:hover {
@@ -334,6 +321,7 @@ export const SaveButton = styled.button`
   color: #3a3a3c;
   cursor: pointer;
   margin-top: 10px;
+  overflow: hidden;
 
   &:hover {
     background-color: #dbdbdb;
@@ -362,4 +350,29 @@ export const RedoButton = styled.button`
   svg {
     font-size: 12px;
   }
+`;
+
+export const TitleInput = styled.input`
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  color: #ffffff;
+  outline: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  &:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #ffffff;
+  }
+`;
+
+export const LabelText = styled.p`
+  font-size: 14px;
+  color: #aaa;
+  margin: 0 0 5px 0;
+  align-self: flex-start;
 `;

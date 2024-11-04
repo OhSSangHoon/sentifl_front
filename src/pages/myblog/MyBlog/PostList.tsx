@@ -163,7 +163,7 @@ const PostList = () => {
         const response = await axiosInstance.delete(
           `/api/v1/post/${uid}/${postId}`
         );
-        if (response.status === 200) {
+        if (response.status === 204) {
           const updatedPosts = allPosts.filter(
             (post) => post.postId !== postId
           );

@@ -49,7 +49,7 @@ export const Points = styled.p`
 export const MainContent = styled.div`
   display: flex;
   flex-direction: row;
-  margin-left: 350px;
+  margin-left: 280px;
   flex-grow: 1;
   padding: 20px;
   align-items: flex-start;

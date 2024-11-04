@@ -254,3 +254,12 @@ export const EmptyText = styled.p`
   color: #dbdbdb;
   margin-top: 10px;
 `;
+
+export const LoadingState = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 18px;
+  color: #777;
+`;

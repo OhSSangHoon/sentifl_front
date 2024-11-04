@@ -15,8 +15,8 @@ export const PostListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 0;
-  width: 100%;
+  width: 100vw;
+  // width: 100%;
   // min-height: 700px;
 `;
 
@@ -185,6 +185,10 @@ export const CreateButton = styled.button`
   &:hover {
     background-color: #333;
   }
+
+  &:active {
+    background-color: #555;
+  }
 `;
 
 export const HashTagInput = styled.input`
@@ -206,12 +210,14 @@ export const HashTagInput = styled.input`
 export const LoadingScreen = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   padding-top: 100px;
   align-items: center;
-  height: 100vh;
+  width: 100vw;
+  margin-right: 200px;
+  margin-top: -100px;
   background-color: #000;
   color: #fff;
+  z-index: 1000;
 `;
 
 export const LoadingTitle = styled.h1`
@@ -227,12 +233,12 @@ export const LoadingText = styled.p`
 `;
 
 export const LoadingCircle = styled.div`
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   border: 5px solid #fff;
   border-top: 5px solid #698dbf;
-  margin: 100px 0;
+  margin: 70px 0;
   animation: spin 1s linear infinite;
 
   @keyframes spin {
@@ -249,6 +255,7 @@ export const HeaderWrapper = styled.div`
   text-align: left;
   color: #ffffff;
   margin-bottom: 20px;
+  padding-left: 20px;
   margin-left: 40px;
 `;
 
