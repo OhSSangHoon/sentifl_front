@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from "react";
+import {
+  FaComment,
+  FaHeart,
+  FaPaperPlane,
+  FaPause,
+  FaPlay,
+} from "react-icons/fa";
+import { MdGraphicEq } from "react-icons/md";
 import { useParams } from "react-router-dom";
+import styled, { css } from "styled-components";
 import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import Sidebar from "../MyBlog/SideBar";
 import * as S from "./Styles/BlogPost.styles";
-import {
-  FaPaperPlane,
-  FaPlay,
-  FaComment,
-  FaHeart,
-  FaPause,
-} from "react-icons/fa";
-import { MdGraphicEq } from "react-icons/md";
-import styled, { keyframes, css } from "styled-components";
 import { CommentData, PostData, pulse } from "./Styles/BlogPost.styles";
 
 function BlogPost() {
@@ -47,6 +47,7 @@ function BlogPost() {
   const [hashTags, setHashTag] = useState<string[]>([]);
 
   useEffect(() => {
+
     const fetchAllPosts = async () => {
       try {
         let allPosts: any[] = [];
@@ -62,6 +63,7 @@ function BlogPost() {
             allPosts = [...allPosts, ...response.data.content];
             lastPage = response.data.last;
             currentPage += 1;
+
           } else {
             console.error("게시물 목록을 불러오는 중 오류 발생");
             break;
@@ -77,18 +79,26 @@ function BlogPost() {
           const { postUrl, totalLikes, totalViews, thumbnailUrl } =
             selectedPost;
 
+          //최신 thumbnailUrl 가져오기
+          const updatedThumbnailUrl = selectedPost.thumbnailUrl;
+
           // S3에서 게시글 내용 가져오기
-          const postContentResponse = await axiosInstance.get(postUrl);
+          const postContentResponse = await axiosInstance.get(postUrl, {
+            headers: { "Cache-Control": "no-cache" },
+          });
           if (postContentResponse.status === 200) {
-            const { title, content } = postContentResponse.data;
+            const { title, content, thumbnailUrl: updatedThumbnailUrl } = postContentResponse.data;
+
 
             setPost({
               ...selectedPost,
               title,
               content,
-              thumbnailUrl,
+              thumbnailUrl: updatedThumbnailUrl,
               hashTag: [],
             });
+
+            //console.log("Loaded thumbnailUrl:", thumbnailUrl);
 
             increasePostView();
 
@@ -100,8 +110,11 @@ function BlogPost() {
             `/api/v1/post/${postId}/hashtag`
           );
           if (hashTagResponse.status === 200) {
-            const hashtagsArray = hashTagResponse.data[0].split(" ");
-            setHashTag(hashtagsArray);
+            const allHashtags = hashTagResponse.data
+            .map((hashtagsString: string) => hashtagsString.split(" "))
+            .flat();
+
+            setHashTag(allHashtags);
           }
         } else {
           console.error("해당 postId에 맞는 게시글을 찾을 수 없습니다.");

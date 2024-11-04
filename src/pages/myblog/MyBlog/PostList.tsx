@@ -17,6 +17,7 @@ export interface Post {
 export interface PostContent {
   title: string;
   content: string;
+  thumbnailUrl: string;
 }
 
 export const PostDescription = ({ content }: { content: string }) => {
@@ -104,12 +105,15 @@ const PostList = () => {
 
   const fetchPostContent = async (postUrl: string, postId: number) => {
     try {
-      const response = await axiosInstance.get(postUrl);
+      const response = await axiosInstance.get(postUrl, {
+        headers: { "Cache-Control": "no-cache" }, //캐싱 방지 헤더 추가
+      });
+
       if (response.status === 200) {
-        const { title, content }: PostContent = response.data;
+        const { title, content, thumbnailUrl }: PostContent & { thumbnailUrl: string } = response.data;
         setPostContents((prevContents) => ({
           ...prevContents,
-          [postId]: { title, content },
+          [postId]: { title, content, thumbnailUrl },
         }));
       } else {
         console.log("게시물 내용을 불러올 수 없습니다.");
@@ -233,13 +237,13 @@ const PostList = () => {
                       />
                     </S.PostDescription>
                   </S.PostInfo>
-                  {post.thumbnailUrl && (
+                  {postContent?.thumbnailUrl && (
                     <S.PostImage
-                      src={post.thumbnailUrl}
+                      src={postContent.thumbnailUrl}
                       alt="Thumbnail"
                       onClick={(event) => {
                         event.stopPropagation();
-                        openImageOverlay(post.thumbnailUrl);
+                        openImageOverlay(postContent.thumbnailUrl);
                       }}
                     />
                   )}
