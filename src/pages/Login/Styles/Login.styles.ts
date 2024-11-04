@@ -1,4 +1,37 @@
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
+
+
+export const slideOutLeft = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+`
+
+export const slideInRight = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+export const AnimatedDiv = styled.div<{ step: number; activeStep: number }>`
+${({ step, activeStep }) =>
+  step === 1 && activeStep === 2
+    ? css`
+        animation: ${slideOutLeft} 0.5s forwards;
+      `
+    : step === 2 && activeStep === 2
+    ? css`
+        animation: ${slideInRight} 0.5s forwards;
+      `
+    : ''}
+`;
+
 
 export const Container = styled.div`
   display: flex;
@@ -9,9 +42,61 @@ export const Container = styled.div`
 export const Uid = styled.div`
   width:100%;
   text-align:center;
-  border:1px solid red;
   margin-top:100px;
   color:#fff;
+`
+export const infoTitle = styled.p`
+  font-size:4.7em;
+  font-family:thin;
+  padding:50px 0;
+`
+
+export const Character = styled.img`
+  margin-bottom:50px;
+`
+
+export const Form = styled.div`
+  width: 30%;
+  height:100px;
+  margin: 0 auto;
+  position: relative;
+`
+
+export const AddInput = styled.input`
+  text-align: center;
+  width: 100%;
+  height: 50px;
+  border-radius: 25px;
+  border: none;
+  outline: none;
+  background: #2F2F2F;
+  color: #fff;
+  font-size: 1em;
+`
+
+export const AddBtn = styled.button`
+  position: absolute;
+  right: 15px;
+  background: #515151;
+  top:5%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  font-size: 1.5em;
+  text-align: center;
+  color: #fff;
+  line-height: -10px;
+  cursor: pointer;
+`
+
+export const Warn = styled.p`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  color: #5e5e5e;
+  font-size: 0.9em;
 `
 
 export const LeftPanel = styled.div`
