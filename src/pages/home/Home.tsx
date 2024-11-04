@@ -1,37 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import axiosInstance from "../../axiosInterceptor";
 import DotNav from "../../components/DotNav";
+import Hashtags from "./Hashtags";
 import MusicRecommend from "./MusicRecommend";
 import NewPost from "./NewPost";
 import * as S from "./Styles/Home.styles";
 
+
 function Home() {
   // 각 섹션에 대한 참조 생성
   const homeRef = useRef<HTMLDivElement>(null);
+  const HashtagsRef = useRef<HTMLDivElement>(null);
   const musicRecommendRef = useRef<HTMLDivElement>(null);
   const newPostRef = useRef<HTMLDivElement>(null);
 
   // 현재 활성화된 섹션 상태
   const [activeSection, setActiveSection] = useState("home");
 
-  // 인기 해시태그 상태
-  const [hashtags, setHashtags] = useState<string[]>([]);
-
-  useEffect(() => {
-    // 인기 해시태그 가져오기
-    const fetchPopularHashtags = async () => {
-      try {
-        const response = await axiosInstance.get(
-          "/api/v1/post/search/hashtags"
-        );
-        setHashtags(response.data);
-      } catch (error) {
-        console.error("Failed to fetch popular hashtags:", error);
-      }
-    };
-
-    fetchPopularHashtags();
-  }, []);
 
   useEffect(() => {
     const observerOptions = {
@@ -45,6 +29,8 @@ function Home() {
         if (entry.isIntersecting) {
           if (entry.target === homeRef.current) {
             setActiveSection("home");
+          } else if(entry.target === HashtagsRef.current){
+            setActiveSection("Hashtags");
           } else if (entry.target === musicRecommendRef.current) {
             setActiveSection("musicRecommend");
           } else if (entry.target === newPostRef.current) {
@@ -60,13 +46,14 @@ function Home() {
     );
 
     if (homeRef.current) observer.observe(homeRef.current);
+    if (HashtagsRef.current) observer.observe(HashtagsRef.current);
     if (musicRecommendRef.current) observer.observe(musicRecommendRef.current);
     if (newPostRef.current) observer.observe(newPostRef.current);
 
     return () => {
       if (homeRef.current) observer.unobserve(homeRef.current);
-      if (musicRecommendRef.current)
-        observer.unobserve(musicRecommendRef.current);
+      if (HashtagsRef.current) observer.unobserve(HashtagsRef.current);
+      if (musicRecommendRef.current) observer.unobserve(musicRecommendRef.current);
       if (newPostRef.current) observer.unobserve(newPostRef.current);
     };
   }, []);
@@ -86,6 +73,7 @@ function Home() {
     <S.PageContainer>
       <DotNav
         scrollToHome={() => scrollToSection(homeRef)}
+        scrollToHashTags={() => scrollToSection(HashtagsRef)}
         scrollToMusicRecommend={() => scrollToSection(musicRecommendRef)}
         scrollToNewPost={() => scrollToSection(newPostRef)}
         activeSection={activeSection}
@@ -108,17 +96,12 @@ function Home() {
             translateY="-50%"
             gradient="linear-gradient(135deg, #2B8DBE 0%, #C06AEA 100%)"
           />
-          <S.HashtagContainer>
-            <h2>Popular Hashtags</h2>
-            {hashtags.length > 0 ? (
-              hashtags
-                .filter((hashtag) => hashtag.trim() !== "")
-                .map((hashtag, index) => <span key={index}>#{hashtag}</span>)
-            ) : (
-              <p>No popular hashtags available</p>
-            )}
-          </S.HashtagContainer>
+
         </S.Background>
+      </S.Section>
+
+      <S.Section ref={HashtagsRef}>
+        <Hashtags />
       </S.Section>
 
       <S.Section ref={musicRecommendRef}>
