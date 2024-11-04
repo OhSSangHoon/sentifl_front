@@ -1,8 +1,9 @@
-import styled from "styled-components";
 import { useLocation } from "react-router-dom";
+import styled from "styled-components";
 
 interface DotNavigationProps {
   scrollToHome?: () => void;
+  scrollToHashTags?: () => void;
   scrollToMusicRecommend?: () => void;
   scrollToNewPost?: () => void;
   scrollToSection1?: () => void;
@@ -12,6 +13,7 @@ interface DotNavigationProps {
 
 const DotNavigation = ({
   scrollToHome,
+  scrollToHashTags,
   scrollToMusicRecommend,
   scrollToNewPost,
   scrollToSection1,
@@ -25,6 +27,7 @@ const DotNavigation = ({
       {location.pathname === "/" ? (
         <>
           <Dot onClick={scrollToHome} active={activeSection === "home"} />
+          <Dot onClick={scrollToHashTags} active={activeSection === "Hashtags"} />
           <Dot
             onClick={scrollToMusicRecommend}
             active={activeSection === "musicRecommend"}
