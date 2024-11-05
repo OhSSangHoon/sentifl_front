@@ -1,4 +1,4 @@
-import { Link, NavLink as RouterNavLink } from "react-router-dom";
+import { NavLink as RouterNavLink } from "react-router-dom";
 import styled from "styled-components";
 
 
@@ -53,81 +53,20 @@ export const SearchContainer = styled.div`
   position: relative;
 `;
 
-export const SearchInput = styled.input`
-  width: 300px;
-  padding: 10px 20px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-  outline: none;
+export const SearchBtn = styled.button`
 
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-  }
 `;
 
-export const SearchIcon = styled.div`
-  position: absolute;
-  top: 50%;
-  right: 160px;
-  transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.7);
-`;
-
-export const SearchResults = styled.div`
-  position: fixed;
-  top: 70px;
-  right: 3.5%;
-  transform: translateX(-50%); /* 가운데 정렬 */
-  width: 300px;
-  background:#fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-height: 200px; /* 최대 높이를 설정하여 스크롤바가 필요할 때만 나타나도록 */
-  overflow-y: auto; /* 스크롤이 필요할 때만 스크롤바 표시 */
-  z-index: 10;
-  border-radius: 5px;
-  cursor:pointer;
-`;
+// export const SearchIcon = styled.div`
+//   position: absolute;
+//   top: 50%;
+//   right: 160px;
+//   transform: translateY(-50%);
+//   color: rgba(255, 255, 255, 0.7);
+// `;
 
 
-export const SearchResultItem = styled.div`
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #f0f0f0;
-  justify-content: space-between;
 
-  &:hover {
-    background-color: #f0f0f0;
-  }
-`;
-
-export const FollowButton = styled.button<{ isFollowing: boolean }>`
-  background-color: ${(props) => (props.isFollowing ? "#cccccc" : "#007bff")};
-  color: ${(props) => (props.isFollowing ? "#666666" : "white")};
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor:pointer;
-  opacity: ${(props) => (props.isFollowing ? 0.6 : 1)};
-  
-`;
-
-export const UserLink = styled(Link)`
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #333;
-
-  img {
-    margin-right: 10px;
-  }
-
-  span {
-    font-size: 14px;
-  }
-`;
 
 export const LoginLink = styled(RouterNavLink)`
   text-align: right;
