@@ -115,7 +115,11 @@ const PostList = () => {
       });
 
       if (response.status === 200) {
-        const { title, content, thumbnailUrl }: PostContent & { thumbnailUrl: string } = response.data;
+        const {
+          title,
+          content,
+          thumbnailUrl,
+        }: PostContent & { thumbnailUrl: string } = response.data;
         setPostContents((prevContents) => ({
           ...prevContents,
           [postId]: { title, content, thumbnailUrl },

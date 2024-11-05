@@ -89,7 +89,7 @@ export const SongTitleWrapper = styled.div`
 export const SongTitle = styled.div`
   display: flex;
   align-items: center;
-  font-size: 14px;
+  font-size: 10px;
   color: white;
 `;
 

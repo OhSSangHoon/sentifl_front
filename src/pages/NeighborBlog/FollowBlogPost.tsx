@@ -344,19 +344,41 @@ function FollowBlogPost() {
   // 음악 재생/일시정지 함수
   const handlePlayPause = (musicUrl: string) => {
     if (audioRef.current) {
+      // 동일한 오디오를 다시 클릭한 경우: 재생/일시정지 토글
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
       } else {
-        audioRef.current.play();
+        audioRef.current.play().catch((error) => {
+          console.error("재생 중 오류 발생:", error);
+        });
         setIsPlaying(true);
       }
     } else {
+      // 오디오가 없는 경우 새 오디오 객체 생성 및 재생
       audioRef.current = new Audio(musicUrl);
-      audioRef.current.play();
-      setIsPlaying(true);
+      audioRef.current.onloadeddata = () => {
+        audioRef.current
+          ?.play()
+          .then(() => {
+            setIsPlaying(true);
+          })
+          .catch((error) => {
+            console.error("오디오 재생 중 오류 발생:", error);
+          });
+      };
     }
   };
+
+  // 컴포넌트 언마운트 시 오디오 정리
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   if (loading) {
     return <p>로딩 중...</p>;

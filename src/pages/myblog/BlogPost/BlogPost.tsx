@@ -47,7 +47,6 @@ function BlogPost() {
   const [hashTags, setHashTag] = useState<string[]>([]);
 
   useEffect(() => {
-
     const fetchAllPosts = async () => {
       try {
         let allPosts: any[] = [];
@@ -63,7 +62,6 @@ function BlogPost() {
             allPosts = [...allPosts, ...response.data.content];
             lastPage = response.data.last;
             currentPage += 1;
-
           } else {
             const errorCode = response.data?.errorCode;
             if (errorCode === "CE1") {
@@ -91,8 +89,11 @@ function BlogPost() {
             headers: { "Cache-Control": "no-cache" },
           });
           if (postContentResponse.status === 200) {
-            const { title, content, thumbnailUrl: updatedThumbnailUrl } = postContentResponse.data;
-
+            const {
+              title,
+              content,
+              thumbnailUrl: updatedThumbnailUrl,
+            } = postContentResponse.data;
 
             setPost({
               ...selectedPost,
@@ -124,8 +125,8 @@ function BlogPost() {
           );
           if (hashTagResponse.status === 200) {
             const allHashtags = hashTagResponse.data
-            .map((hashtagsString: string) => hashtagsString.split(" "))
-            .flat();
+              .map((hashtagsString: string) => hashtagsString.split(" "))
+              .flat();
 
             setHashTag(allHashtags);
           }
@@ -449,22 +450,55 @@ function BlogPost() {
     }
   };
 
-  // 음악 재생/일시정지 함수
-  const handlePlayPause = (musicUrl: string) => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
+  const handlePlayPause = async (musicUrl: string) => {
+    if (!audioRef.current) {
+      // audioRef가 초기화되지 않았다면 새로 생성
+      audioRef.current = new Audio(musicUrl);
+    }
+
+    if (isPlaying) {
+      try {
+        await audioRef.current.pause();
         setIsPlaying(false);
-      } else {
-        audioRef.current.play();
-        setIsPlaying(true);
+      } catch (error) {
+        console.error("일시 정지 중 오류 발생:", error);
       }
     } else {
-      audioRef.current = new Audio(musicUrl);
-      audioRef.current.play();
-      setIsPlaying(true);
+      try {
+        await audioRef.current.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("재생 중 오류 발생:", error);
+      }
     }
   };
+
+  // 컴포넌트가 언마운트될 때 오디오 객체를 정리
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  // // 음악 재생/일시정지 함수
+  // const handlePlayPause = (musicUrl: string) => {
+  //   if (audioRef.current) {
+  //     if (isPlaying) {
+  //       audioRef.current.pause();
+  //       setIsPlaying(false);
+  //     } else {
+  //       audioRef.current.play();
+  //       setIsPlaying(true);
+  //     }
+  //   } else {
+  //     audioRef.current = new Audio(musicUrl);
+  //     audioRef.current.play();
+  //     setIsPlaying(true);
+  //   }
+  // };
 
   if (loading) {
     return <p>로딩 중...</p>;

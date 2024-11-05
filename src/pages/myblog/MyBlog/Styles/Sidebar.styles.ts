@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import React from "react";
+const today = new Date().getDate();
 
 export const SidebarContainer = styled.aside`
   width: 350px;
@@ -238,8 +240,9 @@ export const CalendarContainer = styled.div`
   border-radius: 10px;
   position: relative;
 `;
-
-export const CalendarDate = styled.div`
+export const CalendarDate = styled.div<{
+  isToday?: boolean;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,8 +252,7 @@ export const CalendarDate = styled.div`
   color: #ffffff;
   cursor: pointer;
   border-radius: 5px;
-  background-color: transparent;
-  border: 0.1px solid #1e1e1e;
+  background-color: ${({ isToday }) => (isToday ? "#b3e5fc" : "transparent")};
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
@@ -310,11 +312,8 @@ export const PostListItem = styled.div`
 `;
 
 export const CalendarMonth = styled.div`
-  grid-column: span 7;
   text-align: left;
-  font-size: 18px;
+  font-size: 13px;
   color: white;
   font-weight: bold;
-  margin-bottom: 10px;
-  padding-left: 10px;
 `;

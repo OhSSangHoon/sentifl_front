@@ -266,34 +266,56 @@ function Playlist() {
     setEditedTitle(song.title);
     setEditedHashTag(song.hashTags.join(" "));
   };
-
-  const handlePlayPause = (songId: number, musicUrl: string) => {
+  const handlePlayPause = async (songId: number, musicUrl: string) => {
     if (audioRef.current) {
       // 같은 노래를 다시 클릭한 경우 재생/일시정지
       if (currentSongId === songId) {
         if (isPlaying) {
-          audioRef.current.pause();
+          try {
+            await audioRef.current.pause();
+            setIsPlaying(false);
+          } catch (error) {
+            console.error("일시 정지 중 오류 발생:", error);
+          }
         } else {
-          audioRef.current.play();
+          try {
+            await audioRef.current.play();
+            setIsPlaying(true);
+          } catch (error) {
+            console.error("재생 중 오류 발생:", error);
+          }
         }
-        setIsPlaying(!isPlaying);
       } else {
         // 다른 노래 클릭 시 새로운 노래 재생
         audioRef.current.pause();
         audioRef.current.src = musicUrl;
-        audioRef.current.play();
-        setCurrentSongId(songId);
-        setIsPlaying(true);
+        audioRef.current.load(); // 새로운 URL로 변경 후 load() 호출
+
+        audioRef.current.onloadeddata = async () => {
+          try {
+            await audioRef.current!.play();
+            setCurrentSongId(songId);
+            setIsPlaying(true);
+          } catch (error) {
+            console.error("재생 중 오류 발생:", error);
+          }
+        };
       }
     } else {
       // 첫 재생 시
       audioRef.current = new Audio(musicUrl);
-      audioRef.current.play();
-      setCurrentSongId(songId);
-      setIsPlaying(true);
+      audioRef.current.onloadeddata = async () => {
+        try {
+          await audioRef.current!.play();
+          setCurrentSongId(songId);
+          setIsPlaying(true);
+        } catch (error) {
+          console.error("재생 중 오류 발생:", error);
+        }
+      };
+      audioRef.current.load();
     }
   };
-
   useEffect(() => {
     fetchSongs();
   }, []);

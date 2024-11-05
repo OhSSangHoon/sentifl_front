@@ -11,7 +11,6 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axiosInterceptor";
 import * as S from "./Styles/Sidebar.styles";
-import { Post, PostContent } from "./PostList";
 
 export interface SidebarProps {
   nickname: string;
@@ -19,6 +18,22 @@ export interface SidebarProps {
   profileImage: string;
   toggleFollowPopup?: () => void;
   toggleFollowingPopup?: () => void;
+}
+
+export interface Post {
+  postId: number;
+  postUrl: string;
+  thumbnailUrl: string;
+  createdTime: string;
+  modifiedTime: string;
+  totalLikes: number;
+  totalViews: number;
+}
+
+export interface PostContent {
+  title: string;
+  content: string;
+  thumbnailUrl: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -36,7 +51,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [postContents, setPostContents] = useState<{
     [key: number]: PostContent;
   }>({});
-  const [currentMonth, setCurrentMonth] = useState("");
+  const [currentMonth, setCurrentMonth] = useState<number>(
+    new Date().getMonth()
+  );
+  const [currentYear, setCurrentYear] = useState<number>(
+    new Date().getFullYear()
+  );
 
   const isPostUrl = location.pathname.includes("post");
   const isBlogUrl = location.pathname.includes("blog");
@@ -46,36 +66,42 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const handleDateClick = async (date: number) => {
     try {
-      const formattedDate = `2024-11-${String(date).padStart(2, "0")}`;
+      const selectedDate = new Date(currentYear, currentMonth, date);
       const response = await axiosInstance.get(`/api/v1/post/${uid}`, {
-        params: {
-          page: 0,
-          size: 3,
-          date: formattedDate,
-        },
+        params: { page: 0, size: 120 },
       });
 
-      if (response.status === 200) {
-        setSelectedDatePosts(response.data.content);
+      const posts = response.data.content.filter((post: Post) => {
+        const postDate = new Date(post.createdTime);
+        return (
+          postDate.getFullYear() === selectedDate.getFullYear() &&
+          postDate.getMonth() === selectedDate.getMonth() &&
+          postDate.getDate() === selectedDate.getDate()
+        );
+      });
 
-        response.data.content.forEach(async (post: Post) => {
-          if (!postContents[post.postId]) {
-            const postResponse = await axiosInstance.get(post.postUrl);
-            if (postResponse.status === 200) {
-              setPostContents((prev) => ({
-                ...prev,
-                [post.postId]: postResponse.data,
-              }));
-            }
-          }
+      setSelectedDatePosts(posts);
+
+      // 각 게시글의 제목과 내용을 불러와 postContents에 저장
+      const postContentPromises = posts.map(async (post: Post) => {
+        const postContentResponse = await axiosInstance.get(post.postUrl, {
+          headers: { "Cache-Control": "no-cache" },
         });
+        return {
+          [post.postId]: postContentResponse.data,
+        };
+      });
 
-        setCalendarVisible(false);
-      } else {
-        console.error("해당 날짜의 글 목록을 불러올 수 없습니다.");
-      }
+      // 모든 postContentPromises가 완료된 후 객체로 합치기
+      const postContentsArray = await Promise.all(postContentPromises);
+      const postContentsObject = Object.assign({}, ...postContentsArray);
+      setPostContents((prev) => ({ ...prev, ...postContentsObject }));
+
+      console.log(postContentsObject);
+
+      setCalendarVisible(false);
     } catch (error) {
-      console.error("글 목록 불러오기 오류:", error);
+      console.error("선택한 날짜의 게시글을 불러오지 못했습니다.", error);
     }
   };
 
@@ -104,6 +130,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     fetchFollowInfo();
   }, [uid]);
 
+  useEffect(() => {
+    setCalendarVisible(true);
+  }, [selectedDatePosts]);
+
   const handleBackToCalendar = () => {
     setCalendarVisible(true);
     setSelectedDatePosts([]);
@@ -130,12 +160,24 @@ const Sidebar: React.FC<SidebarProps> = ({
     return doc.body.textContent || "";
   };
 
+  const getDaysInMonth = (month: number, year: number) => {
+    if (month === 1) {
+      return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28;
+    }
+    return [31, 30, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+  };
+
+  const formattedMonth = new Date(currentYear, currentMonth).toLocaleString(
+    "ko-KR",
+    { month: "long" }
+  );
+
   return (
     <S.SidebarContainer>
       <S.SidebarTopBar>
         <S.LeftIcons>
           <FaParking size={18} />
-          <S.PointText>60p</S.PointText>
+          <S.PointText>0p</S.PointText>
         </S.LeftIcons>
         <S.RightIcons>
           <FaBell size={18} />
@@ -172,7 +214,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       <S.Menu>
         <S.MenuIconWrapper>
           <FaCalendarAlt size={18} onClick={toggleCalendarVisibility} />
-          <FaPen onClick={handlePenClick} size={18} />{" "}
+          <FaPen onClick={handlePenClick} size={18} />
         </S.MenuIconWrapper>
 
         {/* <S.CategoryTitle>
@@ -189,37 +231,57 @@ const Sidebar: React.FC<SidebarProps> = ({
       </S.Menu>
       {isCalendarVisible ? (
         <S.CalendarContainer>
-          <S.CalendarMonth>{currentMonth}</S.CalendarMonth>
-          {Array.from({ length: 30 }, (_, index) => {
-            const date = index + 1;
-            return (
-              <S.CalendarDate key={date} onClick={() => handleDateClick(date)}>
-                {date}
-              </S.CalendarDate>
-            );
-          })}
+          <S.CalendarMonth>{formattedMonth}</S.CalendarMonth>
+          {Array.from(
+            { length: getDaysInMonth(currentMonth, currentYear) },
+            (_, index) => {
+              const date = index + 1;
+              const isToday =
+                currentYear === new Date().getFullYear() &&
+                currentMonth === new Date().getMonth() &&
+                date === new Date().getDate();
+              return (
+                <S.CalendarDate
+                  key={date}
+                  onClick={() => handleDateClick(date)}
+                  isToday={isToday}
+                >
+                  {date}
+                </S.CalendarDate>
+              );
+            }
+          )}
         </S.CalendarContainer>
       ) : (
         <S.PostListContainer>
           <S.BackButton onClick={handleBackToCalendar}>
             ← Back to Calendar
           </S.BackButton>
-          {selectedDatePosts.slice(0, 3).map((post) => {
-            const postContent = postContents[post.postId];
-            return (
-              <S.PostListItem
-                key={post.postId}
-                onClick={() => navigate(`/user/${uid}/post/${post.postId}`)}
-              >
-                <h3>{postContent.title || "제목 불러오는 중..."}</h3>
-                {postContent.content
-                  ? stripHtmlTags(postContent.content).length > 20
-                    ? stripHtmlTags(postContent.content).slice(0, 20) + "..."
-                    : stripHtmlTags(postContent.content)
-                  : "내용 불러오는 중..."}
-              </S.PostListItem>
-            );
-          })}
+          {selectedDatePosts.length > 0 ? (
+            selectedDatePosts.map((post) => {
+              const postContent = postContents[post.postId];
+              return (
+                <S.PostListItem
+                  key={post.postId}
+                  onClick={() => navigate(`/user/${uid}/post/${post.postId}`)}
+                >
+                  <h3>{postContent?.title || "제목 불러오는 중..."}</h3>
+                  <p>
+                    {postContent?.content
+                      ? stripHtmlTags(postContent.content).length > 20
+                        ? stripHtmlTags(postContent.content).slice(0, 20) +
+                          "..."
+                        : stripHtmlTags(postContent.content)
+                      : "내용 불러오는 중..."}
+                  </p>
+                </S.PostListItem>
+              );
+            })
+          ) : (
+            <div style={{ marginTop: "50px" }}>
+              해당 날짜에 게시글이 없습니다.
+            </div>
+          )}
         </S.PostListContainer>
       )}
     </S.SidebarContainer>

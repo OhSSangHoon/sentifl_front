@@ -22,9 +22,9 @@ export const Section = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-size: 36px;
+  font-size: 16px;
   color: white;
-  margin-bottom: 20px;
+  margin-top: 40px;
 `;
 
 export const S1Button = styled.button`
@@ -35,6 +35,7 @@ export const S1Button = styled.button`
   color: white;
   font-size: 14px;
   cursor: pointer;
+  margin-top: 300px;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);
@@ -42,9 +43,16 @@ export const S1Button = styled.button`
 `;
 
 export const S1Description = styled.p`
-  font-size: 16px;
+  font-size: 32px;
   color: white;
   margin-top: 36px;
+  font-weight: bold;
+`;
+
+export const S1AdditionalText = styled.p`
+  font-size: 14px;
+  color: white;
+  margin-top: 40px;
 `;
 
 export const S2Button = styled.button`

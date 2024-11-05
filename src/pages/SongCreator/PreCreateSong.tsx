@@ -107,13 +107,15 @@ function PreCreateSong() {
     <S.Container>
       <S.Section ref={section1Ref}>
         <S.Title>MAKE SENTIFL</S.Title>
+        <S.S1Description>
+          오늘의 하루를 정리하며 당신만의 특별한 음악을 만들어보세요.
+        </S.S1Description>
+        <S.S1AdditionalText>
+          SENTIFL이 당신의 특별할 하루를 만들어 드릴게요.
+        </S.S1AdditionalText>
         <S.S1Button onClick={handleCreateSong}>
           <FaMusic /> 나만의 노래를 만들어보세요
         </S.S1Button>
-        <S.S1Description>
-          내가 작성한 블로그 글을 선택하고 해시태그를 입력하면, AI가 자동으로
-          나만의 맞춤형 노래를 제작해줍니다.
-        </S.S1Description>
       </S.Section>
 
       <S.Section ref={section2Ref}>
