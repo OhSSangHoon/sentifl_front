@@ -11,6 +11,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axiosInterceptor";
 import * as S from "./Styles/Sidebar.styles";
+import { Post, PostContent } from "./PostList";
 
 export interface SidebarProps {
   nickname: string;
@@ -30,12 +31,53 @@ const Sidebar: React.FC<SidebarProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
 
-  // URL에 따라 SidebarTopBar 다르게 관리
+  const [isCalendarVisible, setCalendarVisible] = useState(true);
+  const [selectedDatePosts, setSelectedDatePosts] = useState<Post[]>([]);
+  const [postContents, setPostContents] = useState<{
+    [key: number]: PostContent;
+  }>({});
+  const [currentMonth, setCurrentMonth] = useState("");
+
   const isPostUrl = location.pathname.includes("post");
   const isBlogUrl = location.pathname.includes("blog");
 
   const [followCount, setFollowCount] = useState<number>(0);
   const [followingCount, setFollowingCount] = useState<number>(0);
+
+  const handleDateClick = async (date: number) => {
+    try {
+      const formattedDate = `2024-11-${String(date).padStart(2, "0")}`;
+      const response = await axiosInstance.get(`/api/v1/post/${uid}`, {
+        params: {
+          page: 0,
+          size: 3,
+          date: formattedDate,
+        },
+      });
+
+      if (response.status === 200) {
+        setSelectedDatePosts(response.data.content);
+
+        response.data.content.forEach(async (post: Post) => {
+          if (!postContents[post.postId]) {
+            const postResponse = await axiosInstance.get(post.postUrl);
+            if (postResponse.status === 200) {
+              setPostContents((prev) => ({
+                ...prev,
+                [post.postId]: postResponse.data,
+              }));
+            }
+          }
+        });
+
+        setCalendarVisible(false);
+      } else {
+        console.error("해당 날짜의 글 목록을 불러올 수 없습니다.");
+      }
+    } catch (error) {
+      console.error("글 목록 불러오기 오류:", error);
+    }
+  };
 
   useEffect(() => {
     // 팔로우 및 팔로잉 정보 불러오기
@@ -49,7 +91,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         setFollowCount(followedByCount);
 
         // 내가 팔로우한 사용자 수 불러오기
-        const followingResponse = await axiosInstance.get(`/api/v1/follow/${uid}`);
+        const followingResponse = await axiosInstance.get(
+          `/api/v1/follow/${uid}`
+        );
         const followingCount = followingResponse.data.content.length; // content 배열의 길이를 사용해 팔로잉 수 계산
         setFollowingCount(followingCount);
       } catch (error) {
@@ -59,6 +103,15 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     fetchFollowInfo();
   }, [uid]);
+
+  const handleBackToCalendar = () => {
+    setCalendarVisible(true);
+    setSelectedDatePosts([]);
+  };
+
+  const toggleCalendarVisibility = () => {
+    setCalendarVisible((prevVisible) => !prevVisible);
+  };
 
   const handlePenClick = () => {
     navigate("/Create");
@@ -72,27 +125,22 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate("/create-song");
   };
 
+  const stripHtmlTags = (htmlContent: string) => {
+    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
+    return doc.body.textContent || "";
+  };
+
   return (
     <S.SidebarContainer>
       <S.SidebarTopBar>
-        {isBlogUrl ? (
-          <S.LeftIcons>
-            <FaParking size={18} />
-            <S.PointText>60p</S.PointText>
-          </S.LeftIcons>
-        ) : (
-          <S.LeftIcons />
-        )}
-        {isPostUrl ? (
-          <S.RightIcons>
-            <FaAsterisk size={18} onClick={goToCreateSong} />
-          </S.RightIcons>
-        ) : (
-          <S.RightIcons>
-            <FaBell size={18} />
-            <FaCog size={18} />
-          </S.RightIcons>
-        )}
+        <S.LeftIcons>
+          <FaParking size={18} />
+          <S.PointText>60p</S.PointText>
+        </S.LeftIcons>
+        <S.RightIcons>
+          <FaBell size={18} />
+          <FaCog size={18} />
+        </S.RightIcons>
       </S.SidebarTopBar>
       <S.Profile>
         <S.ProfileImageWrapper>
@@ -122,7 +170,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       </S.Profile>
       <S.Divider />
       <S.Menu>
-        <S.CategoryTitle>
+        <S.MenuIconWrapper>
+          <FaCalendarAlt size={18} onClick={toggleCalendarVisibility} />
+          <FaPen onClick={handlePenClick} size={18} />{" "}
+        </S.MenuIconWrapper>
+
+        {/* <S.CategoryTitle>
           카테고리 <FaAngleDown />
         </S.CategoryTitle>
         <S.Icons>
@@ -132,8 +185,43 @@ const Sidebar: React.FC<SidebarProps> = ({
         <S.CategoryList>
           <S.CategoryItem>카테고리 제목</S.CategoryItem>
           <S.CategoryItem>카테고리 제목</S.CategoryItem>
-        </S.CategoryList>
+        </S.CategoryList> */}
       </S.Menu>
+      {isCalendarVisible ? (
+        <S.CalendarContainer>
+          <S.CalendarMonth>{currentMonth}</S.CalendarMonth>
+          {Array.from({ length: 30 }, (_, index) => {
+            const date = index + 1;
+            return (
+              <S.CalendarDate key={date} onClick={() => handleDateClick(date)}>
+                {date}
+              </S.CalendarDate>
+            );
+          })}
+        </S.CalendarContainer>
+      ) : (
+        <S.PostListContainer>
+          <S.BackButton onClick={handleBackToCalendar}>
+            ← Back to Calendar
+          </S.BackButton>
+          {selectedDatePosts.slice(0, 3).map((post) => {
+            const postContent = postContents[post.postId];
+            return (
+              <S.PostListItem
+                key={post.postId}
+                onClick={() => navigate(`/user/${uid}/post/${post.postId}`)}
+              >
+                <h3>{postContent.title || "제목 불러오는 중..."}</h3>
+                {postContent.content
+                  ? stripHtmlTags(postContent.content).length > 20
+                    ? stripHtmlTags(postContent.content).slice(0, 20) + "..."
+                    : stripHtmlTags(postContent.content)
+                  : "내용 불러오는 중..."}
+              </S.PostListItem>
+            );
+          })}
+        </S.PostListContainer>
+      )}
     </S.SidebarContainer>
   );
 };

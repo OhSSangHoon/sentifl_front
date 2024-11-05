@@ -149,6 +149,8 @@ export const Separator = styled.div`
 export const Menu = styled.nav`
   margin-top: 5px;
   position: relative;
+  width: 100%;
+  height: 40px;
 `;
 
 export const CategoryTitle = styled.div`
@@ -202,4 +204,117 @@ export const Icons = styled.div`
       color: #f5f5f5;
     }
   }
+`;
+
+export const MenuIconWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 10px;
+
+  svg {
+    color: #ffffff;
+    font-size: 18px;
+    cursor: pointer;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &:active {
+      color: #f5f5f5;
+    }
+  }
+`;
+
+export const CalendarContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  position: relative;
+`;
+
+export const CalendarDate = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: transparent;
+  border: 0.1px solid #1e1e1e;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+`;
+
+export const PostListContainer = styled.div`
+  margin-top: 20px;
+  position: relative;
+`;
+
+export const BackButton = styled.button`
+  position: absolute;
+  top: 0px;
+  right: 0;
+  background: none;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  svg {
+    margin-right: 5px;
+    font-size: 10px;
+  }
+`;
+
+export const PostListItem = styled.div`
+  padding: 10px;
+  border-bottom: 1px solid #3f3f3f;
+  cursor: pointer;
+  color: #ffffff;
+  margin-top: 20px;
+
+  h3 {
+    font-size: 16px;
+    margin: 0;
+    color: #ffffff;
+  }
+
+  p {
+    font-size: 14px;
+    color: #b5b5b5;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+`;
+
+export const CalendarMonth = styled.div`
+  grid-column: span 7;
+  text-align: left;
+  font-size: 18px;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding-left: 10px;
 `;

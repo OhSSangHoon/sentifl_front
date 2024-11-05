@@ -4,6 +4,7 @@ import { FaPlay, FaPlus, FaAsterisk, FaPause, FaHeart } from "react-icons/fa";
 import axiosInstance from "../../axiosInterceptor";
 import { useNavigate, useParams } from "react-router-dom";
 import Character4 from "../../assets/characters/Character_4.png";
+import { emotionColors } from "../SongCreator/SongResult";
 
 interface Song {
   musicId: number;
@@ -15,6 +16,10 @@ interface Song {
   emotion1: string;
   emotion2: string;
   isLiked: boolean;
+}
+
+export interface SongItemProps {
+  emotion: string;
 }
 
 function Playlist() {
@@ -316,9 +321,12 @@ function Playlist() {
           ) : songs.length > 0 ? (
             <S.SongList>
               {songs.map((song) => (
-                <S.SongItem key={song.musicId}>
+                <S.SongItem key={song.musicId} emotion={song.emotion1}>
                   <S.PlayIcon
                     onClick={() => handlePlayPause(song.musicId, song.musicUrl)}
+                    style={{
+                      background: getEmotionColorGradient(song.emotion1),
+                    }}
                   >
                     {currentSongId === song.musicId && isPlaying ? (
                       <FaPause size={14} color="#fff" />
@@ -408,3 +416,8 @@ function Playlist() {
 }
 
 export default Playlist;
+
+const getEmotionColorGradient = (emotion: string) => {
+  const color = emotionColors[emotion] || "#A9A9A9";
+  return `linear-gradient(to bottom, ${color} 0%, #000000 100%)`;
+};

@@ -16,6 +16,7 @@ import SongResult from "../pages/SongCreator/SongResult";
 import PreCreateSong from "../pages/SongCreator/PreCreateSong";
 import FollowBlog from "../pages/NeighborBlog/FollowBlog";
 import FollowBlogPost from "../pages/NeighborBlog/FollowBlogPost";
+import SearchSong from "../pages/Search/SearchSong";
 
 function Router() {
   return (
@@ -35,6 +36,7 @@ function Router() {
         <Route path="/precreate-song" element={<PreCreateSong />} />
         <Route path="/follow/:uid/blog" element={<FollowBlog />} />
         <Route path="/follow/:uid/post/:postId" element={<FollowBlogPost />} />
+        <Route path="/search-song" element={<SearchSong />} />
       </Route>
     </Routes>
   );

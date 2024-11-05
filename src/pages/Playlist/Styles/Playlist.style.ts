@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { emotionColors } from "../../SongCreator/SongResult";
+import { SongItemProps } from "../Playlist";
 
 export const PlaylistContainer = styled.div`
   display: flex;
@@ -70,7 +72,7 @@ export const SongList = styled.div`
   background-color: #121212;
 `;
 
-export const SongItem = styled.div`
+export const SongItem = styled.div<SongItemProps>`
   display: flex;
   justify-content: space-between;
   border-radius: 15px;
@@ -79,17 +81,41 @@ export const SongItem = styled.div`
   margin-bottom: 10px;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition: background-color 0.8s ease, box-shadow 0.8s,
+    border-color 0.8s ease;
+  border: 3px solid transparent;
 
   &:hover {
-    background-color: linear-gradient(90deg, #001aff 10%, #00ffb2 100%);
+    background-color: ${({ emotion }) => getEmotionBackgroundColor(emotion)};
+    border-color: ${({ emotion }) => getEmotionBorderColor(emotion)};
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  }
+
+  &:active {
+    background-color: ${({ emotion }) => getEmotionBackgroundColor(emotion)};
+    border-color: ${({ emotion }) => getEmotionBorderColor(emotion)};
   }
 `;
 
+const getEmotionBackgroundColor = (emotion: string) => {
+  const color = emotionColors[emotion] || "#A9A9A9";
+  return `rgba(${parseInt(color.slice(1, 3), 16)}, ${parseInt(
+    color.slice(3, 5),
+    16
+  )}, ${parseInt(color.slice(5, 7), 16)}, 0.1)`;
+};
+
+const getEmotionBorderColor = (emotion: string) => {
+  const color = emotionColors[emotion] || "#A9A9A9";
+  return `rgba(${parseInt(color.slice(1, 3), 16)}, ${parseInt(
+    color.slice(3, 5),
+    16
+  )}, ${parseInt(color.slice(5, 7), 16)}, 0.5)`;
+};
+
 export const PlayIcon = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 60px;
+  height: 60px;
   background-color: #000;
   border-radius: 50%;
   display: flex;

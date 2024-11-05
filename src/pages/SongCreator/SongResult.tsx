@@ -446,7 +446,7 @@ const genres = [
   "평화로운",
 ];
 
-const emotionColors: { [key: string]: string } = {
+export const emotionColors: { [key: string]: string } = {
   행복: "#FFD700",
   사랑: "#FF1493",
   불안: "#6A0DAD",
