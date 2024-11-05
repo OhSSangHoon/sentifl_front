@@ -48,13 +48,10 @@ function Create() {
 
             const deltaContent = JSON.parse(jsonData.content);
             setInitialDelta(deltaContent); // Delta 형식을 그대로 저장
+            setHashTag(jsonData.hashTag || '');
 
             if (jsonData.thumbnailUrl) {
                 setThumbnailUrl(jsonData.thumbnailUrl);
-            }
-
-            if (jsonData.hashTag){
-                setHashTag(jsonData.hashTag);
             }
         };
         

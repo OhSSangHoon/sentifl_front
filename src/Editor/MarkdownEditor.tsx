@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Thumbnail from "../assets/icons/thumbnail/Thumbnail.webp";
 import { useAuth } from "../AuthProvider";
-import axiosInstance from "../axiosInterceptor";
+import axios from "../axiosInterceptor";
 import {
   uploadfinalToS3,
   uploadTempToS3,
@@ -175,17 +175,17 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   };
 
   // Content에서 첫 번째 이미지를 자동으로 썸네일로 설정하는 함수
-  const setFirstContentImageAsThumbnail = () => {
-    const editor = quillRef.current;
-    if (editor) {
-      const editorHtml = editor.root.innerHTML;
-      const imgTagMatch = editorHtml.match(/<img[^>]+src="([^">]+)"/); // 첫 번째 이미지 src 추출
+  // const setFirstContentImageAsThumbnail = () => {
+  //   const editor = quillRef.current;
+  //   if (editor) {
+  //     const editorHtml = editor.root.innerHTML;
+  //     const imgTagMatch = editorHtml.match(/<img[^>]+src="([^">]+)"/); // 첫 번째 이미지 src 추출
 
-      if (imgTagMatch && imgTagMatch[1]) {
-        setInternalThumbnailUrl(imgTagMatch[1]);
-      }
-    }
-  };
+  //     if (imgTagMatch && imgTagMatch[1]) {
+  //       setInternalThumbnailUrl(imgTagMatch[1]);
+  //     }
+  //   }
+  // };
 
   // 임시 저장 핸들러
   const handleTemporarySave = async () => {
@@ -202,16 +202,12 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     const editorContent = quillRef.current.getContents();
     const editorDelta = JSON.stringify(editorContent);
 
-    // 썸네일이 없을 경우 첫 번째 이미지로 설정
-    if (!internalThumbnailUrl) {
-      setFirstContentImageAsThumbnail();
-    }
-
-    const jsonContent = {
+    const jsonContent = JSON.stringify({
       title: title,
       content: editorDelta,
       thumbnailUrl: internalThumbnailUrl || "",
-    };
+      hashTag,
+    });
 
     try {
       const s3Url = await uploadTempToS3(jsonContent, uid);
@@ -221,6 +217,38 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       console.error("Error uploading temp file to S3:", error);
     }
   };
+
+  
+  const postHashtag = async (postId: string) => {
+    if (!hashTag.trim()) {
+      console.log("해시태그가 없습니다.");
+      return;
+    }
+  
+    const accessToken = localStorage.getItem("accessToken");
+    const hashtagsString = hashTag.trim().split(/\s+/).join(" "); // 배열을 문자열로 결합
+  
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/v1/post/${postId}/hashtag`,
+        { hashTag: hashtagsString }, // 단일 문자열로 전송
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      );
+  
+      if (response.status === 204) {
+        console.log("Hashtag successfully posted.");
+      }
+    } catch (error) {
+      console.error("Error posting hashtags:", error);
+    }
+  };
+
+
 
   // 최종 저장 핸들러
   const handleSave = async () => {
@@ -242,9 +270,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
 
     // 썸네일 이미지가 없을 경우, content에서 첫 번째 이미지를 썸네일로 사용
-    if (!internalThumbnailUrl) {
-      setFirstContentImageAsThumbnail();
-    }
+    // if (!internalThumbnailUrl) {
+    //   setFirstContentImageAsThumbnail();
+    // }
 
     const editorHtml = quillRef.current.root.innerHTML;
 
@@ -258,6 +286,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       title: title,
       content: editorHtml,
       thumbnailUrl: internalThumbnailUrl || "",
+      hashTag,
     };
 
     try {
@@ -279,7 +308,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         hashTag: hashTag.trim().replace(/\s+/g, " "),
       };
 
-      const response = await axiosInstance.post(
+      const response = await axios.post(
         `/api/v1/post/${uid}`,
         postData,
         {
@@ -294,6 +323,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         alert("게시물이 성공적으로 저장되었습니다.");
         setIsDirty(false);
         navigate(`/user/${uid}/blog`);
+
+        await postHashtag(response.data.postId);
       }
       
     } catch (error) {
@@ -304,19 +335,20 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
   };
 
+
   const handleModify = () => {
     if (quillRef.current && onModify) {
       const content = quillRef.current.root.innerHTML;
-      onModify(content, internalThumbnailUrl || "");
+      onModify(content, internalThumbnailUrl || ""); // 변경된 썸네일 URL 전달
       setIsSaving(true);
-      try{
+      try {
         setIsDirty(false);
       } finally {
         setIsSaving(false);
       }
-      
     }
   };
+  
 
   useEffect(() => {
     setHashTag(hashTag);

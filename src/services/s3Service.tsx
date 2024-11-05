@@ -97,11 +97,28 @@ export const downloadFromS3 = async (key: string): Promise<Blob | null> => {
 
 export const updateToS3 = async (
   file: File,
-  postUrl: string
+  postUrl: string,
+  oldThumbnailUrl: string | null = null
 ): Promise<string> => {
   const s3 = new AWS.S3();
 
   try {
+    // 기존 썸네일 삭제
+    if(oldThumbnailUrl){
+      const oldUrl = new URL(oldThumbnailUrl);
+      const oldFileKey = oldUrl.pathname.substring(1); // 기존 파일 경로 추출
+
+      // console.log("기존 썸네일 파일 삭제 요청:", oldFileKey);
+
+      // S3에서 기존 썸네일 삭제
+      await s3.deleteObject({
+        Bucket: "sentifl-public",
+        Key: oldFileKey,
+      }).promise();
+
+      // console.log("기존 썸네일이 S3에서 성공적으로 삭제되었습니다:", oldFileKey);
+    }
+
     // URL 객체를 사용해 파일 경로 추출
     const url = new URL(postUrl);
     const fileKey = url.pathname.substring(1);
@@ -120,7 +137,7 @@ export const updateToS3 = async (
     });
 
     const data = await upload.promise();
-    console.log("S3 파일 덮어쓰기 성공: ", data.Location);
+    // console.log("S3 파일 덮어쓰기 성공: ", data.Location);
     return data.Location; // 덮어쓰기된 파일의 S3 URL 반환
   } catch (err) {
     console.error("Error updating file on S3:", err);
