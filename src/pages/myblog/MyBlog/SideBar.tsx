@@ -8,7 +8,8 @@ import {
   FaParking,
   FaPen,
 } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import * as S from "./Styles/Sidebar.styles";
 
@@ -21,12 +22,11 @@ export interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
-  nickname,
-  uid,
-  profileImage,
   toggleFollowPopup = () => {},
   toggleFollowingPopup = () => {},
 }) => {
+  const { uid } = useParams<{ uid: string }>();
+  const { uid: loggedInUid } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,10 +34,30 @@ const Sidebar: React.FC<SidebarProps> = ({
   const isPostUrl = location.pathname.includes("post");
   const isBlogUrl = location.pathname.includes("blog");
 
+  const [nickname, setNickname] = useState<string>("");
+  const [profileImage, setProfileImage] = useState<string>("/default-profile.png");
   const [followCount, setFollowCount] = useState<number>(0);
   const [followingCount, setFollowingCount] = useState<number>(0);
 
+
   useEffect(() => {
+    const fetchUserInfo = async () => {
+      try{
+        const response = await axiosInstance.get(
+          `/api/v1/auth/user/search`, {
+            params: { keyword: uid, lastId: 0 },
+          });
+          
+          if(response.status === 200 && response.data.length > 0){
+            const user = response.data[0];
+            setNickname(user.nickName);
+            setProfileImage(user.profile || "/default-profile.png");
+          }
+      } catch (error){
+        console.error("Error fetching user info: ", error);
+      }
+    };
+
     // 팔로우 및 팔로잉 정보 불러오기
     const fetchFollowInfo = async () => {
       try {
@@ -56,12 +76,18 @@ const Sidebar: React.FC<SidebarProps> = ({
         console.error("팔로우 정보 불러오기에 실패했습니다.", error);
       }
     };
-
-    fetchFollowInfo();
+    if(uid){
+      fetchUserInfo();
+      fetchFollowInfo();
+    }
   }, [uid]);
 
   const handlePenClick = () => {
-    navigate("/Create");
+    if(uid === loggedInUid){
+      navigate("/Create");
+    }else{
+      alert("게시글을 작성할 수 없습니다.");
+    }
   };
 
   const goToPlaylist = () => {

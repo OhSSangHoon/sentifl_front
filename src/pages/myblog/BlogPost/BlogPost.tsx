@@ -15,6 +15,21 @@ import Sidebar from "../MyBlog/SideBar";
 import * as S from "./Styles/BlogPost.styles";
 import { CommentData, PostData, pulse } from "./Styles/BlogPost.styles";
 
+interface postData {
+  postId: number;
+  title: string;
+  content: string;
+  thumbnailUrl: string;
+  totalLikes: number;
+  totalViews: number;
+  hashTag: string[];
+  musicTitle?: string;
+  musicUrl?: string;
+  createdTime?: string;
+  modifiedTime?: string;
+}
+
+
 function BlogPost() {
   const { postId } = useParams<{ postId: string }>();
   const { uid, profileImage } = useAuth();
@@ -46,6 +61,7 @@ function BlogPost() {
 
   const [hashTags, setHashTag] = useState<string[]>([]);
 
+
   useEffect(() => {
 
     const fetchAllPosts = async () => {
@@ -72,7 +88,7 @@ function BlogPost() {
 
         // postId에 해당하는 게시물 찾기
         const selectedPost = allPosts.find(
-          (p: any) => p.postId === Number(postId)
+          (p: postData) => p.postId === Number(postId)
         );
 
         if (selectedPost) {

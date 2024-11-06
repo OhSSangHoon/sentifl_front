@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
 import * as S from "./Styles/SearchPopup.style";
@@ -26,15 +27,22 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ searchQuery, setSearchQuery, 
   const [filter, setFilter] = useState("recent");
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10); // 한 페이지당 글 개수 기본값
+  const navigate = useNavigate();
 
 
   const handleOverlayClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     if (e.target === e.currentTarget) {
+      setSearchQuery('');
       onClose();
     }
   };
+
+  const handleClose = () => {
+    setSearchQuery('');
+    onClose();
+  }
 
   useEffect(() => {
     if (isLoggedIn && uid) {
@@ -134,7 +142,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ searchQuery, setSearchQuery, 
 
         if(postSearchResponse.status === 200){
           const postResults = postSearchResponse.data.content;
-          console.log("Full post search response:", postSearchResponse.data);
+          // console.log("Full post search response:", postSearchResponse.data);
           // console.log("Received post search results:", postResults); // 응답 데이터 확인
           setPostResults(postResults);
         }
@@ -198,6 +206,12 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ searchQuery, setSearchQuery, 
     }
   };
 
+  // const handleUserClick = (userUid: string) => {
+  //   navigate(`/user/${userUid}/blog`);
+  //   setSearchQuery('');
+  //   onClose;
+  // }
+
   // 검색어 변경 시 호출
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -233,7 +247,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ searchQuery, setSearchQuery, 
           <S.SearchResults>
             {searchResults.map((user) => (
               <S.SearchResultItem key={user.id}>
-                <S.UserLink to={`/user/${user.uid}/blog`}>
+                <S.UserLink to={`/user/${user.uid}/blog`} onClick={handleClose}>
                   <img
                     src={user.profile || "/default-profile.png"}
                     alt={user.nickName}
@@ -260,9 +274,9 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ searchQuery, setSearchQuery, 
         <S.SearchResults>
           {filteredPostResults.map((post) => (
             <S.SearchResultItem key={post.id}>
-              <S.UserLink to={`/user/${post.uid}/post/${post.id}`} onClick={onClose}>
+              <S.PostLink to={`/user/${post.uid}/post/${post.id}`} onClick={handleClose}>
                 <span>{post.title}</span>
-              </S.UserLink>
+              </S.PostLink>
             </S.SearchResultItem>
           ))}
         </S.SearchResults>
