@@ -29,10 +29,9 @@ interface postData {
   modifiedTime?: string;
 }
 
-
 function BlogPost() {
-  const { postId } = useParams<{ postId: string }>();
-  const { uid, profileImage } = useAuth();
+  const { postId, uid } = useParams<{ postId: string; uid: string }>();
+  const { uid: loggedInUid, nickname, profileImage } = useAuth();
 
   const [post, setPost] = useState<PostData | null>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
@@ -60,7 +59,6 @@ function BlogPost() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [hashTags, setHashTag] = useState<string[]>([]);
-
 
   useEffect(() => {
     const fetchAllPosts = async () => {
@@ -568,8 +566,8 @@ function BlogPost() {
       <S.MainContent>
         <S.SidebarWrapper>
           <Sidebar
-            nickname={uid}
-            uid={uid}
+            nickname={nickname}
+            uid={uid || ""}
             profileImage={profileImage || "/default-profile.png"}
           />
         </S.SidebarWrapper>
