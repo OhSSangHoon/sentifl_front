@@ -106,3 +106,18 @@ export const UserLink = styled(Link)`
         font-size: 14px;
     }
 `;
+
+export const PostLink = styled(Link)`
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+
+    img {
+        margin-right: 10px;
+    }
+
+    span {
+        font-size: 14px;
+    }
+`;

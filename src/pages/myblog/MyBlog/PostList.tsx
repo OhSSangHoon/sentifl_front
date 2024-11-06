@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import * as S from "./Styles/PostList.styles";
+
+interface PostListProps {
+  uid: string;
+}
 
 export interface Post {
   postId: number;
@@ -21,7 +25,7 @@ export interface PostContent {
 }
 
 export const PostDescription = ({ content }: { content: string }) => {
-  const MAX_DESCRIPTION_LENGTH = 800; // 글자 수 제한
+  const MAX_DESCRIPTION_LENGTH = 20; // 글자 수 제한
 
   const displayedContent =
     content.length > MAX_DESCRIPTION_LENGTH
@@ -31,18 +35,21 @@ export const PostDescription = ({ content }: { content: string }) => {
   return <p>{displayedContent}</p>;
 };
 
-const PostList = () => {
+const PostList: React.FC<PostListProps> = ({ uid }) => {
+  const { uid: loggedInUid } = useAuth();
+  const params = useParams<{ uid: string }>();
   const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [postContents, setPostContents] = useState<{
     [key: number]: PostContent;
   }>({});
+  const [selectedPost, setSelectedPost] = useState<PostContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const pageSize = 3;
   const paginationSize = 5;
 
-  const { uid } = useAuth();
+  // const { uid } = useAuth();
   const navigate = useNavigate();
 
   const totalPages = Math.ceil(allPosts.length / pageSize);
@@ -66,6 +73,7 @@ const PostList = () => {
               page: currentPage,
               size: pageSize,
             },
+            headers: { Authorization: `Bearer ${loggedInUid}` }
           });
 
           if (response.status === 200) {
@@ -106,7 +114,7 @@ const PostList = () => {
     };
 
     fetchAllPosts();
-  }, [uid]);
+  }, [uid, loggedInUid]);
 
   const fetchPostContent = async (postUrl: string, postId: number) => {
     try {

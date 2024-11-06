@@ -1,10 +1,10 @@
 // 내 블로그 메인
-import React, { useState } from "react";
-import * as s from "./Styles/MyBlog.style";
-import PostList from "./PostList";
-import Sidebar from "./SideBar";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
+import PostList from "./PostList";
+import Sidebar from "./SideBar";
+import * as s from "./Styles/MyBlog.style";
 
 type ActiveTabType = "follow" | "following" | null;
 
@@ -29,13 +29,13 @@ const MyBlog = () => {
     <s.Container>
       <Sidebar
         nickname={nickname}
-        uid={uid!}
+        uid={uid || ""}
         profileImage={profileImage || "/default-profile.png"}
         toggleFollowPopup={() => openPopup("follow")}
         toggleFollowingPopup={() => openPopup("following")}
       />
       <s.PostListWrapper>
-        <PostList />
+        <PostList uid={uid || ""}/>
       </s.PostListWrapper>
 
       {activeTab && (
