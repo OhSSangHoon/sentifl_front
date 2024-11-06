@@ -32,13 +32,13 @@ export const Container = styled.div`
   color: white;
 `;
 
-export const TopSection = styled.div`
+export const TopSection = styled.div<{ isTopPosition: boolean }>`
   position: relative;
   width: 100%;
-  height: 300px;
+  height: ${({ isTopPosition }) => (isTopPosition ? "270px" : "300px")};
   background-color: #333;
   overflow: hidden;
-  margin-top: 80px;
+  margin-top: ${({ isTopPosition }) => (isTopPosition ? "200px" : "80px")};
 `;
 
 export const BackgroundImage = styled.img`
@@ -233,11 +233,27 @@ export const PostCommentCount = styled.span`
   }
 `;
 
-export const SidebarWrapper = styled.div`
-  width: 350px;
-  margin-left: 20px;
-  margin-right: 40px;
-  overflow-y: hidden;
+export const SidebarWrapper = styled.div<{ isTopPosition: boolean }>`
+  ${({ isTopPosition }) =>
+    isTopPosition &&
+    `
+    position: absolute;
+    top: 0;
+    width: 100%; 
+    
+  `}
+
+  ${({ isTopPosition }) =>
+    !isTopPosition &&
+    `
+    width: 360px;
+    margin-left: 20px;
+   
+    overflow-y: hidden;
+  `}
+
+  background-color: #1e1e1e;
+  padding: 20px;
 `;
 
 export const PostContent = styled.div`
@@ -271,15 +287,16 @@ export const FixedBottomBar = styled.div`
   z-index: 1000;
 `;
 
-export const InputField = styled.input`
+export const InputField = styled.textarea<{ expanded: boolean }>`
   flex: 1;
   background-color: #444;
   border: none;
-  padding: 10px;
+  padding: ${({ expanded }) => (expanded ? "40px" : "10px")};
   margin: 0 10px;
   color: #fff;
   border-radius: 5px;
   font-size: 14px;
+  resize: none;
 `;
 
 export const Icon = styled.span`

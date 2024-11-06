@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
 import PostList from "./PostList";
 import Sidebar from "./SideBar";
-import * as s from "./Styles/MyBlog.style";
+import * as S from "./Styles/MyBlog.style";
 
 type ActiveTabType = "follow" | "following" | null;
 
@@ -18,7 +18,8 @@ export interface SidebarProps {
 
 const MyBlog = () => {
   const { uid } = useParams<{ uid: string }>();
-  const { nickname, profileImage } = useAuth();
+  const { uid: loggedInUid, nickname, profileImage } = useAuth();
+  const isOwner = uid === loggedInUid;
 
   const [activeTab, setActiveTab] = useState<ActiveTabType>(null);
 
@@ -26,53 +27,57 @@ const MyBlog = () => {
   const closePopup = () => setActiveTab(null);
 
   return (
-    <s.Container>
-      <Sidebar
-        nickname={nickname}
-        uid={uid || ""}
-        profileImage={profileImage || "/default-profile.png"}
-        toggleFollowPopup={() => openPopup("follow")}
-        toggleFollowingPopup={() => openPopup("following")}
-      />
-      <s.PostListWrapper>
-        <PostList uid={uid || ""}/>
-      </s.PostListWrapper>
+    <S.Container>
+      <S.MainContent isOwner={isOwner}>
+        <S.SidebarWrapper isOwner={isOwner}>
+          <Sidebar
+            nickname={nickname}
+            uid={uid || ""}
+            profileImage={profileImage || "/default-profile.png"}
+            toggleFollowPopup={() => openPopup("follow")}
+            toggleFollowingPopup={() => openPopup("following")}
+          />
+        </S.SidebarWrapper>
+        <S.PostListWrapper isOwner={isOwner}>
+          <PostList uid={uid || ""} />
+        </S.PostListWrapper>
+      </S.MainContent>
 
       {activeTab && (
-        <s.Overlay>
-          <s.Popup>
-            <s.CloseButton onClick={closePopup}>×</s.CloseButton>
-            <s.PopupHeader>
-              <s.Tab
+        <S.Overlay>
+          <S.Popup>
+            <S.CloseButton onClick={closePopup}>×</S.CloseButton>
+            <S.PopupHeader>
+              <S.Tab
                 active={activeTab === "follow"}
                 onClick={() => setActiveTab("follow")}
               >
                 follow
-              </s.Tab>
-              <s.Tab
+              </S.Tab>
+              <S.Tab
                 active={activeTab === "following"}
                 onClick={() => setActiveTab("following")}
               >
                 following
-              </s.Tab>
-            </s.PopupHeader>
-            <s.PopupContent>
+              </S.Tab>
+            </S.PopupHeader>
+            <S.PopupContent>
               {activeTab === "follow" ? (
-                <s.FollowItem>
-                  <s.FollowProfile />
-                  <s.Nickname>닉네임</s.Nickname>
-                </s.FollowItem>
+                <S.FollowItem>
+                  <S.FollowProfile />
+                  <S.Nickname>닉네임</S.Nickname>
+                </S.FollowItem>
               ) : (
-                <s.FollowingItem>
-                  <s.Nickname>닉네임</s.Nickname>
-                  <s.FollowProfile />
-                </s.FollowingItem>
+                <S.FollowingItem>
+                  <S.Nickname>닉네임</S.Nickname>
+                  <S.FollowProfile />
+                </S.FollowingItem>
               )}
-            </s.PopupContent>
-          </s.Popup>
-        </s.Overlay>
+            </S.PopupContent>
+          </S.Popup>
+        </S.Overlay>
       )}
-    </s.Container>
+    </S.Container>
   );
 };
 

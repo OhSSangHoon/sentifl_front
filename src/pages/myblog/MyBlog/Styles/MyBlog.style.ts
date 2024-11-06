@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
+  flex-direction: column;
   background: #0d0d0e;
   color: #ffffff;
   height: auto;
@@ -15,17 +16,68 @@ export const Container = styled.div`
   }
 `;
 
-export const PostListWrapper = styled.div`
+// export const SidebarWrapper = styled.div`
+//   width: 100%;
+//   background: #1e1e1e;
+//   padding: 20px;
+//   border-radius: 10px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   margin-bottom: 20px;
+// `;
+
+export const SidebarWrapper = styled.div<{ isOwner: boolean }>`
+  width: ${(props) => (props.isOwner ? "25%" : "100%")};
+  margin-bottom: ${(props) => (props.isOwner ? "0" : "20px")};
+  margin-right: ${(props) => (props.isOwner ? "20px" : "0")};
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const PostListWrapper = styled.div<{ isOwner: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   flex-grow: 1;
-  width: 100%;
-
+  width: ${(props) => (props.isOwner ? "80%" : "100%")};
   ::-webkit-scrollbar {
     display: none;
   }
 `;
+
+// export const PostListWrapper = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+//   flex-grow: 1;
+//   width: 100%;
+
+//   ::-webkit-scrollbar {
+//     display: none;
+//   }
+// `;
+
+export const MainContent = styled.div<{ isOwner: boolean }>`
+  display: flex;
+  flex-direction: ${({ isOwner }) => (isOwner ? "row" : "column")};
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-bottom: 80px;
+  max-width: 100%;
+`;
+
+// export const MainContent = styled.div`
+//   display: flex;
+//   flex-grow: 1;
+//   overflow-y: auto;
+//   padding-bottom: 80px;
+//   max-width: 100%;
+// `;
 
 export const Overlay = styled.div`
   position: fixed;
