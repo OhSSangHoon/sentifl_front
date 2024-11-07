@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as S from "./Styles/Playlist.style";
-import { FaPlay, FaPlus, FaAsterisk, FaPause, FaHeart } from "react-icons/fa";
+import { FaPlay, FaPlus, FaMusic, FaPause, FaHeart } from "react-icons/fa";
 import axiosInstance from "../../axiosInterceptor";
 import { useNavigate, useParams } from "react-router-dom";
 import Character4 from "../../assets/characters/Character_4.png";
@@ -328,15 +328,15 @@ function Playlist() {
   return (
     <S.PlaylistContainer>
       <S.TopBar>
-        <S.IconWrapper>
-          <FaAsterisk size={18} onClick={goToCreateSong} />
-        </S.IconWrapper>
+        {/* <S.IconWrapper>
+          <FaMusic size={18} onClick={goToCreateSong} />
+        </S.IconWrapper> */}
       </S.TopBar>
       <S.Content>
-        <S.Sidebar>
+        {/* <S.Sidebar>
           <S.SidebarHeader>MY PLAYLIST</S.SidebarHeader>
           <S.Button>재생목록</S.Button>
-        </S.Sidebar>
+        </S.Sidebar> */}
         <S.SongList>
           {loading ? (
             <S.LoadingState>노래를 불러오는 중입니다...</S.LoadingState>
@@ -439,7 +439,7 @@ function Playlist() {
 
 export default Playlist;
 
-const getEmotionColorGradient = (emotion: string) => {
+export const getEmotionColorGradient = (emotion: string) => {
   const color = emotionColors[emotion] || "#A9A9A9";
   return `linear-gradient(to bottom, ${color} 0%, #000000 100%)`;
 };

@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 export interface PostData {
   title: string;
@@ -274,7 +274,7 @@ export const PostContent = styled.div`
   overflow-y: auto;
 `;
 
-export const FixedBottomBar = styled.div`
+export const FixedBottomBar = styled.div<{ isVisible: boolean }>`
   position: fixed;
   bottom: 0;
   left: 0;
@@ -285,6 +285,23 @@ export const FixedBottomBar = styled.div`
   align-items: center;
   justify-content: space-between;
   z-index: 1000;
+
+  ${({ isVisible }) =>
+    isVisible &&
+    css`
+      animation: ${slideUp} 0.3s ease-out;
+    `}
+`;
+
+export const slideUp = keyframes`
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 `;
 
 export const InputField = styled.textarea<{ expanded: boolean }>`
@@ -387,6 +404,7 @@ export const CommentActionButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 4px;
 
   &:hover {
     background-color: #555;

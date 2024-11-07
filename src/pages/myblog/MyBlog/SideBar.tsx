@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaAngleDown,
-  FaAsterisk,
-  FaBell,
-  FaCalendarAlt,
-  FaCog,
-  FaParking,
-  FaPen,
-} from "react-icons/fa";
+import { FaCalendarAlt, FaCog, FaPen } from "react-icons/fa";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
@@ -76,7 +68,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       });
 
       const posts = response.data.content.filter((post: Post) => {
-        const postDate = new Date(post.createdTime);
+        const postDate = new Date(
+          new Date(post.createdTime).toLocaleString("en-US", {
+            timeZone: "Asia/Seoul",
+          })
+        );
         return (
           postDate.getFullYear() === selectedDate.getFullYear() &&
           postDate.getMonth() === selectedDate.getMonth() &&
@@ -177,10 +173,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate(`/user/${uid}/playlist`);
   };
 
-  const goToCreateSong = () => {
-    navigate("/create-song");
-  };
-
   const stripHtmlTags = (htmlContent: string) => {
     const doc = new DOMParser().parseFromString(htmlContent, "text/html");
     return doc.body.textContent || "";
@@ -202,7 +194,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     <S.SidebarContainer isTopPosition={isTopPosition}>
       {isTopPosition ? (
         <>
-          {/* <S.SidebarContainer isTopPosition={isTopPosition}> */}
           <S.ProfileInfoWrapper isTopPosition={isTopPosition}>
             <S.ProfileImageWrapper>
               <S.ProfileImage
@@ -229,21 +220,14 @@ const Sidebar: React.FC<SidebarProps> = ({
             <S.PlaylistBadge onClick={goToPlaylist}>Playlist</S.PlaylistBadge>
             <S.FollowButton onClick={toggleFollowPopup}>팔로우</S.FollowButton>
           </S.PlaylistFollowWrapper>
-
-          {/* </S.SidebarContainer> */}
         </>
       ) : (
         <>
-          <S.SidebarTopBar>
-            {/* <S.LeftIcons>
-              <FaParking size={18} />
-              <S.PointText>0p</S.PointText>
-            </S.LeftIcons> */}
+          {/* <S.SidebarTopBar>
             <S.RightIcons>
-              <FaBell size={18} />
               <FaCog size={18} />
             </S.RightIcons>
-          </S.SidebarTopBar>
+          </S.SidebarTopBar> */}
           <S.Profile>
             <S.ProfileImageWrapper>
               <S.ProfileImage

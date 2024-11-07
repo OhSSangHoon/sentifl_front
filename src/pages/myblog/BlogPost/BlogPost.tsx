@@ -648,7 +648,7 @@ function BlogPost() {
           )}
         </S.PostContent>
         {showCommentInput && (
-          <S.FixedBottomBar>
+          <S.FixedBottomBar isVisible={showCommentInput}>
             {/* <S.Icon>
               <FaHeart />
             </S.Icon>

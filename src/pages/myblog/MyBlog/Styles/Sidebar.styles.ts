@@ -308,7 +308,7 @@ export const CalendarDate = styled.div<{
   color: #ffffff;
   cursor: pointer;
   border-radius: 5px;
-  background-color: ${({ isToday }) => (isToday ? "#b3e5fc" : "transparent")};
+  background-color: ${({ isToday }) => (isToday ? "#0d47a1" : "transparent")};
   overflow: hidden;
 
   &:hover {

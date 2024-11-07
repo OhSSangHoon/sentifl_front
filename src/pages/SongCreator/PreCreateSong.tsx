@@ -11,9 +11,14 @@ import Character3 from "../../assets/characters/Character_3.png";
 function PreCreateSong() {
   const [activeSection, setActiveSection] = useState("section1");
   const [currentSlide, setCurrentSlide] = useState(0);
+
   const section1Ref = useRef<HTMLDivElement>(null);
   const section2Ref = useRef<HTMLDivElement>(null);
+
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isEntering, setIsEntering] = useState(true);
+  const [isEnteringLeft, setIsEnteringLeft] = useState(false);
+
   const navigate = useNavigate();
 
   const slides = [
@@ -89,14 +94,33 @@ function PreCreateSong() {
     window.scrollTo(0, 0);
   }, []);
 
+  // const nextSlide = () => {
+  //   setIsImageLoaded(false);
+  //   setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  // };
+
   const nextSlide = () => {
+    setIsEntering(false);
+    setIsEnteringLeft(false);
     setIsImageLoaded(false);
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+      setIsEntering(true);
+    }, 200);
   };
+  // const prevSlide = () => {
+  //   setIsImageLoaded(false);
+  //   setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  // };
 
   const prevSlide = () => {
+    setIsEntering(false);
+    setIsEnteringLeft(true);
     setIsImageLoaded(false);
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+      setIsEntering(true);
+    }, 200);
   };
 
   const handleCreateSong = () => {
@@ -106,6 +130,16 @@ function PreCreateSong() {
   return (
     <S.Container>
       <S.Section ref={section1Ref}>
+        {/* <S.Background> */}
+        <S.Circle
+          size="850px"
+          top="70%"
+          left="50%"
+          translateX="-50%"
+          translateY="-50%"
+          gradient="linear-gradient(135deg, rgba(47, 90, 241, 1) 0%, rgba(178, 234, 106, 0.52) 100%)"
+        />
+        {/* </S.Background> */}
         <S.Title>MAKE SENTIFL</S.Title>
         <S.S1Description>
           오늘의 하루를 정리하며 당신만의 특별한 음악을 만들어보세요.
@@ -122,18 +156,29 @@ function PreCreateSong() {
         <S.Title>MAKE SENTIFL</S.Title>
         <S.ImageContainer>
           <S.ArrowLeft onClick={prevSlide} />
-          <S.ImageSection>
-            <img
-              src={slides[currentSlide].image}
-              alt={`Slide ${currentSlide + 1}`}
-              onLoad={() => setIsImageLoaded(true)}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                visibility: isImageLoaded ? "visible" : "hidden",
-              }}
-            />
+          <S.ImageSection
+            isEntering={isEntering}
+            isEnteringLeft={isEnteringLeft}
+          >
+            <TransitionGroup component={null}>
+              <CSSTransition
+                key={slides[currentSlide].id}
+                timeout={100}
+                classNames="slide"
+              >
+                <img
+                  src={slides[currentSlide].image}
+                  alt={`Slide ${currentSlide + 1}`}
+                  onLoad={() => setIsImageLoaded(true)}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    visibility: isImageLoaded ? "visible" : "hidden",
+                  }}
+                />
+              </CSSTransition>
+            </TransitionGroup>
           </S.ImageSection>
           <S.ArrowRight onClick={nextSlide} />
         </S.ImageContainer>

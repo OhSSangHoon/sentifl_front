@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 interface DotProps {
@@ -21,8 +21,52 @@ export const Section = styled.div`
   padding-top: 100px;
 `;
 
+// export const Background = styled.div`
+//   width: 100%;
+//   height: 100vh;
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+// `;
+
+interface CircleProps {
+  size: string;
+  top?: string;
+  left?: string;
+  translateX?: string;
+  translateY?: string;
+  gradient: string;
+}
+
+const pulse = keyframes`
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+`;
+
+export const Circle = styled.div<CircleProps>`
+  position: absolute;
+  background: ${(props) => props.gradient};
+  width: ${(props) => props.size};
+  height: calc(${(props) => props.size} / 1.5);
+  top: ${(props) => props.top};
+  left: ${(props) => props.left};
+  transform: translateX(${(props) => props.translateX || "0"})
+    translateY(${(props) => props.translateY || "0"});
+  filter: blur(100px);
+
+  border-radius: 100% 100% 40% 40%;
+  overflow: hidden;
+
+  animation: ${pulse} 8s ease-in-out infinite;
+`;
+
 export const Title = styled.h1`
-  font-size: 16px;
+  font-weight: 300;
+  font-size: 18px;
   color: white;
   margin-top: 40px;
 `;
@@ -35,7 +79,8 @@ export const S1Button = styled.button`
   color: white;
   font-size: 14px;
   cursor: pointer;
-  margin-top: 300px;
+  margin-top: 150px;
+  z-index: 100;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);
@@ -87,7 +132,54 @@ export const ImageContainer = styled.div`
   margin-top: 20px;
 `;
 
-export const ImageSection = styled.div`
+const slideInRight = keyframes`
+  0% {
+    transform: translateX(100%) scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+`;
+
+const slideOutLeft = keyframes`
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%) scale(0.9);
+    opacity: 0;
+  }
+`;
+
+const slideInLeft = keyframes`
+  0% {
+    transform: translateX(-100%) scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+`;
+
+const slideOutRight = keyframes`
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) scale(0.9);
+    opacity: 0;
+  }
+`;
+
+export const ImageSection = styled.div<{
+  isEntering: boolean;
+  isEnteringLeft: boolean;
+}>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -95,6 +187,16 @@ export const ImageSection = styled.div`
   height: 350px;
   user-select: none;
   pointer-events: none;
+
+  animation: ${(props) =>
+      props.isEntering
+        ? props.isEnteringLeft
+          ? slideInLeft
+          : slideInRight
+        : props.isEnteringLeft
+        ? slideOutRight
+        : slideOutLeft}
+    0.5s ease forwards;
 `;
 
 export const ArrowLeft = styled(FaArrowLeft)`

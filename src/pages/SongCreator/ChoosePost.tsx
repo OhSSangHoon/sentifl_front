@@ -248,7 +248,7 @@ const ChoosePost = () => {
   }
 
   if (loading) {
-    return <p>로딩 중...</p>;
+    return <S.LoadingMessage>로딩 중...</S.LoadingMessage>;
   }
 
   const displayedPosts = allPosts.slice(page * pageSize, (page + 1) * pageSize);

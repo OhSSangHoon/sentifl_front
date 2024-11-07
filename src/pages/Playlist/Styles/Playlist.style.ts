@@ -13,7 +13,7 @@ export const PlaylistContainer = styled.div`
 export const TopBar = styled.div`
   width: 100%;
   height: 180px;
-  background-color: #000;
+  background-color: #1e1e1e;
   color: white;
   display: flex;
   align-items: center;
