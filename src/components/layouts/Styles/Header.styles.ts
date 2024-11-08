@@ -63,15 +63,23 @@ export const SearchContainer = styled.div`
   position: relative;
 `;
 
-export const SearchBtn = styled.button``;
+export const SearchBtn = styled.button`
+  color: white;
+  font-size: 18px;
+  font-weight: 300;
+  background: none;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
 
-// export const SearchIcon = styled.div`
-//   position: absolute;
-//   top: 50%;
-//   right: 160px;
-//   transform: translateY(-50%);
-//   color: rgba(255, 255, 255, 0.7);
-// `;
+  &:hover {
+    color: #d3d3d3;
+  }
+
+  &:active {
+    color: #d3d3d3;
+  }
+`;
 
 export const LoginLink = styled(RouterNavLink)`
   text-align: right;

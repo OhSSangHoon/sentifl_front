@@ -38,14 +38,17 @@ export const PostDescription = ({ content }: { content: string }) => {
 const PostList: React.FC<PostListProps> = ({ uid }) => {
   const { uid: loggedInUid } = useAuth();
   const params = useParams<{ uid: string }>();
+
   const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [postContents, setPostContents] = useState<{
     [key: number]: PostContent;
   }>({});
   const [selectedPost, setSelectedPost] = useState<PostContent | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   const pageSize = 3;
   const paginationSize = 5;
 
@@ -243,17 +246,23 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
                             ? new Date(post.modifiedTime).toLocaleDateString()
                             : new Date(post.createdTime).toLocaleDateString()}
                         </S.PostDate>
-                        <S.ActionButton onClick={() => editPost(post.postId)}>
-                          수정
-                        </S.ActionButton>
-                        <S.ActionButton
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            deletePost(post.postId);
-                          }}
-                        >
-                          삭제
-                        </S.ActionButton>
+                        {loggedInUid === uid && (
+                          <>
+                            <S.ActionButton
+                              onClick={() => editPost(post.postId)}
+                            >
+                              수정
+                            </S.ActionButton>
+                            <S.ActionButton
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                deletePost(post.postId);
+                              }}
+                            >
+                              삭제
+                            </S.ActionButton>
+                          </>
+                        )}
                       </S.PostMeta>
                     </S.PostHeader>
                     <S.PostDescription

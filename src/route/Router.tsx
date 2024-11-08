@@ -34,12 +34,6 @@ function Router() {
         <Route path="/song-result" element={<SongResult />} />
         <Route path="/user/:uid/playlist" element={<Playlist />} />
         <Route path="/precreate-song" element={<PreCreateSong />} />
-        <Route path="/follow/:uid/blog" element={<FollowBlog />} />
-        <Route path="/follow/:uid/post/:postId" element={<FollowBlogPost />} />
-        <Route
-          path="/search-result/song/keyword"
-          element={<SearchResult_Song />}
-        />
       </Route>
     </Routes>
   );

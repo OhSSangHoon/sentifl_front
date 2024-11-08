@@ -22,11 +22,23 @@ interface SongInfoResponse {
   createTime: string;
 }
 
+export interface PostInfoResponse {
+  uid: string;
+  id: number;
+  title: string;
+  createDate: string;
+  totalLikes: number;
+  thumbnailUrl: string;
+}
+
 interface SearchPopupProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   onClose: () => void;
 }
+
+const emotions = ["행복", "사랑", "불안", "분노", "우울", "슬픔", "중립"];
+
 const SearchPopup: React.FC<SearchPopupProps> = ({
   searchQuery,
   setSearchQuery,
@@ -34,14 +46,20 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 }) => {
   const { isLoggedIn, nickname, logout, uid } = useAuth();
   const profileImage = localStorage.getItem("profileImage");
+
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isSearchPopupOpen, setIsSearchPopupOpen] = useState(false);
+
   const [searchResults, setSearchResults] = useState<UserInfoResponse[]>([]);
-  const [postResults, setPostResults] = useState<any[]>([]);
+  const [postResults, setPostResults] = useState<PostInfoResponse[]>([]);
   const [songResults, setSongResults] = useState<SongInfoResponse[]>([]);
+  const [selectedEmotion, setSelectedEmotion] = useState<string | null>(null);
+
   const [filter, setFilter] = useState("recent");
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10); // 한 페이지당 글 개수 기본값
+
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleOverlayClick = (
@@ -137,13 +155,6 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   //게시물 겁색 API 호출
   const handlePostSearch = async () => {
     try {
-      // console.log({
-      //   searchWord: searchQuery,
-      //   page,
-      //   size,
-      //   filter,
-      // });
-
       const postSearchResponse = await axiosInstance.get(
         "/api/v1/post/search/word",
         {
@@ -158,8 +169,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 
       if (postSearchResponse.status === 200) {
         const postResults = postSearchResponse.data.content;
-        // console.log("Full post search response:", postSearchResponse.data);
-        // console.log("Received post search results:", postResults); // 응답 데이터 확인
+
         setPostResults(postResults);
       }
     } catch (error) {
@@ -242,6 +252,34 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
     }
   };
 
+  const handleEmotionClick = async (emotion: string) => {
+    setSelectedEmotion(emotion);
+    setLoading(true);
+
+    try {
+      const response = await axiosInstance.get("/api/v1/music/search/emotion", {
+        params: {
+          emotion,
+          page,
+          size,
+          filter,
+        },
+      });
+      if (response.status === 200) {
+        setSongResults(response.data.content);
+      }
+    } catch (error) {
+      console.error("Emotion-based search error:", error);
+    } finally {
+      setLoading(false); // 로딩 종료
+    }
+  };
+
+  const filteredSongResults =
+    songResults.length > 0
+      ? songResults.filter((song) => song.title.includes(searchQuery))
+      : [];
+
   const getEmotionColorGradient = (emotion: string) => {
     const emotionColors: { [key: string]: string } = {
       행복: "#FFD700",
@@ -279,24 +317,40 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
     <S.PopupOverlay onClick={handleOverlayClick}>
       <S.SearchPopupContainer>
         <S.CloseButton onClick={onClose}>X</S.CloseButton>
-        <S.SearchInput
-          placeholder="검색어를 입력해 주세요."
-          value={searchQuery}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchQuery(e.target.value)
-          }
-        />
+        <S.SearchInputWrapper>
+          <S.SearchIcon />
+          <S.SearchInput
+            placeholder="검색어를 입력해 주세요."
+            value={searchQuery}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchQuery(e.target.value)
+            }
+          />
+        </S.SearchInputWrapper>
 
-        {/* 필터 선택 */}
+        <S.EmotionButtonContainer>
+          {emotions.map((emotion) => (
+            <S.EmotionButton
+              key={emotion}
+              isSelected={selectedEmotion === emotion}
+              onClick={() => handleEmotionClick(emotion)}
+            >
+              {emotion}
+            </S.EmotionButton>
+          ))}
+        </S.EmotionButtonContainer>
+
         {/* <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-        <option value="recent">최신순</option>
-        <option value="like">좋아요 많은 순</option>
-        <option value="view">조회수 순</option>
-      </select>
+          <option value="recent">최신순</option>
+          <option value="like">좋아요 많은 순</option>
+          <option value="view">조회수 순</option>
+        </select>
 
-      <button onClick={() => setPage((prev) => Math.max(prev - 1, 0))}>이전 페이지</button>
-      <button onClick={() => setPage((prev) => prev + 1)}>다음 페이지</button>
-       */}
+        <button onClick={() => setPage((prev) => Math.max(prev - 1, 0))}>
+          이전 페이지
+        </button>
+        <button onClick={() => setPage((prev) => prev + 1)}>다음 페이지</button> */}
+
         {searchResults.length > 0 && (
           <S.SearchResults>
             {searchResults.map((user) => (
@@ -324,34 +378,47 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             ))}
           </S.SearchResults>
         )}
-        {filteredPostResults.length > 0 && (
-          <S.SearchResults>
-            {filteredPostResults.map((post) => (
-              <S.SearchResultItem key={post.id}>
-                <S.PostLink
-                  to={`/user/${post.uid}/post/${post.id}`}
-                  onClick={handleClose}
-                >
-                  <span>{post.title}</span>
-                </S.PostLink>
-              </S.SearchResultItem>
-            ))}
-          </S.SearchResults>
-        )}
-        {songResults.length > 0 && (
-          <S.SearchResults>
-            {songResults.map((song) => (
-              <S.SearchResultItem key={song.musicId}>
-                <S.UserLink to={`/user/${uid}/playlist`} onClick={onClose}>
-                  <S.EmotionCircle
-                    color={getEmotionColorGradient(song.emotion1)}
-                  />
-                  <span>{song.title}</span>
-                </S.UserLink>
-              </S.SearchResultItem>
-            ))}
-          </S.SearchResults>
-        )}
+        {/* 게시글 */}
+        <S.SearchResultsContainer>
+          <S.PostResultsContainer>
+            <h3>게시글</h3>
+            {filteredPostResults.length > 0 ? (
+              filteredPostResults.map((post) => (
+                <S.SearchResultItem key={post.id}>
+                  <S.PostLink
+                    to={`/user/${post.uid}/post/${post.id}`}
+                    onClick={handleClose}
+                  >
+                    <span>{post.title}</span>
+                  </S.PostLink>{" "}
+                </S.SearchResultItem>
+              ))
+            ) : (
+              <S.NoResults>게시글 결과가 없습니다.</S.NoResults>
+            )}
+          </S.PostResultsContainer>
+          <S.SongResultsContainer>
+            {loading ? (
+              <S.LoadingMessage>
+                해당 감정에 대한 노래를 찾고 있습니다...
+              </S.LoadingMessage>
+            ) : filteredSongResults.length > 0 ? (
+              filteredSongResults.map((song) => (
+                <S.SearchResultItem key={song.musicId}>
+                  <S.UserLink to={`/user/${uid}/playlist`} onClick={onClose}>
+                    <S.EmotionCircle
+                      color={getEmotionColorGradient(song.emotion1)}
+                    />
+                    <span>{song.title}</span>
+                  </S.UserLink>
+                  <S.UserNickname>{song.userNickname}</S.UserNickname>
+                </S.SearchResultItem>
+              ))
+            ) : (
+              <S.NoResults>노래 결과가 없습니다.</S.NoResults>
+            )}
+          </S.SongResultsContainer>
+        </S.SearchResultsContainer>
       </S.SearchPopupContainer>
     </S.PopupOverlay>
   );
