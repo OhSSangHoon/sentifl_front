@@ -268,3 +268,17 @@ export const HeaderSubtitle = styled.p`
   font-size: 14px;
   color: #777777;
 `;
+
+export const LoadingMessage = styled.p`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  z-index: 1000;
+`;

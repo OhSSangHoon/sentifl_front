@@ -18,7 +18,7 @@ export const PopupContainer = styled.div`
   top: 80px;
   right: 60px;
   width: 340px;
-  height: 430px;
+  height: 260px;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 10px;
   padding: 40px 20px;
@@ -209,22 +209,22 @@ export const Divider = styled.div`
   margin: 0 10px;
 `;
 
-export const NewPost = styled.div`
-  font-size: 14px;
-  margin-top: 10px;
-`;
+// export const NewPost = styled.div`
+//   font-size: 14px;
+//   margin-top: 10px;
+// `;
 
-export const PostList = styled.div`
-  margin-top: 10px;
-`;
+// export const PostList = styled.div`
+//   margin-top: 10px;
+// `;
 
-export const PostItem = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  padding-bottom: 10px;
-`;
+// export const PostItem = styled.div`
+//   display: flex;
+//   align-items: center;
+//   margin-bottom: 15px;
+//   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+//   padding-bottom: 10px;
+// `;
 
 export const PostAvatar = styled.div`
   width: 40px;
@@ -256,7 +256,7 @@ export const LogoutButton = styled.button`
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 30px;
-  padding: 10px 20px;
+  padding: 5px 10px;
   color: rgba(255, 255, 255, 0.6);
   font-size: 14px;
   cursor: pointer;

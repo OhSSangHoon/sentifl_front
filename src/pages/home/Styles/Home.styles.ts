@@ -9,19 +9,14 @@ interface CircleProps {
   gradient: string;
 }
 
-// 애니메이션 키프레임 정의
-const moveCircle = keyframes`
-  0% {
-    transform: translateX(-50%) translateY(-50%) scale(1);
+const pulse = keyframes`
+  0%, 100% {
+    opacity: 1;
   }
   50% {
-    transform: translateX(-45%) translateY(-55%) scale(1.05);
-  }
-  100% {
-    transform: translateX(-50%) translateY(-50%) scale(1);
+    opacity: 0.5;
   }
 `;
-
 
 export const PageContainer = styled.div`
   height: auto;
@@ -64,5 +59,5 @@ export const Circle = styled.div<CircleProps>`
   transform: translateX(${(props) => props.translateX || "0"})
     translateY(${(props) => props.translateY || "0"});
   filter: blur(100px);
-  animation: ${moveCircle} 8s ease-in-out infinite;
+  animation: ${pulse} 8s ease-in-out infinite;
 `;

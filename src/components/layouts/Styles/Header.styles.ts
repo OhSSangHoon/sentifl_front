@@ -1,7 +1,6 @@
 import { NavLink as RouterNavLink } from "react-router-dom";
 import styled from "styled-components";
 
-
 export const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
@@ -18,9 +17,20 @@ export const HeaderContainer = styled.header`
 `;
 
 export const Logo = styled(RouterNavLink)`
-  flex: 1; // 로고는 왼쪽에 배치됨
+  flex: 1;
   img {
-    height: 40px;
+    height: 20px;
+    transition: transform 0.5s ease, filter 0.5s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+
+  &:active img {
+    transform: scale(1.05);
+    filter: brightness(0.9);
   }
 `;
 
@@ -53,9 +63,7 @@ export const SearchContainer = styled.div`
   position: relative;
 `;
 
-export const SearchBtn = styled.button`
-
-`;
+export const SearchBtn = styled.button``;
 
 // export const SearchIcon = styled.div`
 //   position: absolute;
@@ -64,9 +72,6 @@ export const SearchBtn = styled.button`
 //   transform: translateY(-50%);
 //   color: rgba(255, 255, 255, 0.7);
 // `;
-
-
-
 
 export const LoginLink = styled(RouterNavLink)`
   text-align: right;

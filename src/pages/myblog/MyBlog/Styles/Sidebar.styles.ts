@@ -1,15 +1,31 @@
 import styled from "styled-components";
-import React from "react";
-const today = new Date().getDate();
 
-export const SidebarContainer = styled.aside`
-  width: 350px;
-  height: 100vh;
+export const SidebarContainer = styled.aside<{ isTopPosition: boolean }>`
+  width: ${({ isTopPosition }) => (isTopPosition ? "100%" : "350px")};
+  height: ${({ isTopPosition }) => (isTopPosition ? "auto" : "100vh")};
   background-color: #1e1e1e;
   padding: 20px;
   display: flex;
-  flex-direction: column;
   overflow-y: auto;
+  flex-direction: ${({ isTopPosition }) => (isTopPosition ? "row" : "column")};
+
+  ${({ isTopPosition }) =>
+    isTopPosition &&
+    `
+
+    align-items: center;
+    justify-content: space-between;
+  `}
+`;
+
+export const ProfileInfoWrapper = styled.div<{ isTopPosition: boolean }>`
+  display: flex;
+  flex-direction: ${({ isTopPosition }) => (isTopPosition ? "row" : "column")};
+  align-items: center;
+  justify-content: center;
+  margin-right: ${({ isTopPosition }) => (isTopPosition ? "auto" : "10px")};
+  gap: ${({ isTopPosition }) => (isTopPosition ? "15px" : "0")};
+  flex-basis: ${({ isTopPosition }) => (isTopPosition ? "40%" : "auto")};
 `;
 
 export const SidebarTopBar = styled.div`
@@ -92,9 +108,9 @@ export const PlaylistBadge = styled.div`
   background-color: #3f3f3f;
   color: #ffffff;
   font-size: 12px;
-  padding: 2px 6px;
+  padding: 6px 12px;
   border-radius: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   display: inline-block;
   width: auto;
   cursor: pointer;
@@ -124,6 +140,46 @@ export const ProfileStats = styled.div`
 `;
 
 export const ProfileStatItem = styled.div`
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
+
+  small {
+    display: block;
+    color: #b5b5b5;
+  }
+
+  strong {
+    color: #ffffff;
+    font-size: 18px;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+export const PlaylistFollowWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+`;
+
+export const FollowButton = styled.button`
+  background-color: #3f3f3f;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #5f5f5f;
+  }
+`;
+
+export const StatItem = styled.div`
   text-align: center;
   cursor: pointer;
   font-size: 14px;
@@ -252,7 +308,8 @@ export const CalendarDate = styled.div<{
   color: #ffffff;
   cursor: pointer;
   border-radius: 5px;
-  background-color: ${({ isToday }) => (isToday ? "#b3e5fc" : "transparent")};
+  background-color: ${({ isToday }) => (isToday ? "#0d47a1" : "transparent")};
+  overflow: hidden;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);

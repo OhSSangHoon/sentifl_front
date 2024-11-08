@@ -22,7 +22,8 @@ export const Sidebar = styled.div`
   position: fixed;
   top: 100px;
   left: 0;
-  height: calc(100vh - 100px);
+  // height: calc(100vh - 100px);
+  height: 400px;
   z-index: 1000;
 `;
 
@@ -71,4 +72,20 @@ export const PlaySection = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px;
+`;
+
+export const CreateButton = styled.button`
+  margin-top: auto;
+  padding: 10px 30px;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: gray;
+  }
 `;

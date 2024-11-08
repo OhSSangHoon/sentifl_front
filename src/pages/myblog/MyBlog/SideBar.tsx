@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaAngleDown,
-  FaAsterisk,
-  FaBell,
-  FaCalendarAlt,
-  FaCog,
-  FaParking,
-  FaPen,
-} from "react-icons/fa";
+import { FaCalendarAlt, FaCog, FaPen } from "react-icons/fa";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
@@ -43,6 +35,9 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const { uid } = useParams<{ uid: string }>();
   const { uid: loggedInUid } = useAuth();
+
+  const isTopPosition = uid !== loggedInUid;
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -57,9 +52,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [currentYear, setCurrentYear] = useState<number>(
     new Date().getFullYear()
   );
-
-  const isPostUrl = location.pathname.includes("post");
-  const isBlogUrl = location.pathname.includes("blog");
 
   const [nickname, setNickname] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string>(
@@ -76,7 +68,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       });
 
       const posts = response.data.content.filter((post: Post) => {
-        const postDate = new Date(post.createdTime);
+        const postDate = new Date(
+          new Date(post.createdTime).toLocaleString("en-US", {
+            timeZone: "Asia/Seoul",
+          })
+        );
         return (
           postDate.getFullYear() === selectedDate.getFullYear() &&
           postDate.getMonth() === selectedDate.getMonth() &&
@@ -177,10 +173,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate(`/user/${uid}/playlist`);
   };
 
-  const goToCreateSong = () => {
-    navigate("/create-song");
-  };
-
   const stripHtmlTags = (htmlContent: string) => {
     const doc = new DOMParser().parseFromString(htmlContent, "text/html");
     return doc.body.textContent || "";
@@ -199,116 +191,136 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   return (
-    <S.SidebarContainer>
-      <S.SidebarTopBar>
-        <S.LeftIcons>
-          <FaParking size={18} />
-          <S.PointText>0p</S.PointText>
-        </S.LeftIcons>
-        <S.RightIcons>
-          <FaBell size={18} />
-          <FaCog size={18} />
-        </S.RightIcons>
-      </S.SidebarTopBar>
-      <S.Profile>
-        <S.ProfileImageWrapper>
-          <S.ProfileImage
-            src={profileImage || "/default-profile.png"}
-            alt="Profile"
-          />
-        </S.ProfileImageWrapper>
-        <S.ProfileInfo>
-          <S.PlaylistBadge onClick={goToPlaylist}>My Playlist</S.PlaylistBadge>
-          <S.ProfileName>{nickname}</S.ProfileName>
-          <S.ProfileDescription>
-            자기 소개글을 작성 할 수 있습니다.
-          </S.ProfileDescription>
-          <S.ProfileStats>
-            <S.ProfileStatItem onClick={toggleFollowPopup}>
-              <small>follow</small>
-              <strong>{followCount}</strong>
-            </S.ProfileStatItem>
-            <S.Separator>|</S.Separator>
-            <S.ProfileStatItem onClick={toggleFollowingPopup}>
-              <small>following</small>
-              <strong>{followingCount}</strong>
-            </S.ProfileStatItem>
-          </S.ProfileStats>
-        </S.ProfileInfo>
-      </S.Profile>
-      <S.Divider />
-      <S.Menu>
-        <S.MenuIconWrapper>
-          <FaCalendarAlt size={18} onClick={toggleCalendarVisibility} />
-          <FaPen onClick={handlePenClick} size={18} />
-        </S.MenuIconWrapper>
-
-        {/* <S.CategoryTitle>
-          카테고리 <FaAngleDown />
-        </S.CategoryTitle>
-        <S.Icons>
-          <FaPen onClick={handlePenClick} size={18} />
-          <FaCalendarAlt size={18} />
-        </S.Icons>
-        <S.CategoryList>
-          <S.CategoryItem>카테고리 제목</S.CategoryItem>
-          <S.CategoryItem>카테고리 제목</S.CategoryItem>
-        </S.CategoryList> */}
-      </S.Menu>
-      {isCalendarVisible ? (
-        <S.CalendarContainer>
-          <S.CalendarMonth>{formattedMonth}</S.CalendarMonth>
-          {Array.from(
-            { length: getDaysInMonth(currentMonth, currentYear) },
-            (_, index) => {
-              const date = index + 1;
-              const isToday =
-                currentYear === new Date().getFullYear() &&
-                currentMonth === new Date().getMonth() &&
-                date === new Date().getDate();
-              return (
-                <S.CalendarDate
-                  key={date}
-                  onClick={() => handleDateClick(date)}
-                  isToday={isToday}
-                >
-                  {date}
-                </S.CalendarDate>
-              );
-            }
-          )}
-        </S.CalendarContainer>
-      ) : (
-        <S.PostListContainer>
-          <S.BackButton onClick={handleBackToCalendar}>
-            ← Back to Calendar
-          </S.BackButton>
-          {selectedDatePosts.length > 0 ? (
-            selectedDatePosts.map((post) => {
-              const postContent = postContents[post.postId];
-              return (
-                <S.PostListItem
-                  key={post.postId}
-                  onClick={() => navigate(`/user/${uid}/post/${post.postId}`)}
-                >
-                  <h3>{postContent?.title || "제목 불러오는 중..."}</h3>
-                  <p>
-                    {postContent?.content
-                      ? stripHtmlTags(postContent.content).length > 20
-                        ? stripHtmlTags(postContent.content).slice(0, 20) +
-                          "..."
-                        : stripHtmlTags(postContent.content)
-                      : "내용 불러오는 중..."}
-                  </p>
-                </S.PostListItem>
-              );
-            })
-          ) : (
-            <div style={{ marginTop: "50px" }}>
-              해당 날짜에 게시글이 없습니다.
+    <S.SidebarContainer isTopPosition={isTopPosition}>
+      {isTopPosition ? (
+        <>
+          <S.ProfileInfoWrapper isTopPosition={isTopPosition}>
+            <S.ProfileImageWrapper>
+              <S.ProfileImage
+                src={profileImage || "/default-profile.png"}
+                alt="Profile"
+              />
+            </S.ProfileImageWrapper>
+            <div>
+              <S.ProfileName>{nickname}</S.ProfileName>
+              <S.ProfileStats>
+                <S.StatItem onClick={toggleFollowPopup}>
+                  <small>follow</small>
+                  <strong>{followCount}</strong>
+                </S.StatItem>
+                <S.Separator>|</S.Separator>
+                <S.StatItem onClick={toggleFollowingPopup}>
+                  <small>following</small>
+                  <strong>{followingCount}</strong>
+                </S.StatItem>
+              </S.ProfileStats>
             </div>
+          </S.ProfileInfoWrapper>
+          <S.PlaylistFollowWrapper>
+            <S.PlaylistBadge onClick={goToPlaylist}>Playlist</S.PlaylistBadge>
+            <S.FollowButton onClick={toggleFollowPopup}>팔로우</S.FollowButton>
+          </S.PlaylistFollowWrapper>
+        </>
+      ) : (
+        <>
+          {/* <S.SidebarTopBar>
+            <S.RightIcons>
+              <FaCog size={18} />
+            </S.RightIcons>
+          </S.SidebarTopBar> */}
+          <S.Profile>
+            <S.ProfileImageWrapper>
+              <S.ProfileImage
+                src={profileImage || "/default-profile.png"}
+                alt="Profile"
+              />
+            </S.ProfileImageWrapper>
+            <S.ProfileInfo>
+              <S.PlaylistBadge onClick={goToPlaylist}>
+                My Playlist
+              </S.PlaylistBadge>
+              <S.ProfileName>{nickname}</S.ProfileName>
+              <S.ProfileDescription>
+                자기 소개글을 작성 할 수 있습니다.
+              </S.ProfileDescription>
+              <S.ProfileStats>
+                <S.ProfileStatItem onClick={toggleFollowPopup}>
+                  <small>follow</small>
+                  <strong>{followCount}</strong>
+                </S.ProfileStatItem>
+                <S.Separator>|</S.Separator>
+                <S.ProfileStatItem onClick={toggleFollowingPopup}>
+                  <small>following</small>
+                  <strong>{followingCount}</strong>
+                </S.ProfileStatItem>
+              </S.ProfileStats>
+            </S.ProfileInfo>
+          </S.Profile>
+          <S.Divider />
+          <S.Menu>
+            <S.MenuIconWrapper>
+              <FaCalendarAlt size={18} onClick={toggleCalendarVisibility} />
+              <FaPen onClick={handlePenClick} size={18} />
+            </S.MenuIconWrapper>
+          </S.Menu>
+          {isCalendarVisible ? (
+            <S.CalendarContainer>
+              <S.CalendarMonth>{formattedMonth}</S.CalendarMonth>
+              {Array.from(
+                { length: getDaysInMonth(currentMonth, currentYear) },
+                (_, index) => {
+                  const date = index + 1;
+                  const isToday =
+                    currentYear === new Date().getFullYear() &&
+                    currentMonth === new Date().getMonth() &&
+                    date === new Date().getDate();
+                  return (
+                    <S.CalendarDate
+                      key={date}
+                      onClick={() => handleDateClick(date)}
+                      isToday={isToday}
+                    >
+                      {date}
+                    </S.CalendarDate>
+                  );
+                }
+              )}
+            </S.CalendarContainer>
+          ) : (
+            <S.PostListContainer>
+              <S.BackButton onClick={handleBackToCalendar}>
+                ← Back to Calendar
+              </S.BackButton>
+              {selectedDatePosts.length > 0 ? (
+                selectedDatePosts.map((post) => {
+                  const postContent = postContents[post.postId];
+                  return (
+                    <S.PostListItem
+                      key={post.postId}
+                      onClick={() =>
+                        navigate(`/user/${uid}/post/${post.postId}`)
+                      }
+                    >
+                      <h3>{postContent?.title || "제목 불러오는 중..."}</h3>
+                      <p>
+                        {postContent?.content
+                          ? stripHtmlTags(postContent.content).length > 20
+                            ? stripHtmlTags(postContent.content).slice(0, 20) +
+                              "..."
+                            : stripHtmlTags(postContent.content)
+                          : "내용 불러오는 중..."}
+                      </p>
+                    </S.PostListItem>
+                  );
+                })
+              ) : (
+                <div style={{ marginTop: "50px" }}>
+                  해당 날짜에 게시글이 없습니다.
+                </div>
+              )}
+            </S.PostListContainer>
           )}
-        </S.PostListContainer>
+        </>
       )}
     </S.SidebarContainer>
   );

@@ -105,12 +105,12 @@ export const UserLink = styled(Link)`
     font-size: 14px;
   }
 `;
-export const LikeButton = styled.button`
-  display: flex;
-  align-items: center;
-  background-color: transparent;
-  border: none;
-  color: red;
-  cursor: pointer;
-  font-size: 14px;
+
+export const EmotionCircle = styled.div<{ color: string }>`
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: ${(props) => props.color};
+  margin-right: 10px;
+  border: 1px solid #fff;
 `;

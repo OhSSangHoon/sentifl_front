@@ -32,6 +32,7 @@ interface postData {
 function BlogPost() {
   const { postId, uid } = useParams<{ postId: string; uid: string }>();
   const { uid: loggedInUid, nickname, profileImage } = useAuth();
+  const isTopPosition = uid !== loggedInUid;
 
   const [post, setPost] = useState<PostData | null>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
@@ -54,6 +55,7 @@ function BlogPost() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [commentContent, setCommentContent] = useState<string>("");
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -231,13 +233,6 @@ function BlogPost() {
 
   // 대댓글 작성 시
   const handleCommentClick = (commentId: number, childComment: boolean) => {
-    // if (!childComment) {
-    //   setShowCommentInput(true);
-    //   setIsChildComment(true); // 자식 댓글 설정
-    //   setParentCommentId(commentId); // 부모 댓글 ID 설정
-    // } else {
-    //   setShowCommentInput(false); // 대댓글인 경우 입력창을 비활성화
-    // }
     setShowCommentInput(true);
     setIsChildComment(true); // 자식 댓글 설정
     setParentCommentId(commentId); // 부모 댓글 ID 설정
@@ -444,7 +439,7 @@ function BlogPost() {
     }
   }, [postId]);
 
-  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewCommentContent(e.target.value);
   };
 
@@ -497,23 +492,6 @@ function BlogPost() {
     };
   }, []);
 
-  // // 음악 재생/일시정지 함수
-  // const handlePlayPause = (musicUrl: string) => {
-  //   if (audioRef.current) {
-  //     if (isPlaying) {
-  //       audioRef.current.pause();
-  //       setIsPlaying(false);
-  //     } else {
-  //       audioRef.current.play();
-  //       setIsPlaying(true);
-  //     }
-  //   } else {
-  //     audioRef.current = new Audio(musicUrl);
-  //     audioRef.current.play();
-  //     setIsPlaying(true);
-  //   }
-  // };
-
   if (loading) {
     return <p>로딩 중...</p>;
   }
@@ -524,10 +502,21 @@ function BlogPost() {
 
   return (
     <S.Container>
-      <S.TopSection>
+      {isTopPosition && (
+        <S.SidebarWrapper isTopPosition={isTopPosition}>
+          <Sidebar
+            nickname={nickname}
+            uid={uid || ""}
+            profileImage={profileImage || "/default-profile.png"}
+          />
+        </S.SidebarWrapper>
+      )}
+
+      <S.TopSection isTopPosition={isTopPosition}>
         <S.BackgroundImage
           src={post.thumbnailUrl || "default_image.jpg"}
-          alt="Background"
+          alt=""
+          onError={(e) => (e.currentTarget.style.display = "none")}
         />
         <S.TopRightContent>
           <S.ViewCount>조회수 :{viewsCount}회</S.ViewCount>
@@ -563,14 +552,17 @@ function BlogPost() {
           </S.Date>
         </S.BottomRightContent>
       </S.TopSection>
+
       <S.MainContent>
-        <S.SidebarWrapper>
-          <Sidebar
-            nickname={nickname}
-            uid={uid || ""}
-            profileImage={profileImage || "/default-profile.png"}
-          />
-        </S.SidebarWrapper>
+        {!isTopPosition && (
+          <S.SidebarWrapper isTopPosition={isTopPosition}>
+            <Sidebar
+              nickname={nickname}
+              uid={uid || ""}
+              profileImage={profileImage || "/default-profile.png"}
+            />
+          </S.SidebarWrapper>
+        )}
         <S.PostContent>
           <div dangerouslySetInnerHTML={{ __html: post.content }} />
           <S.IconWrapper>
@@ -605,10 +597,7 @@ function BlogPost() {
                     <S.CommentDate>
                       {new Date(comment.time).toLocaleDateString()}
                     </S.CommentDate>
-                    <S.CommentHeartIcon>❤</S.CommentHeartIcon>
-                    <S.CommentHeartCount>
-                      {comment.totalLikes}
-                    </S.CommentHeartCount>
+
                     {!comment.childComment && (
                       <S.ReplyButton
                         onClick={() =>
@@ -629,23 +618,25 @@ function BlogPost() {
                       gap: "10px",
                     }}
                   >
-                    <S.CommentActionButtonWrapper>
-                      <S.CommentActionButton
-                        onClick={() => handleEditComment(comment)}
-                      >
-                        수정
-                      </S.CommentActionButton>
-                      <S.CommentActionButton
-                        onClick={() =>
-                          handleDeleteComment(
-                            comment.commentId,
-                            comment.childComment
-                          )
-                        }
-                      >
-                        삭제
-                      </S.CommentActionButton>
-                    </S.CommentActionButtonWrapper>
+                    {comment.uid === loggedInUid && (
+                      <S.CommentActionButtonWrapper>
+                        <S.CommentActionButton
+                          onClick={() => handleEditComment(comment)}
+                        >
+                          수정
+                        </S.CommentActionButton>
+                        <S.CommentActionButton
+                          onClick={() =>
+                            handleDeleteComment(
+                              comment.commentId,
+                              comment.childComment
+                            )
+                          }
+                        >
+                          삭제
+                        </S.CommentActionButton>
+                      </S.CommentActionButtonWrapper>
+                    )}
                   </div>
                 </S.CommentAuthorWrapper>
                 <S.CommentText>{comment.content}</S.CommentText>
@@ -657,7 +648,7 @@ function BlogPost() {
           )}
         </S.PostContent>
         {showCommentInput && (
-          <S.FixedBottomBar>
+          <S.FixedBottomBar isVisible={showCommentInput}>
             {/* <S.Icon>
               <FaHeart />
             </S.Icon>
@@ -665,21 +656,26 @@ function BlogPost() {
               <FaComment />
             </S.Icon> */}
             <S.InputField
-              type="text"
               placeholder={
                 isEditing ? "댓글을 수정하세요" : "댓글을 입력하세요"
               }
               value={isEditing ? commentContent : newCommentContent} // 수정일 때는 commentContent, 작성일 때는 newCommentContent 사용
+              // 수정일 때는 setCommentContent, 작성일 때는 handleCommentChange 사용
               onChange={
                 isEditing
                   ? (e) => setCommentContent(e.target.value)
                   : handleCommentChange
-              } // 수정일 때는 setCommentContent, 작성일 때는 handleCommentChange 사용
+              }
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  // Shift+Enter를 누르면 줄바꿈, 그냥 Enter는 제출
                   isEditing ? submitEditedComment() : submitComment();
+                  e.preventDefault();
                 }
               }}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
+              expanded={isInputFocused}
             />
             <S.Icon onClick={isEditing ? submitEditedComment : submitComment}>
               <FaPaperPlane />

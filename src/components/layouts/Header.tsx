@@ -3,6 +3,7 @@ import { useAuth } from "../../AuthProvider";
 import SearchPopup from "./SearchPopup";
 import * as S from "./Styles/Header.styles";
 import UserPanel from "./UserPanel";
+import MainLogo from "../../assets/logos/logo.png";
 
 function Header() {
   const { isLoggedIn, nickname, logout, uid } = useAuth();
@@ -22,26 +23,28 @@ function Header() {
 
   const closeSearchPopup = () => {
     setIsSearchPopupOpen(false);
-  }
+  };
 
   return (
     <S.HeaderContainer>
       <S.Logo to="/">
-        <img src="/path" alt="logo" />
+        <img src={MainLogo} alt="logo" />
       </S.Logo>
       <S.Nav>
         <S.StyledNavLink to="/precreate-song">Create</S.StyledNavLink>
         <S.StyledNavLink to="/">Home</S.StyledNavLink>
       </S.Nav>
       <S.SearchContainer>
-        <S.SearchBtn onClick={() => setIsSearchPopupOpen(true)}>search</S.SearchBtn>
-          {isSearchPopupOpen && (
-            <SearchPopup
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              onClose={closeSearchPopup}
-            />
-          )}
+        <S.SearchBtn onClick={() => setIsSearchPopupOpen(true)}>
+          search
+        </S.SearchBtn>
+        {isSearchPopupOpen && (
+          <SearchPopup
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            onClose={closeSearchPopup}
+          />
+        )}
       </S.SearchContainer>
       {isLoggedIn ? (
         <S.ProfileLink onClick={togglePopup}>
@@ -58,7 +61,6 @@ function Header() {
         <UserPanel onClose={togglePopup} onLogout={handleLogout} />
       )}
     </S.HeaderContainer>
-
   );
 }
 

@@ -1,6 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import Footer from "./Footer";
 import Header from "./Header";
 import * as S from "./Styles/Layout.style";
 import { SlideInDiv } from "./Styles/Transition.style";
@@ -30,8 +29,6 @@ function Layout() {
             )}
           </TransitionGroup>
         </S.MainContent>
-
-        <Footer />
       </S.LayoutContainer>
     </>
   );

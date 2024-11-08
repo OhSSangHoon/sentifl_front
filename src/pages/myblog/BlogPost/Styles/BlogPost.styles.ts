@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 export interface PostData {
   title: string;
@@ -32,13 +32,13 @@ export const Container = styled.div`
   color: white;
 `;
 
-export const TopSection = styled.div`
+export const TopSection = styled.div<{ isTopPosition: boolean }>`
   position: relative;
   width: 100%;
-  height: 300px;
+  height: ${({ isTopPosition }) => (isTopPosition ? "270px" : "300px")};
   background-color: #333;
   overflow: hidden;
-  margin-top: 80px;
+  margin-top: ${({ isTopPosition }) => (isTopPosition ? "200px" : "80px")};
 `;
 
 export const BackgroundImage = styled.img`
@@ -233,11 +233,27 @@ export const PostCommentCount = styled.span`
   }
 `;
 
-export const SidebarWrapper = styled.div`
-  width: 350px;
-  margin-left: 20px;
-  margin-right: 40px;
-  overflow-y: hidden;
+export const SidebarWrapper = styled.div<{ isTopPosition: boolean }>`
+  ${({ isTopPosition }) =>
+    isTopPosition &&
+    `
+    position: absolute;
+    top: 0;
+    width: 100%; 
+    
+  `}
+
+  ${({ isTopPosition }) =>
+    !isTopPosition &&
+    `
+    width: 360px;
+    margin-left: 20px;
+   
+    overflow-y: hidden;
+  `}
+
+  background-color: #1e1e1e;
+  padding: 20px;
 `;
 
 export const PostContent = styled.div`
@@ -258,7 +274,7 @@ export const PostContent = styled.div`
   overflow-y: auto;
 `;
 
-export const FixedBottomBar = styled.div`
+export const FixedBottomBar = styled.div<{ isVisible: boolean }>`
   position: fixed;
   bottom: 0;
   left: 0;
@@ -269,17 +285,35 @@ export const FixedBottomBar = styled.div`
   align-items: center;
   justify-content: space-between;
   z-index: 1000;
+
+  ${({ isVisible }) =>
+    isVisible &&
+    css`
+      animation: ${slideUp} 0.3s ease-out;
+    `}
 `;
 
-export const InputField = styled.input`
+export const slideUp = keyframes`
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+`;
+
+export const InputField = styled.textarea<{ expanded: boolean }>`
   flex: 1;
   background-color: #444;
   border: none;
-  padding: 10px;
+  padding: ${({ expanded }) => (expanded ? "40px" : "10px")};
   margin: 0 10px;
   color: #fff;
   border-radius: 5px;
   font-size: 14px;
+  resize: none;
 `;
 
 export const Icon = styled.span`
@@ -370,6 +404,7 @@ export const CommentActionButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 4px;
 
   &:hover {
     background-color: #555;

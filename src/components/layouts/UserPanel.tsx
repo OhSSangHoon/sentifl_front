@@ -31,7 +31,9 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
         setFollowCount(followedByCount);
 
         // 내가 팔로우한 사용자 수 불러오기
-        const followingResponse = await axiosInstance.get(`/api/v1/follow/${uid}`);
+        const followingResponse = await axiosInstance.get(
+          `/api/v1/follow/${uid}`
+        );
         const followingCount = followingResponse.data.content.length; // content 배열의 길이를 사용해 팔로잉 수 계산
         setFollowingCount(followingCount);
       } catch (error) {
@@ -100,7 +102,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
           <S.Divider />
           <S.TabItem>이웃</S.TabItem>
         </S.Tabs>
-        <S.NewPost>new post</S.NewPost>
+        {/* <S.NewPost>new post</S.NewPost>
         <S.PostList>
           <S.PostItem>
             <S.PostAvatar />
@@ -116,7 +118,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
               <S.PostTitle>포스트 제목</S.PostTitle>
             </S.PostDetails>
           </S.PostItem>
-        </S.PostList>
+        </S.PostList> */}
         <S.LogoutButton onClick={onLogout}>로그아웃</S.LogoutButton>
       </S.PopupContainer>
     </S.PopupOverlay>

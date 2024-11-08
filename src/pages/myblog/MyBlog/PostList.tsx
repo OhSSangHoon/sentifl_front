@@ -25,12 +25,12 @@ export interface PostContent {
 }
 
 export const PostDescription = ({ content }: { content: string }) => {
-  const MAX_DESCRIPTION_LENGTH = 20; // 글자 수 제한
+  const MAX_DESCRIPTION_LENGTH = 20;
 
   const displayedContent =
     content.length > MAX_DESCRIPTION_LENGTH
       ? content.substring(0, MAX_DESCRIPTION_LENGTH) + "..."
-      : content; // 내용이 길면 생략 처리
+      : content;
 
   return <p>{displayedContent}</p>;
 };
@@ -73,7 +73,7 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
               page: currentPage,
               size: pageSize,
             },
-            headers: { Authorization: `Bearer ${loggedInUid}` }
+            headers: { Authorization: `Bearer ${loggedInUid}` },
           });
 
           if (response.status === 200) {
