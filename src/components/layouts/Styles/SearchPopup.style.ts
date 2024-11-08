@@ -255,9 +255,10 @@ export const EmotionButton = styled.button<{ isSelected: boolean }>`
   cursor: pointer;
   font-size: 0.7em;
   overflow: hidden;
+  transition: background-color 0.1s ease;
 
   &:hover {
-    background-color: #ff1493;
+    background-color: #d3d3d3;
   }
 `;
 
