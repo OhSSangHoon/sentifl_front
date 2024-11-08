@@ -27,6 +27,7 @@ interface SearchPopupProps {
   setSearchQuery: (query: string) => void;
   onClose: () => void;
 }
+
 const SearchPopup: React.FC<SearchPopupProps> = ({
   searchQuery,
   setSearchQuery,
@@ -44,9 +45,14 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   const [size, setSize] = useState(10); // 한 페이지당 글 개수 기본값
   const navigate = useNavigate();
 
+  if (!searchQuery || typeof searchQuery !== "string") {
+    return null; // JSX를 반환하거나 컴포넌트를 종료합니다.
+  }
+
   const handleOverlayClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
+    
     if (e.target === e.currentTarget) {
       setSearchQuery("");
       onClose();
@@ -153,15 +159,14 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             size,
             filter,
           },
-        }
-      );
+        });
 
-      if (postSearchResponse.status === 200) {
-        const postResults = postSearchResponse.data.content;
-        // console.log("Full post search response:", postSearchResponse.data);
-        // console.log("Received post search results:", postResults); // 응답 데이터 확인
-        setPostResults(postResults);
-      }
+        if(postSearchResponse.status === 200){
+          const postResults = postSearchResponse.data.content;
+          // console.log("Full post search response:", postSearchResponse.data);
+          console.log("Received post search results:", postResults); // 응답 데이터 확인
+          setPostResults(postResults);
+        }
     } catch (error) {
       console.error("게시물 검색 에러", error);
     }
