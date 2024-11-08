@@ -80,7 +80,7 @@ export const S1Button = styled.button`
   font-size: 14px;
   cursor: pointer;
   margin-top: 150px;
-  z-index: 100;
+  z-index: 1;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);

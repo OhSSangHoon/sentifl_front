@@ -304,6 +304,8 @@ const SongResult: React.FC = () => {
     audio.addEventListener("ended", handleEnded);
 
     return () => {
+      audio.pause();
+      audio.currentTime = 0;
       audio.removeEventListener("ended", handleEnded);
     };
   }, []);
@@ -317,6 +319,12 @@ const SongResult: React.FC = () => {
     }
     setIsPlaying(!isPlaying);
   };
+
+  useEffect(() => {
+    // if (isDropdownVisible) {
+    //   console.log("Dropdown is now visible.");
+    // }
+  }, [isDropdownVisible]);
 
   return (
     <S.Wrapper>
