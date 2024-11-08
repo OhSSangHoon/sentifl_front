@@ -221,6 +221,7 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
 
   const displayedPosts = allPosts.slice(page * pageSize, (page + 1) * pageSize);
 
+
   return (
     <>
       <S.Content>
@@ -229,6 +230,7 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
         ) : (
           displayedPosts.map((post) => {
             const postContent = postContents[post.postId];
+            const isAuthor = loggedInUid === uid;
             return (
               <S.Post key={post.postId}>
                 <S.PostContentWrapper>
@@ -243,6 +245,8 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
                             ? new Date(post.modifiedTime).toLocaleDateString()
                             : new Date(post.createdTime).toLocaleDateString()}
                         </S.PostDate>
+                        {isAuthor && (
+                          <>
                         <S.ActionButton onClick={() => editPost(post.postId)}>
                           수정
                         </S.ActionButton>
@@ -254,6 +258,8 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
                         >
                           삭제
                         </S.ActionButton>
+                        </>
+                        )}
                       </S.PostMeta>
                     </S.PostHeader>
                     <S.PostDescription

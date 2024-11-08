@@ -1,5 +1,6 @@
 import AWS from "aws-sdk";
 
+
 export const uploadToS3 = async (file: File, uid: string): Promise<string> => {
   const s3 = new AWS.S3();
   const fileFormat = file.name.split(".").pop();
@@ -9,7 +10,7 @@ export const uploadToS3 = async (file: File, uid: string): Promise<string> => {
       Key: `${uid}/images/${Date.now()}.${fileFormat}`,
       Body: file,
       ContentType: file.type,
-      //ACL: 'public-read', // 파일을 공개적으로 읽을 수 있도록 설정
+      // ACL: 'public-read', // 파일을 공개적으로 읽을 수 있도록 설정
     },
   });
 
@@ -34,7 +35,7 @@ export const uploadfinalToS3 = async (
       Key: `${uid}/post/${Date.now()}.${fileFormat}`,
       Body: file,
       ContentType: file.type,
-      //ACL: 'public-read', // 파일을 공개적으로 읽을 수 있도록 설정
+      // ACL: 'public-read', // 파일을 공개적으로 읽을 수 있도록 설정
     },
   });
 
@@ -79,11 +80,22 @@ export const downloadFromS3 = async (key: string): Promise<Blob | null> => {
 
   try {
     const data = await s3.getObject(params).promise();
+
+    let jsonText;
+
     if (data.Body instanceof Uint8Array) {
-      return new Blob([data.Body.buffer], { type: "application/json" });
-    } else {
-      throw new Error("Unexpected data type from S3");
+      jsonText = new TextDecoder().decode(data.Body);
+      // return new Blob([data.Body.buffer], { type: "application/json" });
+    } else if(typeof data.Body === 'string'){
+      // throw new Error("Unexpected data type from S3");
+      jsonText = data.Body;
+    }else if(Buffer.isBuffer(data.Body)){
+      jsonText = data.Body.toString('utf-8');
+    }else{
+      throw new Error("unexpected data type from S3");
     }
+
+    return new Blob([jsonText], { type: "application/json" });
   } catch (err: any) {
     if (err.code === "NoSuchKey") {
       console.warn(`File not found: ${key}`);

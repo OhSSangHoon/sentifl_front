@@ -211,7 +211,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
     try {
       const s3Url = await uploadTempToS3(jsonContent, uid);
-      console.log("File uploaded to S3:", s3Url);
+      // console.log("File uploaded to S3:", s3Url); //임시저장 파일 업로드 완료
       navigate("/");
     } catch (error) {
       console.error("Error uploading temp file to S3:", error);
@@ -241,7 +241,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       );
   
       if (response.status === 204) {
-        console.log("Hashtag successfully posted.");
+        // console.log("Hashtag successfully posted."); // 해시태그 저장
       }
     } catch (error) {
       console.error("Error posting hashtags:", error);

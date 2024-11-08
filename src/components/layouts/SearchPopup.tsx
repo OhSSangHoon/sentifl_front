@@ -143,7 +143,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ searchQuery, setSearchQuery, 
         if(postSearchResponse.status === 200){
           const postResults = postSearchResponse.data.content;
           // console.log("Full post search response:", postSearchResponse.data);
-          // console.log("Received post search results:", postResults); // 응답 데이터 확인
+          console.log("Received post search results:", postResults); // 응답 데이터 확인
           setPostResults(postResults);
         }
     } catch(error){
@@ -274,7 +274,8 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ searchQuery, setSearchQuery, 
         <S.SearchResults>
           {filteredPostResults.map((post) => (
             <S.SearchResultItem key={post.id}>
-              <S.PostLink to={`/user/${post.uid}/post/${post.id}`} onClick={handleClose}>
+              {/* 추후에 elastic search 완성 후 uid를 post.uid로 바꿔야함 */}
+              <S.PostLink to={`/user/${uid}/post/${post.id}`} onClick={handleClose}>
                 <span>{post.title}</span>
               </S.PostLink>
             </S.SearchResultItem>
