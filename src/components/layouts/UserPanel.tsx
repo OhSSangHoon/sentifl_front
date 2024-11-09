@@ -124,7 +124,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
           <S.UserInfo>
             <S.UserNameAndPlaylist>
               <S.UserName>{nickname || "닉네임"}</S.UserName>
-              <S.UserPlaylist onClick={() => navigate(`/user/${uid}/playlist`)}>
+              <S.UserPlaylist onClick={() => {navigate(`/user/${uid}/playlist`); onClose();}}>
                 My Playlist
               </S.UserPlaylist>
             </S.UserNameAndPlaylist>
@@ -150,7 +150,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
           </S.ProfileImageContainer>
         </S.UserProfile>
         <S.Tabs>
-          <S.TabItem onClick={() => navigate(`/user/${uid}/blog`)}>My Blog</S.TabItem>
+          <S.TabItem onClick={() => {navigate(`/user/${uid}/blog`); onClose();}} >My Blog</S.TabItem>
           <S.Divider />
           <S.TabItem onClick={() => setIsSearchMode(!isSearchMode)}>유저 찾기</S.TabItem>
         </S.Tabs>
@@ -166,7 +166,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
             <S.SearchResults>
               {searchResults.map((user) => (
                 <S.SearchResultItem key={user.id}>
-                  <S.UserLink to={`/user/${user.uid}/blog`}>
+                  <S.UserLink to={`/user/${user.uid}/blog`} onClick={onClose}>
                     <img
                       src={user.profile || Character}
                       alt={user.nickName}

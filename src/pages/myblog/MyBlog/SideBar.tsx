@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaCalendarAlt, FaCog, FaPen } from "react-icons/fa";
+import { FaCalendarAlt, FaPen } from "react-icons/fa";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
@@ -60,6 +60,11 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [followCount, setFollowCount] = useState<number>(0);
   const [followingCount, setFollowingCount] = useState<number>(0);
 
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const [loadingFollow, setLoadingFollow] = useState<boolean>(false);
+
+  
+
   const handleDateClick = async (date: number) => {
     try {
       const selectedDate = new Date(currentYear, currentMonth, date);
@@ -104,6 +109,51 @@ const Sidebar: React.FC<SidebarProps> = ({
       console.error("선택한 날짜의 게시글을 불러오지 못했습니다.", error);
     }
   };
+
+  useEffect(() => {
+    const fetchFollowStatus = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/v1/follow/${loggedInUid}`);
+        const followedUids = response.data.content.map(
+          (user: { uid: string }) => user.uid.trim()
+        );
+        setIsFollowing(followedUids.includes(uid ?? ""));
+      } catch (error) {
+        console.error("Error fetching follow status:", error);
+      }
+    };
+  
+    if (uid && loggedInUid) {
+      fetchFollowStatus();
+    }
+  }, [uid, loggedInUid]);
+
+
+  const handleFollowToggle = async () => {
+    if (!loggedInUid) return;
+  
+    setLoadingFollow(true);
+  
+    try {
+      if (isFollowing) {
+        // 언팔로우
+        await axiosInstance.delete("/api/v1/follow", {
+          data: { uid },
+        });
+        setIsFollowing(false);
+      } else {
+        // 팔로우
+        await axiosInstance.post("/api/v1/follow", { uid });
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error("Error toggling follow:", error);
+    } finally {
+      setLoadingFollow(false);
+    }
+  };
+  
+  
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -204,12 +254,12 @@ const Sidebar: React.FC<SidebarProps> = ({
             <div>
               <S.ProfileName>{nickname}</S.ProfileName>
               <S.ProfileStats>
-                <S.StatItem onClick={toggleFollowPopup}>
+                <S.StatItem>
                   <small>follow</small>
                   <strong>{followCount}</strong>
                 </S.StatItem>
                 <S.Separator>|</S.Separator>
-                <S.StatItem onClick={toggleFollowingPopup}>
+                <S.StatItem>
                   <small>following</small>
                   <strong>{followingCount}</strong>
                 </S.StatItem>
@@ -218,8 +268,13 @@ const Sidebar: React.FC<SidebarProps> = ({
           </S.ProfileInfoWrapper>
           <S.PlaylistFollowWrapper>
             <S.PlaylistBadge onClick={goToPlaylist}>Playlist</S.PlaylistBadge>
-            <S.FollowButton onClick={toggleFollowPopup}>팔로우</S.FollowButton>
-          </S.PlaylistFollowWrapper>
+              <S.FollowButton
+                    isFollowing={isFollowing}
+                    onClick={() => handleFollowToggle()}
+              >
+                {isFollowing ? "Following" : "Follow"}
+              </S.FollowButton>
+            </S.PlaylistFollowWrapper>
         </>
       ) : (
         <>

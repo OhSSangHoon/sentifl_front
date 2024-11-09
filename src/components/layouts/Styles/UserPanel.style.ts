@@ -78,13 +78,14 @@ export const UserProfile = styled.div`
 
 export const UserInfo = styled.div`
   flex: 1;
-  margin-right: 10px;
+  margin-right: 60px;
+  
 `;
 
 export const UserNameAndPlaylist = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
   margin-bottom: 10px;
   width: 100%;
   overflow: hidden;
@@ -100,14 +101,15 @@ export const UserName = styled.div`
 `;
 
 export const UserPlaylist = styled.div`
-  background-color: grey;
+  background-color: #5f5f5f;
   color: white;
   padding: 2px 5px;
-  border-radius: 5px;
+  border-radius: 10px;
   font-size: 12px;
   white-space: nowrap;
-  width: auto;
+  width: 80px;
   cursor: pointer;
+  text-align: center;
 
   &:hover {
     background-color: #5f5f5f;
@@ -119,7 +121,7 @@ export const UserPlaylist = styled.div`
 
 export const UserStats = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 35px;
 `;
 
 export const FollowStat = styled.div`
@@ -154,7 +156,6 @@ export const ProfileImageContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  margin-right: 30px;
   overflow: hidden;
 `;
 

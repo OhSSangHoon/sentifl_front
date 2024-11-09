@@ -78,7 +78,10 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       );
 
       if (postSearchResponse.status === 200) {
-        setPostResults(postSearchResponse.data.content);
+        const postResults = postSearchResponse.data.content;
+        // console.log("Full post search response:", postSearchResponse.data);
+        // console.log("Received post search results:", postResults); // 응답 데이터 확인
+        setPostResults(postResults);
       }
     } catch (error) {
       console.error("게시물 검색 에러", error);
