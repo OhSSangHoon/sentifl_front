@@ -38,14 +38,17 @@ export const PostDescription = ({ content }: { content: string }) => {
 const PostList: React.FC<PostListProps> = ({ uid }) => {
   const { uid: loggedInUid } = useAuth();
   const params = useParams<{ uid: string }>();
+
   const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [postContents, setPostContents] = useState<{
     [key: number]: PostContent;
   }>({});
   const [selectedPost, setSelectedPost] = useState<PostContent | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   const pageSize = 3;
   const paginationSize = 5;
 

@@ -1,3 +1,4 @@
+import { FaSearch, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -16,42 +17,129 @@ export const PopupOverlay = styled.div`
 export const SearchPopupContainer = styled.div`
   position: relative;
   display: flex;
-  width: 60%;
-  height: 60vh;
+  flex-direction: column;
+  align-items: center;
+  width: 70%;
+  height: 70vh;
   margin: 0 auto;
   margin-top: 100px;
   z-index: 100;
-  justify-content: center;
-  background: #c6c6c6;
+  background: transparent;
+  backdrop-filter: blur(200px);
+  border-radius: 8px;
+  padding: 20px;
+`;
+
+export const SearchResultsContainer = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 20px;
+  background: #1c1c1e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 40px;
+`;
+
+export const PostResultsContainer = styled.div`
+  width: 50%;
+  padding-right: 10px;
+  border-right: 1px solid #cccccc;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  h3 {
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    color: #888;
+  }
+`;
+
+export const SongResultsContainer = styled.div`
+  width: 50%;
+  padding-left: 10px;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  h3 {
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    color: #888;
+  }
+`;
+
+export const NoResults = styled.div`
+  padding: 10px;
+  color: #888;
+  text-align: center;
+  font-size: 0.9em;
+`;
+
+export const SearchInputWrapper = styled.div`
+  position: relative;
+  width: 60%;
+  height: 100px;
+  overflow: hidden;
 `;
 
 export const SearchInput = styled.input`
-  width: 50%;
-  height: 60px;
-  padding: 10px 20px;
+  width: 100%;
+  height: 50px;
+  padding: 10px 20px 10px 50px;
   margin: 50px 0;
   border-radius: 30px;
   background: #3a3a3c;
   border: none;
   color: #fff;
   outline: none;
-  font-size: 1.1em;
+  font-size: 0.9em;
 
   &::placeholder {
     color: rgba(255, 255, 255, 0.7);
   }
 `;
 
-export const CloseButton = styled.button`
-  position: fixed;
-  background: none;
-  border: none;
-  font-size: 2em;
-  font-weight: 100;
-  color: #1c1c1e;
+export const SearchIcon = styled(FaSearch)`
+  position: absolute;
+  left: 15px;
+  top: 75px;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2em;
+  transition: color 0.1s;
+
+  &:hover {
+    color: #ffffff;
+  }
+`;
+
+export const CloseButton = styled(FaTimes)`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 1.5em;
+  color: #888888;
   cursor: pointer;
-  right: 21%;
-  top: 13%;
+
+  transition: color 0.1s;
+
+  &:hover {
+    color: #444444;
+  }
+
+  &:active {
+    color: #444444;
+  }
 `;
 
 export const SearchResults = styled.div`
@@ -70,14 +158,27 @@ export const SearchResults = styled.div`
 `;
 
 export const SearchResultItem = styled.div`
-  padding: 10px;
+  padding: 20px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #f0f0f0;
   justify-content: space-between;
+  transition: background-color 0.3s;
+  border-radius: 8px;
 
   &:hover {
-    background-color: #f0f0f0;
+    background-color: #2e2e30;
+  }
+
+  &:active {
+    background-color: #3a3a3c;
+  }
+
+  span {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
   }
 `;
 
@@ -128,4 +229,48 @@ export const EmotionCircle = styled.div<{ color: string }>`
   background: ${(props) => props.color};
   margin-right: 10px;
   border: 1px solid #fff;
+`;
+
+export const UserNickname = styled.span`
+  margin-left: auto;
+  font-size: 14px;
+  color: #d3d3d3;
+  padding-left: 10px;
+`;
+
+export const EmotionButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 8px;
+  width: 100%;
+`;
+
+export const EmotionButton = styled.button<{ isSelected: boolean; emotion: string }>`
+  padding: 6px 10px;
+  border-radius: 20px;
+  background-color: ${({ isSelected, emotion }) => (
+    isSelected ? {
+      행복: "#FFD700",
+      사랑: "#FF1493",
+      불안: "#6A0DAD",
+      분노: "#8B0000",
+      우울: "#000080",
+      슬픔: "#4169E1",
+      중립: "#A9A9A9",
+    }[emotion] : "#3a3a3c"
+  )};
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 0.7em;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
+`;
+
+export const LoadingMessage = styled.div`
+  padding: 10px;
+  color: #888;
+  text-align: center;
+  font-size: 0.9em;
 `;
