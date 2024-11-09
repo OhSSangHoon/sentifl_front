@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
+
 
 export const PopupOverlay = styled.div`
   position: fixed;
@@ -15,13 +17,17 @@ export const PopupOverlay = styled.div`
 
 export const PopupContainer = styled.div`
   position: absolute;
-  top: 80px;
-  right: 60px;
+  display: flex;
+  right: 100px;
+  top: 100px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   width: 340px;
-  height: 260px;
+  height: auto;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 10px;
-  padding: 40px 20px;
+  padding: 20px;
   color: white;
   overflow: hidden;
   z-index: 1000;
@@ -148,7 +154,7 @@ export const ProfileImageContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  margin-right: 10px;
+  margin-right: 30px;
   overflow: hidden;
 `;
 
@@ -250,9 +256,9 @@ export const PostTitle = styled.div`
 `;
 
 export const LogoutButton = styled.button`
-  position: absolute;
+  margin-top: 50px;
+  margin-left: auto;
   bottom: 20px;
-  right: 20px;
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 30px;
@@ -265,4 +271,98 @@ export const LogoutButton = styled.button`
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
+`;
+
+export const SearchContainer = styled.div`
+  width: 100%;
+  max-height: 200px;
+  display: flex;
+  align-items: center;
+  position: relative;
+`;
+
+export const SearchInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100px;
+  overflow: hidden;
+`;
+
+export const SearchInput = styled.input`
+  width: 100%;
+  height: 50px;
+  padding:20px 30px;
+  margin:25px 0;
+  border-radius: 30px;
+  background: #3a3a3c;
+  border: none;
+  color: #fff;
+  outline: none;
+  font-size: 0.9em;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+`;
+
+export const SearchResults = styled.div`
+  position: fixed;
+  top: 250px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
+export const SearchResultItem = styled.div`
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.3s;
+  border-radius: 8px;
+
+  span {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
+export const UserLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+
+  img {
+    margin-right: 10px;
+  }
+
+  span {
+    font-size: 14px;
+  }
+`;
+
+export const FollowButton = styled.button<{ isFollowing: boolean }>`
+  background-color: ${(props) => (props.isFollowing ? "#cccccc" : "#007bff")};
+  color: ${(props) => (props.isFollowing ? "#666666" : "white")};
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: ${(props) => (props.isFollowing ? 0.6 : 1)};
+`;
+
+export const Settings = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
 `;
