@@ -10,6 +10,16 @@ export const Post = styled.div`
   margin-left: 30px;
   margin-bottom: 20px;
   padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #444;
+  }
+
+  &:active {
+    background-color: #444;
+  }
 `;
 
 export const PostContentWrapper = styled.div`
@@ -38,10 +48,11 @@ export const PostHeader = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  gap: 15px;
 `;
 
 export const PostTitle = styled.h2`
-  font-size: 24px;
+  font-size: 28px;
   margin-right: 15px;
   color: #ffffff;
 `;
@@ -63,7 +74,7 @@ export const PostDate = styled.span`
 `;
 
 export const ActionButton = styled.button`
-  font-size: 12px;
+  font-size: 14px;
   color: #b5b5b5;
   background: none;
   border: none;
@@ -143,4 +154,14 @@ export const OverlayImage = styled.img`
   min-width: 400px;
   min-height: 400px;
   border-radius: 10px;
+`;
+
+export const LoadingMessage = styled.p`
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  color: #ffffff;
+  font-weight: bold;
 `;

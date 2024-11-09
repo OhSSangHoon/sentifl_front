@@ -387,6 +387,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             ))}
           </S.SearchResults>
         )}
+
         {/* 게시글 */}
         <S.SearchResultsContainer>
           <S.PostResultsContainer>
@@ -409,6 +410,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 
           {/* 노래 */}
           <S.SongResultsContainer>
+            <h3>노래</h3>
             {loading ? (
               <S.LoadingMessage>
                 해당 감정에 대한 노래를 찾고 있습니다...

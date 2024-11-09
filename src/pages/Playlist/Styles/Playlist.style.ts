@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { emotionColors } from "../../SongCreator/SongResult";
 import { SongItemProps } from "../Playlist";
 
@@ -10,16 +10,39 @@ export const PlaylistContainer = styled.div`
   background-color: #121212;
 `;
 
+const gradientAnimation = keyframes`
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+`;
+
 export const TopBar = styled.div`
   width: 100%;
   height: 180px;
-  background-color: #1e1e1e;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 100px;
   position: relative;
+  background: linear-gradient(
+    270deg,
+    rgba(102, 51, 38, 0.5),
+    rgba(100, 70, 50, 0.5),
+    rgba(60, 84, 115, 0.5),
+    rgba(55, 97, 96, 0.5)
+  );
+  background-size: 800% 800%;
+  animation: ${gradientAnimation} 30s ease infinite;
+  backdrop-filter: blur(300px);
+  box-shadow: 0 0 20px 10px rgba(30, 30, 30, 0.5);
+  border-radius: 20px;
 `;
 
 export const IconWrapper = styled.div`
@@ -81,8 +104,8 @@ export const SongItem = styled.div<SongItemProps>`
   margin-bottom: 10px;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.8s ease, box-shadow 0.8s,
-    border-color 0.8s ease;
+  transition: background-color 0.5s ease, box-shadow 0.5s,
+    border-color 0.5s ease;
   border: 3px solid transparent;
 
   &:hover {

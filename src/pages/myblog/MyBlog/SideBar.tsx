@@ -259,7 +259,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <S.Divider />
           <S.Menu>
             <S.MenuIconWrapper>
-              <FaCalendarAlt size={18} onClick={toggleCalendarVisibility} />
+              {/* <FaCalendarAlt size={18} onClick={toggleCalendarVisibility} /> */}
               <FaPen onClick={handlePenClick} size={18} />
             </S.MenuIconWrapper>
           </S.Menu>

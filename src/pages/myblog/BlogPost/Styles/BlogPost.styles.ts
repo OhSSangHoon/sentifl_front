@@ -134,7 +134,7 @@ export const Title = styled.h1`
 `;
 
 export const ViewCount = styled.div`
-  color: #aaa;
+  color: #ffffff;
   font-size: 14px;
 `;
 
@@ -148,7 +148,7 @@ export const BottomRightContent = styled.div`
 `;
 
 export const Date = styled.div`
-  color: #aaa;
+  color: #ffffff;
   font-size: 14px;
   margin-right: 10px;
 `;
@@ -341,7 +341,7 @@ export const HeartIcon = styled(Icon)`
 export const CommentSection = styled.div`
   margin-top: 20px;
   padding: 10px 0;
-  border-top: 1px solid #333;
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
 `;
 
 export const CommentTitle = styled.div`
@@ -361,7 +361,7 @@ export const Comment = styled.div`
 export const CommentAuthorWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between; /* 양쪽 끝에 배치 */
+  justify-content: space-between;
   margin-bottom: 10px;
   width: 100%;
 `;
@@ -404,7 +404,7 @@ export const CommentActionButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 4px;
+  border-radius: 10px;
 
   &:hover {
     background-color: #555;
@@ -454,6 +454,7 @@ export const LoadMoreButton = styled.button`
 export const ReplyButton = styled.span`
   cursor: pointer;
   color: gray;
+  font-size: 14px;
 
   &:hover {
     color: rgba(256, 256, 256, 0.2);

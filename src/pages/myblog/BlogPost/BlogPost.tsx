@@ -519,7 +519,7 @@ function BlogPost() {
           onError={(e) => (e.currentTarget.style.display = "none")}
         />
         <S.TopRightContent>
-          <S.ViewCount>조회수 :{viewsCount}회</S.ViewCount>
+          <S.ViewCount>조회수: {viewsCount}회</S.ViewCount>
         </S.TopRightContent>
         <S.LeftContent>
           <S.SongTitleWrapper>

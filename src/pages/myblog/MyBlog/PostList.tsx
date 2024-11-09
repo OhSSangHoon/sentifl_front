@@ -219,7 +219,7 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
   };
 
   if (loading) {
-    return <p>로딩 중...</p>;
+    return <S.LoadingMessage>로딩 중...</S.LoadingMessage>;
   }
 
   const displayedPosts = allPosts.slice(page * pageSize, (page + 1) * pageSize);
@@ -228,7 +228,7 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
     <>
       <S.Content>
         {displayedPosts.length === 0 ? (
-          <p>게시물이 없습니다.</p>
+          <S.LoadingMessage>게시물이 없습니다</S.LoadingMessage>
         ) : (
           displayedPosts.map((post) => {
             const postContent = postContents[post.postId];
