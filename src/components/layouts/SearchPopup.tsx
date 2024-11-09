@@ -90,11 +90,6 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       ? postResults.filter((post) => post.title.includes(searchQuery))
       : [];
 
-  const filteredSongResults =
-    songResults.length > 0
-      ? songResults.filter((song) => song.title.includes(searchQuery))
-      : [];
-
   const handleSongSearch = async () => {
     try {
       const response = await axiosInstance.get("/api/v1/music/search/word", {
@@ -144,6 +139,11 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       setLoading(false);
     }
   };
+
+  const filteredSongResults =
+    songResults.length > 0
+      ? songResults.filter((song) => song.title.includes(searchQuery))
+      : [];
 
   const getEmotionColorGradient = (emotion: string) => {
     const emotionColors: { [key: string]: string } = {
@@ -198,7 +198,6 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
           ))}
         </S.EmotionButtonContainer>
 
-        {/* 게시글 */}
         <S.SearchResultsContainer>
           <S.PostResultsContainer>
             <h3>게시글</h3>
