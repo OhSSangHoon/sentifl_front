@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import axiosInstance from "../../axiosInterceptor";
 import * as S from "./Styles/Login.styles";
 
-import Character from "../../assets/icons/character/Login_character.png";
+import Character from "../../assets/characters/Login_character.png";
 
 
 

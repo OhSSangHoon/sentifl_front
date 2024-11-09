@@ -1,9 +1,12 @@
 import { useState } from "react";
+import MainLogo from "../../assets/logos/logo.png";
 import { useAuth } from "../../AuthProvider";
 import SearchPopup from "./SearchPopup";
 import * as S from "./Styles/Header.styles";
 import UserPanel from "./UserPanel";
-import MainLogo from "../../assets/logos/logo.png";
+
+import Character from "../../assets/characters/Login_character.png";
+
 
 function Header() {
   const { isLoggedIn, nickname, logout, uid } = useAuth();
@@ -49,7 +52,7 @@ function Header() {
       {isLoggedIn ? (
         <S.ProfileLink onClick={togglePopup}>
           <img
-            src={profileImage || "/default-profile.png"}
+            src={profileImage && !profileImage.includes("default_profile.jpeg") ? profileImage : Character}
             alt={nickname}
             style={{ width: "40px", height: "40px", borderRadius: "50%" }}
           />

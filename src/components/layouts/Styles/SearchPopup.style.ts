@@ -1,6 +1,6 @@
+import { FaSearch, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { FaSearch, FaTimes } from "react-icons/fa";
 
 export const PopupOverlay = styled.div`
   position: fixed;
@@ -246,20 +246,26 @@ export const EmotionButtonContainer = styled.div`
   width: 100%;
 `;
 
-export const EmotionButton = styled.button<{ isSelected: boolean }>`
+export const EmotionButton = styled.button<{ isSelected: boolean; emotion: string }>`
   padding: 6px 10px;
   border-radius: 20px;
-  background-color: ${({ isSelected }) => (isSelected ? "#FF1493" : "#3a3a3c")};
-  color: #888;
+  background-color: ${({ isSelected, emotion }) => (
+    isSelected ? {
+      행복: "#FFD700",
+      사랑: "#FF1493",
+      불안: "#6A0DAD",
+      분노: "#8B0000",
+      우울: "#000080",
+      슬픔: "#4169E1",
+      중립: "#A9A9A9",
+    }[emotion] : "#3a3a3c"
+  )};
+  color: #fff;
   border: none;
   cursor: pointer;
   font-size: 0.7em;
   overflow: hidden;
   transition: background-color 0.1s ease;
-
-  &:hover {
-    background-color: #d3d3d3;
-  }
 `;
 
 export const FilterSelectWrapper = styled.div`
