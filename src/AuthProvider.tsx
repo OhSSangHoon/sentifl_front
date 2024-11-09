@@ -1,4 +1,6 @@
 import { FunctionComponent, ReactNode, createContext, useContext, useState } from "react";
+import Character from "./assets/characters/Login_character.png";
+
 
 interface AuthContextType {
     isLoggedIn: boolean;
@@ -54,9 +56,15 @@ export const AuthProvider: FunctionComponent<AuthProviderProps> = ({ children })
     };
 
     const setProfileImage = (profileImage: string) => {
-        setProfileImagestate(profileImage);
-        localStorage.setItem("profileImage", profileImage);
-    }
+        // 기본 프로필 이미지 조건 확인
+        const isDefaultImage =!profileImage || profileImage.includes("default_profile.jpeg");
+
+        // 기본 이미지면 Character로 처리, 아니면 입력받은 profileImage를 사용
+        const validProfileImage = isDefaultImage ? Character : profileImage;
+
+        setProfileImagestate(validProfileImage);
+        localStorage.setItem("profileImage", validProfileImage);
+    };
 
     return (
         <AuthContext.Provider
