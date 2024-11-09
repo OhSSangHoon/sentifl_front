@@ -262,6 +262,29 @@ export const EmotionButton = styled.button<{ isSelected: boolean }>`
   }
 `;
 
+export const FilterSelectWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 40px;
+`;
+
+export const FilterSelect = styled.select`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.6em;
+  background-color: #3a3a3c;
+  color: #fff;
+
+  border-radius: 5px;
+  padding: 5px;
+  outline: none;
+
+  &:hover {
+    background-color: #2e2e30;
+  }
+`;
+
 export const LoadingMessage = styled.div`
   padding: 10px;
   color: #888;

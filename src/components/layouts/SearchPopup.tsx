@@ -164,32 +164,19 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             size,
             filter,
           },
-        });
+        }
+      );
 
-<<<<<<< HEAD
       if (postSearchResponse.status === 200) {
         const postResults = postSearchResponse.data.content;
         // console.log("Full post search response:", postSearchResponse.data);
         console.log("Received post search results:", postResults); // 응답 데이터 확인
         setPostResults(postResults);
       }
-=======
-        if(postSearchResponse.status === 200){
-          const postResults = postSearchResponse.data.content;
-          // console.log("Full post search response:", postSearchResponse.data);
-          console.log("Received post search results:", postResults); // 응답 데이터 확인
-          setPostResults(postResults);
-        }
->>>>>>> origin/sh_develop
     } catch (error) {
       console.error("게시물 검색 에러", error);
     }
   };
-
-  const filteredPostResults =
-    postResults.length > 0
-      ? postResults.filter((post) => post.title.includes(searchQuery))
-      : [];
 
   // 사용자 검색 API 호출
   const handleUserSearch = async (query: string) => {
@@ -291,6 +278,11 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
     }
   };
 
+  const filteredPostResults =
+    postResults.length > 0
+      ? postResults.filter((post) => post.title.includes(searchQuery))
+      : [];
+
   const filteredSongResults =
     songResults.length > 0
       ? songResults.filter((song) => song.title.includes(searchQuery))
@@ -363,6 +355,8 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
           <option value="view">조회수 순</option>
         </select>
 
+    
+
         <button onClick={() => setPage((prev) => Math.max(prev - 1, 0))}>
           이전 페이지
         </button>
@@ -400,6 +394,17 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
         <S.SearchResultsContainer>
           <S.PostResultsContainer>
             <h3>게시글</h3>
+            <S.FilterSelectWrapper>
+              <S.FilterSelect
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
+                <option value="recent">최신순</option>
+                <option value="like">좋아요 많은 순</option>
+                <option value="view">조회수 순</option>
+              </S.FilterSelect>
+            </S.FilterSelectWrapper>
+
             {filteredPostResults.length > 0 ? (
               filteredPostResults.map((post) => (
                 <S.SearchResultItem key={post.id}>
@@ -419,6 +424,15 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
           {/* 노래 */}
           <S.SongResultsContainer>
             <h3>노래</h3>
+            <S.FilterSelectWrapper>
+              <S.FilterSelect
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
+                <option value="recent">최신순</option>
+                <option value="like">좋아요 많은 순</option>
+              </S.FilterSelect>
+            </S.FilterSelectWrapper>
             {loading ? (
               <S.LoadingMessage>
                 해당 감정에 대한 노래를 찾고 있습니다...
