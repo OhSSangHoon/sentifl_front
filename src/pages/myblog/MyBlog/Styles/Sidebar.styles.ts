@@ -165,19 +165,16 @@ export const PlaylistFollowWrapper = styled.div`
   gap: 15px;
 `;
 
-export const FollowButton = styled.button`
-  background-color: #3f3f3f;
-  color: #ffffff;
+export const FollowButton = styled.button<{ isFollowing: boolean }>`
+  background-color: ${(props) => (props.isFollowing ? "#cccccc" : "#007bff")};
+  color: ${(props) => (props.isFollowing ? "#666666" : "white")};
   border: none;
-  padding: 8px 12px;
-  border-radius: 12px;
-  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 4px;
   cursor: pointer;
-
-  &:hover {
-    background-color: #5f5f5f;
-  }
+  opacity: ${(props) => (props.isFollowing ? 0.6 : 1)};
 `;
+
 
 export const StatItem = styled.div`
   text-align: center;
