@@ -232,6 +232,7 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
         ) : (
           displayedPosts.map((post) => {
             const postContent = postContents[post.postId];
+            const isAuthor = loggedInUid === uid;
             return (
               <S.Post key={post.postId}>
                 <S.PostContentWrapper>
@@ -246,7 +247,7 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
                             ? new Date(post.modifiedTime).toLocaleDateString()
                             : new Date(post.createdTime).toLocaleDateString()}
                         </S.PostDate>
-                        {loggedInUid === uid && (
+                        {isAuthor && (
                           <>
                             <S.ActionButton
                               onClick={() => editPost(post.postId)}

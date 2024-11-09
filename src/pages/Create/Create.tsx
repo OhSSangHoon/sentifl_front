@@ -42,16 +42,20 @@ function Create() {
     
         const loadEditorContentFromZip = async (jsonBlob: Blob) => {
             const jsonText = await jsonBlob.text();
-            const jsonData = JSON.parse(jsonText);
-        
-            setTitle(jsonData.title);
+            try{
+                const firstParse = JSON.parse(jsonText);
+                const jsonData = typeof firstParse === "string" ? JSON.parse(firstParse) : firstParse;
 
-            const deltaContent = JSON.parse(jsonData.content);
-            setInitialDelta(deltaContent); // Delta 형식을 그대로 저장
-            setHashTag(jsonData.hashTag || '');
+                setTitle(jsonData.title);
+                const deltaContent = JSON.parse(jsonData.content);
+                setInitialDelta(deltaContent); // Delta 형식을 그대로 저장
+                setHashTag(jsonData.hashTag || '');
 
-            if (jsonData.thumbnailUrl) {
-                setThumbnailUrl(jsonData.thumbnailUrl);
+                if (jsonData.thumbnailUrl) {
+                    setThumbnailUrl(jsonData.thumbnailUrl);
+                }
+            } catch (error){
+                console.error("JSON parsing error: ", error);
             }
         };
         

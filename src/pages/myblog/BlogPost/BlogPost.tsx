@@ -446,7 +446,7 @@ function BlogPost() {
   // 조회수
   const increasePostView = async () => {
     try {
-      await axiosInstance.post(`/api/v1/post/view/${postId}`);
+      await axiosInstance.post(`http://localhost:8080/api/v1/post/view/${postId}`);
     } catch (error: any) {
       const errorCode = error.response?.data?.errorCode;
       if (errorCode === "SP3") {

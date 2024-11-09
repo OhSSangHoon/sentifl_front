@@ -164,15 +164,23 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             size,
             filter,
           },
-        }
-      );
+        });
 
+<<<<<<< HEAD
       if (postSearchResponse.status === 200) {
         const postResults = postSearchResponse.data.content;
         // console.log("Full post search response:", postSearchResponse.data);
         console.log("Received post search results:", postResults); // 응답 데이터 확인
         setPostResults(postResults);
       }
+=======
+        if(postSearchResponse.status === 200){
+          const postResults = postSearchResponse.data.content;
+          // console.log("Full post search response:", postSearchResponse.data);
+          console.log("Received post search results:", postResults); // 응답 데이터 확인
+          setPostResults(postResults);
+        }
+>>>>>>> origin/sh_develop
     } catch (error) {
       console.error("게시물 검색 에러", error);
     }
