@@ -153,7 +153,6 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             size,
             filter,
           },
-<<<<<<< HEAD
         });
 
         if(postSearchResponse.status === 200){
@@ -161,17 +160,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
           // console.log("Full post search response:", postSearchResponse.data);
           console.log("Received post search results:", postResults); // 응답 데이터 확인
           setPostResults(postResults);
-=======
->>>>>>> develop
         }
-      );
-
-      if (postSearchResponse.status === 200) {
-        const postResults = postSearchResponse.data.content;
-        // console.log("Full post search response:", postSearchResponse.data);
-        // console.log("Received post search results:", postResults); // 응답 데이터 확인
-        setPostResults(postResults);
-      }
     } catch (error) {
       console.error("게시물 검색 에러", error);
     }
@@ -335,19 +324,6 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
           </S.SearchResults>
         )}
         {filteredPostResults.length > 0 && (
-<<<<<<< HEAD
-        <S.SearchResults>
-          {filteredPostResults.map((post) => (
-            <S.SearchResultItem key={post.id}>
-              {/* 추후에 elastic search 완성 후 uid를 post.uid로 바꿔야함 */}
-              <S.PostLink to={`/user/${uid}/post/${post.id}`} onClick={handleClose}>
-                <span>{post.title}</span>
-              </S.PostLink>
-            </S.SearchResultItem>
-          ))}
-        </S.SearchResults>
-      )}
-=======
           <S.SearchResults>
             {filteredPostResults.map((post) => (
               <S.SearchResultItem key={post.id}>
@@ -375,7 +351,6 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             ))}
           </S.SearchResults>
         )}
->>>>>>> develop
       </S.SearchPopupContainer>
     </S.PopupOverlay>
   );
