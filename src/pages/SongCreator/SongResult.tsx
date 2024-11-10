@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import * as S from "./Styles/SongResult.style";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
-import { FaPlay, FaPause, FaChevronUp, FaRedo } from "react-icons/fa";
+import { FaPlay, FaPause, FaRedo } from "react-icons/fa";
 import axiosInstance from "../../axiosInterceptor";
 import { CSSTransition } from "react-transition-group";
 
@@ -19,8 +19,19 @@ const SongResult: React.FC = () => {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
 
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false);
-  // const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title || "");
+
+  const videoUrl = emotionVideos[emotion1] || emotionVideos["중립"];
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(new Audio(musicUrl));
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.loop = true;
+    }
+  }, []);
 
   const handleGenreClick = (genre: string) => {
     setSelectedGenres((prev) =>
@@ -62,7 +73,7 @@ const SongResult: React.FC = () => {
       // 제목이 변경되었을 경우 노래 정보 수정 API 호출
       if (titleChanged) {
         const updateResponse = await axiosInstance.put(
-          `/api/v1/music/post/${postId}`,
+          `/api/v1/music?postId=${postId}`,
           {
             musicUrl: musicUrl,
             title: editedTitle,
@@ -144,106 +155,6 @@ const SongResult: React.FC = () => {
     }
   };
 
-  // const handleSaveButtonClick = async () => {
-  //   setIsSaveButtonClicked(true);
-
-  //   const accessToken = localStorage.getItem("accessToken");
-  //   if (!accessToken) {
-  //     alert("로그인이 필요합니다.");
-  //     return;
-  //   }
-
-  //   try {
-  //     const postId = location.state?.postId;
-  //     if (!postId) {
-  //       alert("게시물 ID를 찾을 수 없습니다.");
-  //       return;
-  //     }
-
-  //     const updateResponse = await axiosInstance.put(
-  //       `/api/v1/music/post/${postId}`,
-  //       {
-  //         musicUrl: musicUrl,
-  //         title: editedTitle,
-  //         emotion1: emotion1,
-  //         emotion2: emotion2,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (updateResponse.status === 204) {
-  //       alert("노래 정보가 성공적으로 수정되었습니다!");
-  //     } else {
-  //       const errorCode = updateResponse.data?.errorCode;
-  //       if (errorCode === "CE1") {
-  //         console.error("엘라스틱서치 요청 실패");
-  //       } else if (errorCode === "sp1") {
-  //         alert("존재하지 않는 게시물입니다.");
-  //       } else {
-  //         console.error("노래 정보 수정 실패:", updateResponse);
-  //       }
-  //       alert("노래 정보 수정에 실패했습니다.");
-  //     }
-
-  //     if (selectedGenres.length > 0) {
-  //       const hashTagString = selectedGenres.join(" ").trim();
-  //       // console.log("선택된 장르 (문자열):", hashTagString);
-
-  //       const hashtagResponse = await axiosInstance.post(
-  //         `/api/v1/music/${musicId}/hashtag`,
-  //         {
-  //           hashTag: hashTagString,
-  //         },
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${accessToken}`,
-  //           },
-  //         }
-  //       );
-
-  //       if (hashtagResponse.status === 204) {
-  //         alert("해시태그가 성공적으로 저장되었습니다!");
-  //         navigate(`/user/${uid}/playlist`);
-  //       } else {
-  //         const errorCode = hashtagResponse.data?.errorCode;
-  //         if (errorCode === "CE1") {
-  //           console.error("엘라스틱서치 요청 실패");
-  //         } else if (errorCode === "SA9") {
-  //           alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
-  //         } else if (errorCode === "SM1") {
-  //           alert("존재하지 않는 노래입니다.");
-  //         } else {
-  //           console.error("해시태그 저장 실패:", hashtagResponse);
-  //         }
-  //         alert("해시태그 저장에 실패했습니다.");
-  //       }
-  //     } else {
-  //       // 해시태그를 선택하지 않은 경우 바로 플레이리스트로 이동
-  //       navigate(`/user/${uid}/playlist`);
-  //     }
-  //   } catch (error) {
-  //     console.error(
-  //       "노래 정보 저장 중 네트워크 오류 또는 예기치 않은 오류 발생:",
-  //       error
-  //     );
-  //     alert("노래 정보 저장 중 오류가 발생했습니다.");
-  //   }
-  // };
-
-  // const handleCheckboxChange = () => {
-  //   setIsCheckboxChecked(!isCheckboxChecked);
-  //   if (!isCheckboxChecked) {
-  //     console.log("Selected genres:", selectedGenres);
-  //   }
-  // };
-
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef(new Audio(musicUrl));
-
   const handleSaveToPlaylist = async () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
@@ -252,9 +163,15 @@ const SongResult: React.FC = () => {
         return;
       }
 
+      const postId = location.state?.postId;
+      if (!postId) {
+        alert("postId를 찾을 수 없습니다.");
+        return;
+      }
+
       // FastAPI에서 받은 데이터를 스프링 백엔드에 전송
       const springResponse = await axiosInstance.post(
-        `/api/v1/music/post/${location.state?.postId}`, // postId를 ChoosePost에서 받아와서 사용
+        `/api/v1/music?postId=${postId}`,
         {
           musicUrl: musicUrl,
           title: title,
@@ -268,7 +185,7 @@ const SongResult: React.FC = () => {
         }
       );
 
-      if (springResponse.status === 200 || springResponse.status === 204) {
+      if (springResponse.status === 200) {
         alert("노래가 플레이리스트에 성공적으로 저장되었습니다!");
         setIsDropdownVisible(true);
         setMusicId(springResponse.data.id);
@@ -297,7 +214,7 @@ const SongResult: React.FC = () => {
   // 노래가 끝났을 때 실행되는 핸들러
   useEffect(() => {
     const handleEnded = () => {
-      setIsPlaying(false); // 노래가 끝나면 재생 버튼으로 변경
+      setIsPlaying(false);
     };
 
     const audio = audioRef.current;
@@ -328,6 +245,7 @@ const SongResult: React.FC = () => {
 
   return (
     <S.Wrapper>
+      <S.VideoBackground ref={videoRef} src={videoUrl} autoPlay muted loop />
       <S.TopLeftInfo>
         <S.InfoText>{nickname} 님의 감정으로 노래를 만들었어요.</S.InfoText>
         <S.BottomCenterText>
@@ -393,13 +311,6 @@ const SongResult: React.FC = () => {
                 onChange={(e) => setEditedTitle(e.target.value)}
                 placeholder="제목을 입력하세요"
               />
-              {/* <S.CheckboxContainer>
-                <S.Checkbox
-                  checked={isCheckboxChecked}
-                  onChange={handleCheckboxChange}
-                />
-                <span>내 게시글에 바로 사용</span>
-              </S.CheckboxContainer> */}
             </S.LeftContainer>
 
             <S.GenreOptions>
@@ -433,6 +344,16 @@ const SongResult: React.FC = () => {
 
 export default SongResult;
 export { EmotionDescription };
+
+const emotionVideos: { [key: string]: string } = {
+  행복: require("../../assets/videos/행복.mp4"),
+  사랑: require("../../assets/videos/사랑.mp4"),
+  불안: require("../../assets/videos/불안.mp4"),
+  분노: require("../../assets/videos/분노.mp4"),
+  우울: require("../../assets/videos/우울.mp4"),
+  슬픔: require("../../assets/videos/슬픔.mp4"),
+  중립: require("../../assets/videos/중립.mp4"),
+};
 
 const genres = [
   "재즈",

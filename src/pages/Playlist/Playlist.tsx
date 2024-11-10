@@ -205,13 +205,25 @@ function Playlist() {
   // 노래 수정
   const handleSaveEdit = async (song: Song) => {
     try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      // 노래 정보 수정 API 호출
       const response = await axiosInstance.put(
-        `/api/v1/music/post/${song.postId}`,
+        `/api/v1/music?postId=${song.postId}`,
         {
           musicUrl: song.musicUrl,
           title: editedTitle,
           emotion1: song.emotion1,
           emotion2: song.emotion2,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
       );
 
@@ -268,7 +280,6 @@ function Playlist() {
   };
   const handlePlayPause = async (songId: number, musicUrl: string) => {
     if (audioRef.current) {
-      // 같은 노래를 다시 클릭한 경우 재생/일시정지
       if (currentSongId === songId) {
         if (isPlaying) {
           try {
@@ -286,10 +297,9 @@ function Playlist() {
           }
         }
       } else {
-        // 다른 노래 클릭 시 새로운 노래 재생
         audioRef.current.pause();
         audioRef.current.src = musicUrl;
-        audioRef.current.load(); // 새로운 URL로 변경 후 load() 호출
+        audioRef.current.load();
 
         audioRef.current.onloadeddata = async () => {
           try {
@@ -302,7 +312,6 @@ function Playlist() {
         };
       }
     } else {
-      // 첫 재생 시
       audioRef.current = new Audio(musicUrl);
       audioRef.current.onloadeddata = async () => {
         try {
@@ -324,11 +333,7 @@ function Playlist() {
 
   return (
     <S.PlaylistContainer>
-      <S.TopBar>
-        {/* <S.IconWrapper>
-          <FaMusic size={18} onClick={goToCreateSong} />
-        </S.IconWrapper> */}
-      </S.TopBar>
+      <S.TopBar></S.TopBar>
       <S.Content>
         {/* <S.Sidebar>
           <S.SidebarHeader>MY PLAYLIST</S.SidebarHeader>

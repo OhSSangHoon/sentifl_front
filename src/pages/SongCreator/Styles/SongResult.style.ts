@@ -14,6 +14,17 @@ export const Wrapper = styled.div`
   overflow: hidden;
 `;
 
+export const VideoBackground = styled.video`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 1;
+`;
+
 export const TopLeftInfo = styled.div`
   position: absolute;
   top: 20px;
@@ -56,7 +67,10 @@ export const PlayButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  width: 400px;
+  height: 400px;
+  z-index: 1;
+  overflow: hidden;
 `;
 
 export const PlayButton = styled.button`
@@ -73,12 +87,20 @@ export const PlayButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: transform 0.2s ease;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
   }
+
+  &:active {
+    transform: scale(1.1);
+  }
+
   svg {
     color: rgba(255, 255, 255, 0.6);
+    transition: transform 0.2s ease;
   }
 `;
 
