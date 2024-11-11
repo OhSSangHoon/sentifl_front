@@ -187,6 +187,9 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             }}
           />
         </S.SearchInputWrapper>
+      {/* <button onClick={() => setPage((prev) => Math.max(prev - 1, 0))}>이전 페이지</button>
+      <button onClick={() => setPage((prev) => prev + 1)}>다음 페이지</button>
+       */}
 
         <S.EmotionButtonContainer>
           {emotions.map((emotion) => (
@@ -203,6 +206,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 
         <S.SearchResultsContainer>
           <S.PostResultsContainer>
+<<<<<<< HEAD
             <h3>게시글</h3>
             <S.FilterSelectWrapper>
               <S.FilterSelect
@@ -215,11 +219,19 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
               </S.FilterSelect>
             </S.FilterSelectWrapper>
 
+=======
+          {/* <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <option value="recent">최신순</option>
+            <option value="like">좋아요 많은 순</option>
+            <option value="view">조회수 순</option>
+          </select> */}
+          <h3>게시글</h3>
+>>>>>>> sh_develop
             {filteredPostResults.length > 0 ? (
               filteredPostResults.map((post) => (
                 <S.SearchResultItem key={post.id}>
                   <S.PostLink
-                    to={`/user/${post.uid}/post/${post.id}`}
+                    to={`/user/${uid}/post/${post.id}`}
                     onClick={handleClose}
                   >
                     <span>{post.title}</span>
@@ -232,6 +244,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
           </S.PostResultsContainer>
 
           <S.SongResultsContainer>
+<<<<<<< HEAD
             <h3>노래</h3>
             <S.FilterSelectWrapper>
               <S.FilterSelect
@@ -242,6 +255,9 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                 <option value="like">좋아요 많은 순</option>
               </S.FilterSelect>
             </S.FilterSelectWrapper>
+=======
+          <h3>노래</h3>
+>>>>>>> sh_develop
             {loading ? (
               <S.LoadingMessage>
                 해당 감정에 대한 노래를 찾고 있습니다...

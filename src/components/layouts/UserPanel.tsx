@@ -3,7 +3,10 @@ import { FiSettings, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
+import { uploadProfileToS3 } from "../../services/s3Service";
 import * as S from "./Styles/UserPanel.style";
+
+// import UserProfile from "./UserProfile";
 
 import Character from "../../assets/characters/Login_character.png";
 
@@ -23,7 +26,12 @@ interface UserPanelProps {
 
 const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
   const { nickname, uid, isLoggedIn } = useAuth();
-  const profileImage = localStorage.getItem("profileImage");
+
+  const [profileImage, setProfileImage] = useState(
+    localStorage.getItem("profileImage") || Character
+  );
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
 
   const [followCount, setFollowCount] = useState<number>(0);
   const [followingCount, setFollowingCount] = useState<number>(0);
@@ -114,8 +122,39 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
     }
   }, [searchQuery]);
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) {
+          alert("파일을 선택해주세요.");
+          return;
+      }
+  
+      try {
+          const s3Key = await uploadProfileToS3(file, uid, profileImage);
+          const response = await axiosInstance.put("/api/v1/auth/profile", {
+              profileUrl: s3Key,
+          });
+  
+          if (response.status === 204) {
+              alert("프로필 이미지가 성공적으로 저장되었습니다.");
+              setProfileImage(s3Key);
+              localStorage.setItem("profileImage", s3Key);
+          }
+      } catch (error) {
+          console.error("프로필 이미지 처리 실패:", error);
+          alert("프로필 이미지 처리에 실패했습니다.");
+      }
+  };
+  
+  const handleSettingsClick = () => {
+    fileInputRef.current?.click();
+  };
+
+
   return (
-    <S.PopupOverlay onClick={(e) => e.currentTarget === e.target && onClose()}>
+    <S.PopupOverlay onClick={(e) => {
+      if(e.currentTarget === e.target) onClose();
+    }}>
       <S.PopupContainer>
         <S.CloseButton onClick={onClose}>
           <FiX size={24} />
@@ -144,7 +183,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
               src={profileImage && !profileImage.includes("default_profile.jpeg") ? profileImage : Character}
               alt={nickname}
             />
-            <S.Settings>
+            <S.Settings onClick={handleSettingsClick}>
               <FiSettings size={24} />
             </S.Settings>
           </S.ProfileImageContainer>
@@ -185,9 +224,16 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
             </S.SearchResults>
           </S.SearchContainer>
         )}
-        
         <S.LogoutButton onClick={onLogout}>로그아웃</S.LogoutButton>
       </S.PopupContainer>
+
+      <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          accept="image/*"
+          onChange={handleFileChange}
+        />
     </S.PopupOverlay>
   );
 };
