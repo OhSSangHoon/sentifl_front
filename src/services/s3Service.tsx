@@ -140,11 +140,10 @@ export const updateToS3 = async (
 
     const upload = new AWS.S3.ManagedUpload({
       params: {
-        Bucket: "sentifl-public", // 버킷 이름
-        Key: fileKey, // 추출된 파일 경로에 덮어쓰기
+        Bucket: "sentifl-public",
+        Key: fileKey,
         Body: file,
         ContentType: file.type,
-        // ACL: "public-read",
       },
     });
 
@@ -169,5 +168,42 @@ export const deleteFromS3 = async (key: string): Promise<void> => {
   } catch (err) {
     console.log("Error deleting file from S3", err);
     throw err;
+  }
+};
+
+export const uploadProfileToS3 = async (
+  file: File,
+  uid: string,
+  oldProfileUrl: string | null = null
+): Promise<string> => {
+  const s3 = new AWS.S3();
+  const fileFormat = file.name.split(".").pop(); // 파일 확장자 추출
+
+  try {
+    if(oldProfileUrl){
+      const oldUrl = new URL(oldProfileUrl);
+      const oldFileKey = oldUrl.pathname.substring(1); // 기존 파일 경로 추출
+
+      await s3.deleteObject({
+        Bucket: "sentifl-public",
+        Key: oldFileKey,
+      })
+      .promise();
+    }
+
+    const upload = new AWS.S3.ManagedUpload({
+      params: {
+        Bucket: "sentifl-public",
+        Key: `${uid}/profile/${Date.now()}.${fileFormat}`,
+        Body: file,
+        ContentType: file.type,
+      },
+    });
+
+    const data = await upload.promise();
+    return data.Location; // 업로드된 파일의 S3 URL 반환
+  } catch (err) {
+    console.error("Error uploading profile to S3:", err);
+    throw new Error("프로필 업로드에 실패했습니다.");
   }
 };

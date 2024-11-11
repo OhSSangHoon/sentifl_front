@@ -366,4 +366,9 @@ export const Settings = styled.div`
   position: absolute;
   bottom: 0;
   right: 0;
+
+  cursor: pointer;
 `;
+
+
+// UserProfile
