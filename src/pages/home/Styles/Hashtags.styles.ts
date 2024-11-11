@@ -18,7 +18,7 @@ export const HashtagContainer = styled.div`
 
 export const HashTitle = styled.div`
   margin: 0 auto;
-  margin-top: 50px;
+  margin-top: 100px;
   font-size: 4.5em;
   font-weight: 100;
 `;

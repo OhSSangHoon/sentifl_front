@@ -67,7 +67,7 @@ function Hashtags() {
   return (
     <S.Container>
       <S.HashTitle style={{ color: "white" }}>Hashtag</S.HashTitle>
-      <S.HashInt>센티플이 제공하는 해시태그를 사용한 게시물을 구경하세요.</S.HashInt>
+      <S.HashInt>센티플과 오늘의 감정을 공유해봐요.</S.HashInt>
       <S.HashtagContainer>
         <S.HashGroup>
           {Array.isArray(hashtags) && hashtags.length > 0 ? (
