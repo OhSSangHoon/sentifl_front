@@ -1,4 +1,9 @@
-import { FaSearch, FaTimes } from "react-icons/fa";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaSearch,
+  FaTimes,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -246,20 +251,24 @@ export const EmotionButtonContainer = styled.div`
   width: 100%;
 `;
 
-export const EmotionButton = styled.button<{ isSelected: boolean; emotion: string }>`
+export const EmotionButton = styled.button<{
+  isSelected: boolean;
+  emotion: string;
+}>`
   padding: 6px 10px;
   border-radius: 20px;
-  background-color: ${({ isSelected, emotion }) => (
-    isSelected ? {
-      행복: "#FFD700",
-      사랑: "#FF1493",
-      불안: "#6A0DAD",
-      분노: "#8B0000",
-      우울: "#000080",
-      슬픔: "#4169E1",
-      중립: "#A9A9A9",
-    }[emotion] : "#3a3a3c"
-  )};
+  background-color: ${({ isSelected, emotion }) =>
+    isSelected
+      ? {
+          행복: "#FFD700",
+          사랑: "#FF1493",
+          불안: "#6A0DAD",
+          분노: "#8B0000",
+          우울: "#000080",
+          슬픔: "#4169E1",
+          중립: "#A9A9A9",
+        }[emotion]
+      : "#3a3a3c"};
   color: #fff;
   border: none;
   cursor: pointer;
@@ -270,20 +279,20 @@ export const EmotionButton = styled.button<{ isSelected: boolean; emotion: strin
 
 export const FilterSelectWrapper = styled.div`
   position: relative;
-  width: 100%;
+  width: 50%;
   height: 40px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 `;
 
 export const FilterSelect = styled.select`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 0.6em;
+  font-size: 0.8em;
+  height: 30px;
   background-color: #3a3a3c;
   color: #fff;
-
   border-radius: 5px;
-  padding: 5px;
+  border: none;
   outline: none;
 
   &:hover {
@@ -296,4 +305,43 @@ export const LoadingMessage = styled.div`
   color: #888;
   text-align: center;
   font-size: 0.9em;
+`;
+
+export const LeftArrow = styled(FaChevronLeft)<{ disabled?: boolean }>`
+  font-size: 1.4em;
+  color: ${(props) => (props.disabled ? "#555" : "#888")};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  transition: color 0.3s;
+
+  &:hover {
+    color: ${(props) => (props.disabled ? "#555" : "#fff")};
+  }
+`;
+
+export const RightArrow = styled(FaChevronRight)<{ disabled?: boolean }>`
+  font-size: 1.4em;
+  color: ${(props) => (props.disabled ? "#555" : "#888")};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  transition: color 0.3s;
+
+  &:hover {
+    color: ${(props) => (props.disabled ? "#555" : "#fff")};
+  }
+`;
+
+export const ArrowContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 50%;
+  margin-top: 10px;
+  gap: 20px;
+`;
+
+export const FilterRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
 `;

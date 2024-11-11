@@ -47,7 +47,8 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   const [songFilter, setSongFilter] = useState("recent");
   const [postPage, setPostPage] = useState(0);
   const [songPage, setSongPage] = useState(0);
-  const [size, setSize] = useState(10);
+  const [postSize, setPostSize] = useState(10);
+  const [songSize, setSongSize] = useState(10);
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
           params: {
             searchWord: searchQuery,
             page: postPage,
-            size,
+            size: postSize,
             filter: postFilter,
           },
         }
@@ -100,7 +101,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
         params: {
           searchWord: searchQuery,
           page: songPage,
-          size,
+          size: songSize,
           filter: songFilter,
         },
       });
@@ -121,7 +122,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
         params: {
           emotion,
           page: songPage,
-          size,
+          size: songSize,
           filter: songFilter,
         },
       });
@@ -220,19 +221,31 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
         <S.SearchResultsContainer>
           <S.PostResultsContainer>
             <h3>게시글</h3>
-            <S.FilterSelectWrapper>
-              <S.FilterSelect
-                value={postFilter}
-                onChange={(e) => {
-                  setPostFilter(e.target.value);
-                  setPostPage(0);
-                }}
-              >
-                <option value="recent">최신순</option>
-                <option value="like">좋아요 많은 순</option>
-                <option value="view">조회수 순</option>
-              </S.FilterSelect>
-            </S.FilterSelectWrapper>
+            <S.FilterRow>
+              <S.ArrowContainer>
+                <S.LeftArrow
+                  onClick={() => setPostPage(postPage - 1)}
+                  disabled={postPage === 0}
+                />
+                <S.RightArrow
+                  onClick={() => setPostPage(postPage + 1)}
+                  disabled={postResults.length < postSize}
+                />
+              </S.ArrowContainer>
+              <S.FilterSelectWrapper>
+                <S.FilterSelect
+                  value={postFilter}
+                  onChange={(e) => {
+                    setPostFilter(e.target.value);
+                    setPostPage(0);
+                  }}
+                >
+                  <option value="recent">최신순</option>
+                  <option value="like">좋아요 많은 순</option>
+                  <option value="view">조회수 순</option>
+                </S.FilterSelect>
+              </S.FilterSelectWrapper>
+            </S.FilterRow>
 
             {filteredPostResults.length > 0 ? (
               filteredPostResults.map((post) => (
@@ -253,18 +266,30 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 
           <S.SongResultsContainer>
             <h3>노래</h3>
-            <S.FilterSelectWrapper>
-              <S.FilterSelect
-                value={songFilter}
-                onChange={(e) => {
-                  setSongFilter(e.target.value);
-                  setSongPage(0);
-                }}
-              >
-                <option value="recent">최신순</option>
-                <option value="like">좋아요 많은 순</option>
-              </S.FilterSelect>
-            </S.FilterSelectWrapper>
+            <S.FilterRow>
+              <S.ArrowContainer>
+                <S.LeftArrow
+                  onClick={() => setSongPage(songPage - 1)}
+                  disabled={songPage === 0}
+                />
+                <S.RightArrow
+                  onClick={() => setSongPage(songPage + 1)}
+                  disabled={songResults.length < songSize}
+                />
+              </S.ArrowContainer>
+              <S.FilterSelectWrapper>
+                <S.FilterSelect
+                  value={songFilter}
+                  onChange={(e) => {
+                    setSongFilter(e.target.value);
+                    setSongPage(0);
+                  }}
+                >
+                  <option value="recent">최신순</option>
+                  <option value="like">좋아요 많은 순</option>
+                </S.FilterSelect>
+              </S.FilterSelectWrapper>
+            </S.FilterRow>
             {loading ? (
               <S.LoadingMessage>
                 해당 감정에 대한 노래를 찾고 있습니다...
