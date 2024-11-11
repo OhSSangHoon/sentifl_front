@@ -10,6 +10,7 @@ interface SongInfoResponse {
   emotion1: string;
   emotion2: string;
   totalLikes: number;
+  uid: string;
   userNickname: string;
   createTime: string;
 }
@@ -42,8 +43,10 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   const [songResults, setSongResults] = useState<SongInfoResponse[]>([]);
   const [selectedEmotion, setSelectedEmotion] = useState<string | null>(null);
 
-  const [filter, setFilter] = useState("recent");
-  const [page, setPage] = useState(0);
+  const [postFilter, setPostFilter] = useState("recent");
+  const [songFilter, setSongFilter] = useState("recent");
+  const [postPage, setPostPage] = useState(0);
+  const [songPage, setSongPage] = useState(0);
   const [size, setSize] = useState(10);
 
   const [loading, setLoading] = useState(false);
@@ -70,17 +73,15 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
         {
           params: {
             searchWord: searchQuery,
-            page,
+            page: postPage,
             size,
-            filter,
+            filter: postFilter,
           },
         }
       );
 
       if (postSearchResponse.status === 200) {
         const postResults = postSearchResponse.data.content;
-        // console.log("Full post search response:", postSearchResponse.data);
-        // console.log("Received post search results:", postResults); // 응답 데이터 확인
         setPostResults(postResults);
       }
     } catch (error) {
@@ -98,9 +99,9 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       const response = await axiosInstance.get("/api/v1/music/search/word", {
         params: {
           searchWord: searchQuery,
-          page,
+          page: songPage,
           size,
-          filter,
+          filter: songFilter,
         },
       });
       if (response.status === 200) {
@@ -113,24 +114,15 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
     }
   };
 
-  const handleEmotionClick = async (emotion: string) => {
-    if (selectedEmotion === emotion) {
-      setSelectedEmotion(null);
-      setSongResults([]);
-      return;
-    }
-
-    setSelectedEmotion(emotion);
-    setSearchQuery("");
+  const fetchEmotionSongs = async (emotion: string) => {
     setLoading(true);
-
     try {
       const response = await axiosInstance.get("/api/v1/music/search/emotion", {
         params: {
           emotion,
-          page,
+          page: songPage,
           size,
-          filter,
+          filter: songFilter,
         },
       });
       if (response.status === 200) {
@@ -142,6 +134,24 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       setLoading(false);
     }
   };
+
+  const handleEmotionClick = async (emotion: string) => {
+    if (selectedEmotion === emotion) {
+      setSelectedEmotion(null);
+      setSongResults([]);
+      return;
+    }
+
+    setSelectedEmotion(emotion);
+    setSearchQuery("");
+    await fetchEmotionSongs(emotion);
+  };
+
+  useEffect(() => {
+    if (selectedEmotion) {
+      fetchEmotionSongs(selectedEmotion);
+    }
+  }, [selectedEmotion, songFilter, songPage]);
 
   const filteredSongResults =
     songResults.length > 0
@@ -165,12 +175,18 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   useEffect(() => {
     if (searchQuery.trim()) {
       handlePostSearch();
+    } else {
+      setPostResults([]);
+    }
+  }, [searchQuery, postFilter, postPage]);
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
       handleSongSearch();
     } else {
       setSongResults([]);
-      setPostResults([]);
     }
-  }, [searchQuery, filter, page, size]);
+  }, [searchQuery, songFilter, songPage]);
 
   return (
     <S.PopupOverlay onClick={handleOverlayClick}>
@@ -206,8 +222,11 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             <h3>게시글</h3>
             <S.FilterSelectWrapper>
               <S.FilterSelect
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
+                value={postFilter}
+                onChange={(e) => {
+                  setPostFilter(e.target.value);
+                  setPostPage(0);
+                }}
               >
                 <option value="recent">최신순</option>
                 <option value="like">좋아요 많은 순</option>
@@ -223,7 +242,8 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                     onClick={handleClose}
                   >
                     <span>{post.title}</span>
-                  </S.PostLink>{" "}
+                  </S.PostLink>
+                  <span>{post.uid}</span>
                 </S.SearchResultItem>
               ))
             ) : (
@@ -235,8 +255,11 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             <h3>노래</h3>
             <S.FilterSelectWrapper>
               <S.FilterSelect
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
+                value={songFilter}
+                onChange={(e) => {
+                  setSongFilter(e.target.value);
+                  setSongPage(0);
+                }}
               >
                 <option value="recent">최신순</option>
                 <option value="like">좋아요 많은 순</option>
@@ -249,7 +272,13 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             ) : filteredSongResults.length > 0 ? (
               filteredSongResults.map((song) => (
                 <S.SearchResultItem key={song.musicId}>
-                  <S.UserLink to={`/user/${uid}/playlist`} onClick={onClose}>
+                  <S.UserLink
+                    to={`/user/${song.uid}/playlist`}
+                    onClick={() => {
+                      console.log("Clicked song.uid:", song.uid);
+                      onClose();
+                    }}
+                  >
                     <S.EmotionCircle
                       color={getEmotionColorGradient(song.emotion1)}
                     />
