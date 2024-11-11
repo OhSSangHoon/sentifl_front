@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as S from "./Styles/Playlist.style";
-import { FaPlay, FaPlus, FaMusic, FaPause, FaHeart } from "react-icons/fa";
+import { FaPlay, FaPause, FaHeart } from "react-icons/fa";
 import axiosInstance from "../../axiosInterceptor";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Character4 from "../../assets/characters/Character_4.png";
 import { emotionColors } from "../SongCreator/SongResult";
 
@@ -329,7 +329,15 @@ function Playlist() {
     fetchSongs();
   }, []);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <S.PlaylistContainer>

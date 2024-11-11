@@ -39,8 +39,8 @@ export const TopBar = styled.div`
     rgba(55, 97, 96, 0.5)
   );
   background-size: 800% 800%;
-  animation: ${gradientAnimation} 30s ease infinite;
-  backdrop-filter: blur(300px);
+  animation: ${gradientAnimation} 15s ease infinite;
+  backdrop-filter: blur(250px);
   box-shadow: 0 0 20px 10px rgba(30, 30, 30, 0.5);
   border-radius: 20px;
 `;

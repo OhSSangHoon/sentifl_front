@@ -2,7 +2,6 @@
 
 import React from "react";
 import * as S from "./Styles/CreateSong.style";
-import { FaParking } from "react-icons/fa";
 import ChoosePost from "./ChoosePost";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
@@ -24,9 +23,7 @@ const CreateSong = () => {
           alt="Profile"
         />
         <S.Nickname>{nickname || "userName"}</S.Nickname>
-        {/* <S.Points>
-          <FaParking style={{ marginRight: "5px" }} /> 0p
-        </S.Points> */}
+
         <S.CreateButton onClick={handleCreateButtonClick}>
           글작성
         </S.CreateButton>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaCalendarAlt, FaPen } from "react-icons/fa";
+import { FaPen } from "react-icons/fa";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
@@ -63,8 +63,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [loadingFollow, setLoadingFollow] = useState<boolean>(false);
 
-  
-
   const handleDateClick = async (date: number) => {
     try {
       const selectedDate = new Date(currentYear, currentMonth, date);
@@ -113,7 +111,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   useEffect(() => {
     const fetchFollowStatus = async () => {
       try {
-        const response = await axiosInstance.get(`/api/v1/follow/${loggedInUid}`);
+        const response = await axiosInstance.get(
+          `/api/v1/follow/${loggedInUid}`
+        );
         const followedUids = response.data.content.map(
           (user: { uid: string }) => user.uid.trim()
         );
@@ -122,18 +122,17 @@ const Sidebar: React.FC<SidebarProps> = ({
         console.error("Error fetching follow status:", error);
       }
     };
-  
+
     if (uid && loggedInUid) {
       fetchFollowStatus();
     }
   }, [uid, loggedInUid]);
 
-
   const handleFollowToggle = async () => {
     if (!loggedInUid) return;
-  
+
     setLoadingFollow(true);
-  
+
     try {
       if (isFollowing) {
         // 언팔로우
@@ -152,8 +151,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       setLoadingFollow(false);
     }
   };
-  
-  
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -268,21 +265,16 @@ const Sidebar: React.FC<SidebarProps> = ({
           </S.ProfileInfoWrapper>
           <S.PlaylistFollowWrapper>
             <S.PlaylistBadge onClick={goToPlaylist}>Playlist</S.PlaylistBadge>
-              <S.FollowButton
-                    isFollowing={isFollowing}
-                    onClick={() => handleFollowToggle()}
-              >
-                {isFollowing ? "Following" : "Follow"}
-              </S.FollowButton>
-            </S.PlaylistFollowWrapper>
+            <S.FollowButton
+              isFollowing={isFollowing}
+              onClick={() => handleFollowToggle()}
+            >
+              {isFollowing ? "Following" : "Follow"}
+            </S.FollowButton>
+          </S.PlaylistFollowWrapper>
         </>
       ) : (
         <>
-          {/* <S.SidebarTopBar>
-            <S.RightIcons>
-              <FaCog size={18} />
-            </S.RightIcons>
-          </S.SidebarTopBar> */}
           <S.Profile>
             <S.ProfileImageWrapper>
               <S.ProfileImage
@@ -295,9 +287,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                 My Playlist
               </S.PlaylistBadge>
               <S.ProfileName>{nickname}</S.ProfileName>
-              <S.ProfileDescription>
+              {/* <S.ProfileDescription>
                 자기 소개글을 작성 할 수 있습니다.
-              </S.ProfileDescription>
+              </S.ProfileDescription> */}
               <S.ProfileStats>
                 <S.ProfileStatItem onClick={toggleFollowPopup}>
                   <small>follow</small>
@@ -314,8 +306,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <S.Divider />
           <S.Menu>
             <S.MenuIconWrapper>
-              {/* <FaCalendarAlt size={18} onClick={toggleCalendarVisibility} /> */}
-              <FaPen onClick={handlePenClick} size={18} />
+              <FaPen onClick={handlePenClick} size={20} />
             </S.MenuIconWrapper>
           </S.Menu>
           {isCalendarVisible ? (

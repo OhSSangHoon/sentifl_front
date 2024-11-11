@@ -6,7 +6,6 @@ import NewPost from "./NewPost";
 import * as S from "./Styles/Home.styles";
 
 function Home() {
-  // 각 섹션에 대한 참조 생성
   const homeRef = useRef<HTMLDivElement>(null);
   const HashtagsRef = useRef<HTMLDivElement>(null);
   const musicRecommendRef = useRef<HTMLDivElement>(null);
@@ -19,7 +18,7 @@ function Home() {
     const observerOptions = {
       root: null,
       rootMargin: "0px",
-      threshold: 0.6, // 60% 이상 화면에 보여야 활성화로 처리
+      threshold: 0.6,
     };
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
@@ -57,7 +56,6 @@ function Home() {
     };
   }, []);
 
-  // 스크롤 이동을 처리하는 함수
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
     if (ref.current) {
       ref.current.scrollIntoView({ behavior: "smooth" });
@@ -79,6 +77,15 @@ function Home() {
       />
       <S.Section ref={homeRef}>
         <S.Background>
+          <S.TextContainer>
+            <S.MainText>
+              SENTIFL 에서 마음속에 담아 놓았던 <br />
+              당신만의 이야기를 담아보세요
+            </S.MainText>
+            <S.SubText>
+              세상에서 단 하나 뿐인 특별한 노래를 만들어드릴게요
+            </S.SubText>
+          </S.TextContainer>
           <S.Circle
             size="800px"
             top="70%"

@@ -175,7 +175,6 @@ export const FollowButton = styled.button<{ isFollowing: boolean }>`
   opacity: ${(props) => (props.isFollowing ? 0.6 : 1)};
 `;
 
-
 export const StatItem = styled.div`
   text-align: center;
   cursor: pointer;
@@ -292,7 +291,9 @@ export const CalendarContainer = styled.div`
   background-color: #2a2a2a;
   border-radius: 10px;
   position: relative;
+  max-height: 200px;
 `;
+
 export const CalendarDate = styled.div<{
   isToday?: boolean;
 }>`
@@ -320,6 +321,8 @@ export const CalendarDate = styled.div<{
 export const PostListContainer = styled.div`
   margin-top: 20px;
   position: relative;
+  overflow-y: auto;
+  max-height: 300px;
 `;
 
 export const BackButton = styled.button`
@@ -330,7 +333,7 @@ export const BackButton = styled.button`
   color: #ffffff;
   border: none;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 14px;
 
   &:hover {
     color: rgba(255, 255, 255, 0.8);

@@ -60,7 +60,7 @@ export const PostResultsContainer = styled.div`
   }
 
   h3 {
-    font-size: 0.9em;
+    font-size: 1em;
     margin-bottom: 10px;
     color: #888;
   }
@@ -77,7 +77,7 @@ export const SongResultsContainer = styled.div`
   }
 
   h3 {
-    font-size: 0.9em;
+    font-size: 1em;
     margin-bottom: 10px;
     color: #888;
   }
@@ -156,7 +156,7 @@ export const SearchResults = styled.div`
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   max-height: 200px; /* 최대 높이를 설정하여 스크롤바가 필요할 때만 나타나도록 */
-  overflow-y: auto; /* 스크롤이 필요할 때만 스크롤바 표시 */
+  overflow-y: auto;
   z-index: 10;
   border-radius: 5px;
   cursor: pointer;
@@ -309,7 +309,7 @@ export const LoadingMessage = styled.div`
 
 export const LeftArrow = styled(FaChevronLeft)<{ disabled?: boolean }>`
   font-size: 1.4em;
-  color: ${(props) => (props.disabled ? "#555" : "#888")};
+  color: ${(props) => (props.disabled ? "#555" : "#ffffff")};
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   transition: color 0.3s;
 
@@ -320,7 +320,7 @@ export const LeftArrow = styled(FaChevronLeft)<{ disabled?: boolean }>`
 
 export const RightArrow = styled(FaChevronRight)<{ disabled?: boolean }>`
   font-size: 1.4em;
-  color: ${(props) => (props.disabled ? "#555" : "#888")};
+  color: ${(props) => (props.disabled ? "#555" : "#ffffff")};
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   transition: color 0.3s;
 

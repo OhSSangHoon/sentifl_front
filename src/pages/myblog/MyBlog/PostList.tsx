@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
 import axiosInstance from "../../../axiosInterceptor";
 import * as S from "./Styles/PostList.styles";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 interface PostListProps {
   uid: string;
@@ -49,7 +50,7 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
   const [page, setPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const pageSize = 3;
+  const pageSize = 5;
   const paginationSize = 5;
 
   // const { uid } = useAuth();
@@ -304,7 +305,7 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
           onClick={handlePrevPageGroup}
           disabled={currentPaginationStart === 0}
         >
-          &lt;
+          <FaChevronLeft />
         </S.PageButton>
         {Array.from(
           {
@@ -330,7 +331,7 @@ const PostList: React.FC<PostListProps> = ({ uid }) => {
           onClick={handleNextPageGroup}
           disabled={currentPaginationStart + paginationSize >= totalPages}
         >
-          &gt;
+          <FaChevronRight />
         </S.PageButton>
       </S.PaginationWrapper>
     </>

@@ -62,3 +62,22 @@ export const Circle = styled.div<CircleProps>`
   filter: blur(100px);
   animation: ${pulse} 8s ease-in-out infinite;
 `;
+
+export const TextContainer = styled.div`
+  position: absolute;
+  top: 30%;
+  left: 10%;
+  z-index: 2;
+`;
+
+export const MainText = styled.h2`
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 250;
+  margin-bottom: 30px;
+`;
+
+export const SubText = styled.span`
+  color: #999999;
+  font-size: 18px;
+`;

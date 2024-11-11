@@ -35,6 +35,8 @@ const ChoosePost = () => {
   const [creatingMusic, setCreatingMusic] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const displayedPosts = allPosts.slice(page * pageSize, (page + 1) * pageSize);
+
   const { uid } = useAuth();
   const navigate = useNavigate();
 
@@ -138,7 +140,9 @@ const ChoosePost = () => {
   };
 
   const handleCheckboxChange = (postId: number) => {
-    setSelectedPostId(postId);
+    setSelectedPostId((prevSelectedPostId) =>
+      prevSelectedPostId === postId ? null : postId
+    );
   };
 
   const sendToFastAPI = async (
@@ -215,7 +219,7 @@ const ChoosePost = () => {
               emotion1: emotion1,
               emotion2: emotion2,
               musicUrl,
-              postId: post.postId, // 전달할 postId
+              postId: post.postId,
             },
           });
         } else {
@@ -236,13 +240,29 @@ const ChoosePost = () => {
     }
   };
 
+  const messages = [
+    "노래 제작 중입니다. 멋진 음악을 만들어드릴게요.",
+    "오늘 어떤 일이 있으셨나요? 센티플과 함께 하루를 마무리해보세요.",
+    "당신의 하루와 어울리는 노래를 제작하고 있어요.",
+  ];
+  const [messageIndex, setMessageIndex] = useState(0);
+  const currentMessage = messages[messageIndex];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   if (creatingMusic) {
     return (
       <S.LoadingScreen>
-        <S.LoadingTitle>MAKE SENTIFL</S.LoadingTitle> <S.LoadingCircle />
-        <S.LoadingText>
-          노래를 생성 중입니다. 멋진 음악을 만들어 드릴게요.
-        </S.LoadingText>
+        <S.LoadingTitle>MAKE SENTIFL</S.LoadingTitle>
+        <S.LoadingCircle />
+        <S.GradientBackground />
+        <S.LoadingText>{currentMessage}</S.LoadingText>
       </S.LoadingScreen>
     );
   }
@@ -250,8 +270,6 @@ const ChoosePost = () => {
   if (loading) {
     return <S.LoadingMessage>로딩 중...</S.LoadingMessage>;
   }
-
-  const displayedPosts = allPosts.slice(page * pageSize, (page + 1) * pageSize);
 
   return (
     <S.Content>

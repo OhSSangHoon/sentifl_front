@@ -44,11 +44,12 @@ export const TopSection = styled.div<{ isTopPosition: boolean }>`
 export const BackgroundImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   filter: brightness(50%);
   position: absolute;
   top: 0;
   left: 0;
+  background-color: #333;
 `;
 
 export const TopRightContent = styled.div`
@@ -341,7 +342,7 @@ export const HeartIcon = styled(Icon)`
 export const CommentSection = styled.div`
   margin-top: 20px;
   padding: 10px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
 `;
 
 export const CommentTitle = styled.div`

@@ -1,4 +1,11 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+interface CircleProps {
+  size: string;
+  top: string;
+  left: string;
+  gradient: string;
+}
 
 export const Content = styled.main`
   display: flex;
@@ -21,7 +28,7 @@ export const PostListWrapper = styled.div`
 `;
 
 export const PostNumber = styled.span`
-  font-size: 16px;
+  font-size: 20px;
   color: #777;
   margin-right: 10px;
   width: 20px;
@@ -42,7 +49,7 @@ export const PostContentWrapper = styled.div<{ isChecked?: boolean }>`
   border-bottom: 1px solid #333;
   gap: 20px;
   border-radius: 10px;
-  background-color: ${({ isChecked }) => (isChecked ? "#272727" : "inherit")};
+  background-color: ${({ isChecked }) => (isChecked ? "#3a3a3a" : "inherit")};
   transition: background-color 0.3s ease;
 
   &:hover {
@@ -88,8 +95,8 @@ export const CheckBoxWrapper = styled.div`
 `;
 
 export const CheckBox = styled.input`
-  width: 16px;
-  height: 16px;
+  width: 22px;
+  height: 22px;
   cursor: pointer;
 `;
 
@@ -164,12 +171,28 @@ export const PlayButton = styled.div`
     border-radius: 50%;
     background: linear-gradient(
       90deg,
-      rgba(47, 90, 241, 0.7) 0%,
-      rgba(178, 234, 106, 0.7) 100%
+      rgba(47, 90, 241, 0.7),
+      rgba(178, 234, 106, 0.7),
+      rgba(255, 100, 150, 0.7),
+      rgba(100, 200, 255, 0.7)
     );
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease-in-out infinite;
     filter: blur(40px);
     opacity: 0.8;
     z-index: -1;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 `;
 
@@ -218,12 +241,15 @@ export const LoadingScreen = styled.div`
   background-color: #000;
   color: #fff;
   z-index: 1000;
+  position: relative;
+  overflow: hidden;
 `;
 
 export const LoadingTitle = styled.h1`
   font-size: 36px;
   margin-bottom: 40px;
-  font-weight: bold;
+  font-weight: 250;
+  color: #ffffff;
 `;
 
 export const LoadingText = styled.p`
@@ -239,14 +265,53 @@ export const LoadingCircle = styled.div`
   border: 5px solid #fff;
   border-top: 5px solid #698dbf;
   margin: 70px 0;
-  animation: spin 1s linear infinite;
+  position: relative;
+  z-index: 1;
+  animation: spinPulse 2s linear infinite;
 
-  @keyframes spin {
+  @keyframes spinPulse {
     0% {
-      transform: rotate(0deg);
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(180deg) scale(1.1);
     }
     100% {
-      transform: rotate(360deg);
+      transform: rotate(360deg) scale(1);
+    }
+  }
+`;
+
+export const GradientBackground = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    rgba(47, 90, 241, 0.7),
+    rgba(178, 234, 106, 0.7),
+    rgba(255, 100, 150, 0.7),
+    rgba(100, 200, 255, 0.7)
+  );
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease-in-out infinite;
+  filter: blur(40px);
+  opacity: 0.8;
+  z-index: 0;
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
     }
   }
 `;
@@ -267,6 +332,7 @@ export const HeaderTitle = styled.h1`
 export const HeaderSubtitle = styled.p`
   font-size: 14px;
   color: #777777;
+  margin-top: 10px;
 `;
 
 export const LoadingMessage = styled.p`

@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-
 export const PopupOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -23,7 +22,7 @@ export const PopupContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: 340px;
+  width: 360px;
   height: auto;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 10px;
@@ -35,13 +34,15 @@ export const PopupContainer = styled.div`
 
 export const CloseButton = styled.button`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   background: none;
   border: none;
   font-size: 18px;
   color: white;
   cursor: pointer;
+  transition: color 0.2s ease, transform 0.1s ease;
+
   &:hover {
     color: rgba(255, 255, 255, 0.8);
   }
@@ -79,7 +80,6 @@ export const UserProfile = styled.div`
 export const UserInfo = styled.div`
   flex: 1;
   margin-right: 60px;
-  
 `;
 
 export const UserNameAndPlaylist = styled.div`
@@ -110,12 +110,15 @@ export const UserPlaylist = styled.div`
   width: 80px;
   cursor: pointer;
   text-align: center;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 
   &:hover {
-    background-color: #5f5f5f;
+    background-color: #4a4a4a;
   }
+
   &:active {
-    background-color: #5f5f5f;
+    background-color: #4a4a4a;
+    transform: scale(0.95);
   }
 `;
 
@@ -177,13 +180,6 @@ export const SettingsIcon = styled.div`
   border-radius: 50%;
   color: white;
   cursor: pointer;
-  &:hover {
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  &:active {
-    color: #f5f5f5;
-  }
 `;
 
 export const Tabs = styled.div`
@@ -215,23 +211,6 @@ export const Divider = styled.div`
   background-color: rgba(255, 255, 255, 0.4);
   margin: 0 10px;
 `;
-
-// export const NewPost = styled.div`
-//   font-size: 14px;
-//   margin-top: 10px;
-// `;
-
-// export const PostList = styled.div`
-//   margin-top: 10px;
-// `;
-
-// export const PostItem = styled.div`
-//   display: flex;
-//   align-items: center;
-//   margin-bottom: 15px;
-//   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-//   padding-bottom: 10px;
-// `;
 
 export const PostAvatar = styled.div`
   width: 40px;
@@ -292,8 +271,8 @@ export const SearchInputWrapper = styled.div`
 export const SearchInput = styled.input`
   width: 100%;
   height: 50px;
-  padding:20px 30px;
-  margin:25px 0;
+  padding: 20px 30px;
+  margin: 25px 0;
   border-radius: 30px;
   background: #3a3a3c;
   border: none;
@@ -369,6 +348,5 @@ export const Settings = styled.div`
 
   cursor: pointer;
 `;
-
 
 // UserProfile
