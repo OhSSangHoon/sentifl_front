@@ -136,14 +136,65 @@ const getEmotionBorderColor = (emotion: string) => {
   )}, ${parseInt(color.slice(5, 7), 16)}, 0.5)`;
 };
 
-export const PlayIcon = styled.div`
-  width: 60px;
-  height: 60px;
-  background-color: #000;
-  border-radius: 50%;
+function getEmotionGradient(emotion1: string, emotion2: string) {
+  const color1 = emotionColors[emotion1] || "#A9A9A9";
+  const color2 = emotionColors[emotion2] || "#A9A9A9";
+
+  return `linear-gradient(
+    270deg,
+    ${hexToRgba(color1, 0.5)},
+    ${hexToRgba(color2, 0.5)}
+  )`;
+}
+
+function hexToRgba(hex: string, alpha: number) {
+  const r = parseInt(hex.slice(1, 3), 16) || 0;
+  const g = parseInt(hex.slice(3, 5), 16) || 0;
+  const b = parseInt(hex.slice(5, 7), 16) || 0;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+export const PlayIcon = styled.div<{ emotion1: string; emotion2: string }>`
+  width: 80px;
+  height: 80px;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: #000;
+  transition: width 0.3s ease, height 0.3s ease;
+
+  &:hover {
+    width: 90px;
+    height: 90px;
+  }
+
+  &:active {
+    width: 100px;
+    height: 100px;
+  }
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: ${({ emotion1, emotion2 }) =>
+      getEmotionGradient(emotion1, emotion2)};
+    background-size: 800% 800%;
+    animation: ${gradientAnimation} 5s ease infinite;
+    filter: blur(10px);
+  }
+
+  & > svg {
+    position: relative;
+    z-index: 1;
+    font-size: 24px;
+    color: #fff;
+  }
 `;
 
 export const SongDetails = styled.div`

@@ -204,7 +204,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             }}
           />
         </S.SearchInputWrapper>
-      {/* <button onClick={() => setPage((prev) => Math.max(prev - 1, 0))}>이전 페이지</button>
+        {/* <button onClick={() => setPage((prev) => Math.max(prev - 1, 0))}>이전 페이지</button>
       <button onClick={() => setPage((prev) => prev + 1)}>다음 페이지</button>
        */}
 

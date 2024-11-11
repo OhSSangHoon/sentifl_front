@@ -42,7 +42,8 @@ export const Background = styled.div`
 `;
 
 export const Section = styled.div`
-  height: 100vh;
+  height: auto;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

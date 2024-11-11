@@ -348,9 +348,8 @@ function Playlist() {
                 <S.SongItem key={song.musicId} emotion={song.emotion1}>
                   <S.PlayIcon
                     onClick={() => handlePlayPause(song.musicId, song.musicUrl)}
-                    style={{
-                      background: getEmotionColorGradient(song.emotion1),
-                    }}
+                    emotion1={song.emotion1}
+                    emotion2={song.emotion2}
                   >
                     {currentSongId === song.musicId && isPlaying ? (
                       <FaPause size={14} color="#fff" />
