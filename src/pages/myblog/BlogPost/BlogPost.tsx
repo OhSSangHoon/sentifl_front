@@ -446,7 +446,9 @@ function BlogPost() {
   // 조회수
   const increasePostView = async () => {
     try {
-      await axiosInstance.post(`http://localhost:8080/api/v1/post/view/${postId}`);
+      await axiosInstance.post(
+        `http://localhost:8080/api/v1/post/view/${postId}`
+      );
     } catch (error: any) {
       const errorCode = error.response?.data?.errorCode;
       if (errorCode === "SP3") {
@@ -482,7 +484,6 @@ function BlogPost() {
     }
   };
 
-  // 컴포넌트가 언마운트될 때 오디오 객체를 정리
   useEffect(() => {
     return () => {
       if (audioRef.current) {
@@ -493,11 +494,19 @@ function BlogPost() {
   }, []);
 
   if (loading) {
-    return <p>로딩 중...</p>;
+    return (
+      <S.LoadingScreen>
+        <S.LoadingText>로딩 중...</S.LoadingText>
+      </S.LoadingScreen>
+    );
   }
 
   if (!post) {
-    return <p>게시글을 불러오는 중 문제가 발생했습니다.</p>;
+    return (
+      <S.LoadingScreen>
+        <S.LoadingText>게시글을 불러오는 중 문제가 발생했습니다.</S.LoadingText>
+      </S.LoadingScreen>
+    );
   }
 
   return (

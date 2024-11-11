@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../axiosInterceptor";
 import * as S from "./Styles/MusicRecommend.style";
 import { FaPlay, FaPause, FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -22,11 +22,12 @@ function MusicRecommend() {
   const [songResults, setSongResults] = useState<SongInfoResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
+  const [hasMoreSongs, setHasMoreSongs] = useState<boolean>(true);
 
-  const [playingSongId, setPlayingSongId] = useState<number | null>(null);
-  const [audioPlayers, setAudioPlayers] = useState<{
-    [key: number]: HTMLAudioElement;
-  }>({});
+  const [currentSongId, setCurrentSongId] = useState<number | null>(null);
+  const [currentSongKey, setCurrentSongKey] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [direction, setDirection] = useState<"next" | "prev">("next");
   const [shouldAnimate, setShouldAnimate] = useState(false);
@@ -44,6 +45,8 @@ function MusicRecommend() {
       });
       if (response.status === 200) {
         setSongResults(response.data.content);
+        setHasMoreSongs(!response.data.last);
+        console.log(response.data);
       }
     } catch (error) {
       console.error("Emotion-based search error:", error);
@@ -59,40 +62,71 @@ function MusicRecommend() {
   const handleEmotionClick = (emotion: string) => {
     setSelectedEmotion(emotion);
     setPage(0);
+    setHasMoreSongs(true);
     setShouldAnimate(false);
-    if (playingSongId !== null) {
-      audioPlayers[playingSongId]?.pause();
-      setPlayingSongId(null);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
     }
+    setCurrentSongKey(null);
+    setIsPlaying(false);
   };
 
-  const handlePlayPause = async (song: SongInfoResponse) => {
-    const songId = song.musicId;
-
-    console.log("Playing song URL:", song.musicUrl);
-
-    if (playingSongId === songId) {
-      audioPlayers[songId]?.pause();
-      setPlayingSongId(null);
+  const handlePlayPause = async (song: SongInfoResponse, songKey: string) => {
+    if (audioRef.current) {
+      if (currentSongKey === songKey) {
+        if (isPlaying) {
+          try {
+            audioRef.current.pause();
+            setIsPlaying(false);
+          } catch (error) {
+            console.error("일시 정지 중 오류 발생:", error);
+          }
+        } else {
+          try {
+            await audioRef.current.play();
+            setIsPlaying(true);
+          } catch (error) {
+            console.error("재생 중 오류 발생:", error);
+          }
+        }
+      } else {
+        audioRef.current.pause();
+        audioRef.current = new Audio(song.musicUrl);
+        audioRef.current.onloadeddata = async () => {
+          try {
+            await audioRef.current!.play();
+            setCurrentSongKey(songKey);
+            setIsPlaying(true);
+          } catch (error) {
+            console.error("재생 중 오류 발생:", error);
+          }
+        };
+      }
     } else {
-      if (playingSongId !== null) {
-        audioPlayers[playingSongId]?.pause();
-      }
-
-      let audio = audioPlayers[songId];
-      if (!audio) {
-        audio = new Audio(song.musicUrl);
-        setAudioPlayers((prev) => ({ ...prev, [songId]: audio }));
-      }
-
-      try {
-        await audio.play();
-        setPlayingSongId(songId);
-      } catch (error) {
-        console.error("Error playing audio:", error);
-      }
+      audioRef.current = new Audio(song.musicUrl);
+      audioRef.current.onloadeddata = async () => {
+        try {
+          await audioRef.current!.play();
+          setCurrentSongKey(songKey);
+          setIsPlaying(true);
+        } catch (error) {
+          console.error("재생 중 오류 발생:", error);
+        }
+      };
+      audioRef.current.load();
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   const handlePrevPage = () => {
     if (page > 0) {
@@ -103,7 +137,7 @@ function MusicRecommend() {
   };
 
   const handleNextPage = () => {
-    if (songResults.length === 3) {
+    if (hasMoreSongs) {
       setDirection("next");
       setPage((prev) => prev + 1);
       setShouldAnimate(true);
@@ -138,30 +172,30 @@ function MusicRecommend() {
             </S.ArrowButton>
             <S.SongList direction={direction} shouldAnimate={shouldAnimate}>
               {songResults.length > 0 ? (
-                songResults.map((song, index) => (
-                  <S.SongCard key={index}>
-                    <S.PlayIconWrapper
-                      onClick={() => handlePlayPause(song)}
-                      emotion1={song.emotion1}
-                      emotion2={song.emotion2}
-                    >
-                      <S.PlayIconCircle>
-                        {playingSongId === song.musicId ? (
-                          <FaPause />
-                        ) : (
-                          <FaPlay />
-                        )}
-                      </S.PlayIconCircle>
-                    </S.PlayIconWrapper>
-                    <S.SongTitle longText={song.title.length > 20}>
-                      {song.title}
-                    </S.SongTitle>
-                    <S.UserNickname>{song.userNickname}</S.UserNickname>
-                    {/* <S.SaveToPlaylistButton>
-                      MY PLAYLIST에 저장
-                    </S.SaveToPlaylistButton> */}
-                  </S.SongCard>
-                ))
+                songResults.map((song, index) => {
+                  const songKey = `${song.musicId}-${index}`;
+                  return (
+                    <S.SongCard key={songKey}>
+                      <S.PlayIconWrapper
+                        onClick={() => handlePlayPause(song, songKey)}
+                        emotion1={song.emotion1}
+                        emotion2={song.emotion2}
+                      >
+                        <S.PlayIconCircle>
+                          {currentSongKey === songKey && isPlaying ? (
+                            <FaPause />
+                          ) : (
+                            <FaPlay />
+                          )}
+                        </S.PlayIconCircle>
+                      </S.PlayIconWrapper>
+                      <S.SongTitle longText={song.title.length > 20}>
+                        {song.title}
+                      </S.SongTitle>
+                      <S.UserNickname>{song.userNickname}</S.UserNickname>
+                    </S.SongCard>
+                  );
+                })
               ) : (
                 <>
                   {[...Array(3)].map((_, index) => (
@@ -178,10 +212,7 @@ function MusicRecommend() {
                 </>
               )}
             </S.SongList>
-            <S.ArrowButton
-              disabled={songResults.length < 3}
-              onClick={handleNextPage}
-            >
+            <S.ArrowButton disabled={!hasMoreSongs} onClick={handleNextPage}>
               <FaChevronRight />
             </S.ArrowButton>
           </S.SongCarousel>

@@ -203,9 +203,7 @@ export const PlayIconCircle = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  border: 0.8px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 0 0 1.6px rgba(255, 255, 255, 0.2);
-
   z-index: 1;
 
   & > svg {

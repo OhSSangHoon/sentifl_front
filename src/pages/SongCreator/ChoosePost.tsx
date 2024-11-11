@@ -1,7 +1,7 @@
 // 글 선택하여 노래 제작하는 페이지
 
 import { useEffect, useState } from "react";
-import { FaPlay, FaMusic } from "react-icons/fa";
+import { FaPlay, FaMusic, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
@@ -30,7 +30,6 @@ const ChoosePost = () => {
   const pageSize = 5;
   const paginationSize = 5;
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
-  // const [hashTags, setHashTags] = useState<{ [key: number]: string }>({});
 
   const [creatingMusic, setCreatingMusic] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -317,7 +316,7 @@ const ChoosePost = () => {
             onClick={handlePrevPageGroup}
             disabled={currentPaginationStart === 0}
           >
-            &lt;
+            <FaChevronLeft />
           </S.PageButton>
           {Array.from(
             {
@@ -343,7 +342,7 @@ const ChoosePost = () => {
             onClick={handleNextPageGroup}
             disabled={currentPaginationStart + paginationSize >= totalPages}
           >
-            &gt;
+            <FaChevronRight />
           </S.PageButton>
         </S.PaginationWrapper>
       </S.PostListWrapper>

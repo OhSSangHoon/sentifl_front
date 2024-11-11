@@ -343,10 +343,6 @@ function Playlist() {
     <S.PlaylistContainer>
       <S.TopBar></S.TopBar>
       <S.Content>
-        {/* <S.Sidebar>
-          <S.SidebarHeader>MY PLAYLIST</S.SidebarHeader>
-          <S.Button>재생목록</S.Button>
-        </S.Sidebar> */}
         <S.SongList>
           {loading ? (
             <S.LoadingState>노래를 불러오는 중입니다...</S.LoadingState>

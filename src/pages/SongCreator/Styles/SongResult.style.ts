@@ -23,6 +23,7 @@ export const VideoBackground = styled.video`
   object-fit: cover;
   z-index: 0;
   opacity: 1;
+  filter: brightness(1.8);
 `;
 
 export const TopLeftInfo = styled.div`

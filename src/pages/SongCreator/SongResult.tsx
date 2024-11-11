@@ -237,11 +237,7 @@ const SongResult: React.FC = () => {
     setIsPlaying(!isPlaying);
   };
 
-  useEffect(() => {
-    // if (isDropdownVisible) {
-    //   console.log("Dropdown is now visible.");
-    // }
-  }, [isDropdownVisible]);
+  useEffect(() => {}, [isDropdownVisible]);
 
   return (
     <S.Wrapper>

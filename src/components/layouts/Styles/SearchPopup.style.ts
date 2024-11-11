@@ -233,7 +233,6 @@ export const EmotionCircle = styled.div<{ color: string }>`
   border-radius: 50%;
   background: ${(props) => props.color};
   margin-right: 10px;
-  border: 1px solid #fff;
 `;
 
 export const UserNickname = styled.span`

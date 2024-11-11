@@ -11,6 +11,7 @@ export const Container = styled.div`
   font-family: Arial, sans-serif;
   padding: 20px;
   margin-top: 50px;
+
   ::-webkit-scrollbar {
     display: none;
   }
@@ -45,22 +46,11 @@ export const PostListWrapper = styled.div<{ isOwner: boolean }>`
   justify-content: space-between;
   flex-grow: 1;
   width: ${(props) => (props.isOwner ? "80%" : "100%")};
+
   ::-webkit-scrollbar {
     display: none;
   }
 `;
-
-// export const PostListWrapper = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: space-between;
-//   flex-grow: 1;
-//   width: 100%;
-
-//   ::-webkit-scrollbar {
-//     display: none;
-//   }
-// `;
 
 export const MainContent = styled.div<{ isOwner: boolean }>`
   display: flex;

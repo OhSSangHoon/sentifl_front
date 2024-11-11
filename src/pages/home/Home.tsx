@@ -63,7 +63,9 @@ function Home() {
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (homeRef.current) {
+      homeRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, []);
 
   return (

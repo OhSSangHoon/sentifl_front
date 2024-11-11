@@ -50,8 +50,27 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   const [postSize, setPostSize] = useState(10);
   const [songSize, setSongSize] = useState(10);
 
+  const [postIsLastPage, setPostIsLastPage] = useState(false);
+  const [songIsLastPage, setSongIsLastPage] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      handlePostSearch();
+    } else {
+      setPostResults([]);
+    }
+  }, [postPage]);
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      handleSongSearch();
+    } else {
+      setSongResults([]);
+    }
+  }, [songPage]);
 
   const handleOverlayClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -84,6 +103,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       if (postSearchResponse.status === 200) {
         const postResults = postSearchResponse.data.content;
         setPostResults(postResults);
+        setPostIsLastPage(postSearchResponse.data.last);
       }
     } catch (error) {
       console.error("게시물 검색 에러", error);
@@ -107,6 +127,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       });
       if (response.status === 200) {
         setSongResults(response.data.content);
+        setSongIsLastPage(response.data.last);
       } else {
         console.error("노래 검색 실패: 상태 코드", response.status);
       }
@@ -128,6 +149,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       });
       if (response.status === 200) {
         setSongResults(response.data.content);
+        setSongIsLastPage(response.data.last);
       }
     } catch (error) {
       console.error("Emotion-based search error:", error);
@@ -145,6 +167,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 
     setSelectedEmotion(emotion);
     setSearchQuery("");
+    setSongPage(0);
     await fetchEmotionSongs(emotion);
   };
 
@@ -201,12 +224,11 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setSearchQuery(e.target.value);
               setSelectedEmotion(null);
+              setPostPage(0);
+              setSongPage(0);
             }}
           />
         </S.SearchInputWrapper>
-        {/* <button onClick={() => setPage((prev) => Math.max(prev - 1, 0))}>이전 페이지</button>
-      <button onClick={() => setPage((prev) => prev + 1)}>다음 페이지</button>
-       */}
 
         <S.EmotionButtonContainer>
           {emotions.map((emotion) => (
@@ -232,7 +254,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                 />
                 <S.RightArrow
                   onClick={() => setPostPage(postPage + 1)}
-                  disabled={postResults.length < postSize}
+                  disabled={postIsLastPage || postResults.length === 0}
                 />
               </S.ArrowContainer>
               <S.FilterSelectWrapper>
@@ -277,7 +299,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                 />
                 <S.RightArrow
                   onClick={() => setSongPage(songPage + 1)}
-                  disabled={songResults.length < songSize}
+                  disabled={songIsLastPage || songResults.length === 0}
                 />
               </S.ArrowContainer>
               <S.FilterSelectWrapper>

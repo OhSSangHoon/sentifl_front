@@ -60,7 +60,7 @@ export const Circle = styled.div<CircleProps>`
   transform: translateX(${(props) => props.translateX || "0"})
     translateY(${(props) => props.translateY || "0"});
   filter: blur(100px);
-  animation: ${pulse} 8s ease-in-out infinite;
+  animation: ${pulse} 6s ease-in-out infinite;
 `;
 
 export const TextContainer = styled.div`

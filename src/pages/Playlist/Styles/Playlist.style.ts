@@ -104,8 +104,8 @@ export const SongItem = styled.div<SongItemProps>`
   margin-bottom: 10px;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.5s ease, box-shadow 0.5s,
-    border-color 0.5s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s,
+    border-color 0.2s ease;
   border: 3px solid transparent;
 
   &:hover {

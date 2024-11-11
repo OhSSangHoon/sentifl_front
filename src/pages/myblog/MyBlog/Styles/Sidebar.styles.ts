@@ -323,6 +323,12 @@ export const PostListContainer = styled.div`
   position: relative;
   overflow-y: auto;
   max-height: 300px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
 export const BackButton = styled.button`

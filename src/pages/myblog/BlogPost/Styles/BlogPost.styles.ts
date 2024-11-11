@@ -480,3 +480,23 @@ export const pulse = keyframes`
     opacity: 1;
   }
 `;
+
+export const LoadingScreen = styled.div`
+  position: fixed;
+  top: 0px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 9999;
+`;
+
+export const LoadingText = styled.div`
+  position: relative;
+  font-size: 24px;
+  font-weight: 250;
+`;
