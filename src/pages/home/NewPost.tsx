@@ -7,11 +7,20 @@ import * as S from "./Styles/NewPost.styles";
 interface Post {
   postId: number;
   postUrl: string;
-  contents?: string;
+  contents: string;
   thumbnailUrl: string;
   title: string;
   createdTime: string;
-  authorId: string;
+  uid: string;
+}
+
+// createdTime 형식 변경
+function formatDate(isoString: string): string {
+  const date = new Date(isoString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}.${month}.${day}`;
 }
 
 function NewPost() {
@@ -111,9 +120,8 @@ function NewPost() {
     setCurrentPage((prev) => Math.max(prev - 1, 0));
   };
 
-
-  const handlePostClick = (authorId: string, postId: number) => {
-      navigate(`/user/${authorId}/post/${postId}`);
+  const handlePostClick = (uid: string, postId: number) => {
+      navigate(`/user/${uid}/post/${postId}`);
   };
 
   return (
@@ -122,12 +130,16 @@ function NewPost() {
       <S.HashInt>매일 새로운 이야기를 공유해보세요.</S.HashInt>
       <S.PostList>
         {displayedPosts.map((post) => (
-          <S.PostItem key={post.postId} onClick={() => handlePostClick(post.authorId, post.postId)}>
+          <S.PostItem key={post.postId} onClick={() => handlePostClick(post.uid, post.postId)}>
             {post.thumbnailUrl ? (
               <S.thumbnail src={post.thumbnailUrl} />
             ) : null}
             <S.PostTitle>{post.title}</S.PostTitle>
             <S.PostContents>{post.contents}</S.PostContents>
+            <S.Box>
+              <S.Writter><S.ico_by>by</S.ico_by> {post.uid}</S.Writter>
+              {/* <S.Date>{formatDate(post.createdTime)}</S.Date> */}
+            </S.Box>
           </S.PostItem>
         ))}
       </S.PostList>
