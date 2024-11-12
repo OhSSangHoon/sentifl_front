@@ -8,11 +8,20 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 interface Post {
   postId: number;
   postUrl: string;
-  contents?: string;
+  contents: string;
   thumbnailUrl: string;
   title: string;
   createdTime: string;
   uid: string;
+}
+
+// createdTime 형식 변경
+function formatDate(isoString: string): string {
+  const date = new Date(isoString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}.${month}.${day}`;
 }
 
 function NewPost() {
@@ -119,17 +128,6 @@ function NewPost() {
     navigate(`/user/${uid}/post/${postId}`);
   };
 
-  const formatDate = (dateString: any) => {
-    const date = new Date(dateString);
-    return date
-      .toLocaleDateString("ko-KR", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      })
-      .replace(/\./g, ".");
-  };
-
   return (
     <S.Container>
       <S.Title>NEW POST</S.Title>
@@ -148,10 +146,12 @@ function NewPost() {
               <S.thumbnail src={post.thumbnailUrl || undefined} />
               <S.PostTitle>{post.title}</S.PostTitle>
               <S.PostContents>{post.contents}</S.PostContents>
-              <S.InfoContainer>
-                <S.AuthorId>{post.uid}</S.AuthorId>
-                <S.CreatedTime>{formatDate(post.createdTime)}</S.CreatedTime>
-              </S.InfoContainer>
+              <S.Box>
+                <S.Writter>
+                  <S.ico_by>by</S.ico_by> {post.uid}
+                </S.Writter>
+                <S.Date>{formatDate(post.createdTime)}</S.Date>
+              </S.Box>
             </S.PostItem>
           ))}
         </S.PostList>

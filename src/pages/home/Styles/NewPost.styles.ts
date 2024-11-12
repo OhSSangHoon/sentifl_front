@@ -46,6 +46,7 @@ export const PostList = styled.div`
 `;
 
 export const PostItem = styled.div`
+  position: relative;
   flex: 0 0 calc(100% / 5 - 16px);
   max-width: calc(100% / 5 - 16px);
   height: 400px;
@@ -59,18 +60,26 @@ export const PostItem = styled.div`
   cursor: pointer;
   transition: transform 0.3s ease, width 0.3s ease, box-shadow 0.3s ease;
 
-  &:hover,
-  &:active {
-    transform: scale(1.1);
+  & > span {
+    font-size: 0.875rem;
+  }
+
+  &:hover {
+    transform: translateY(-10px) scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+    & > PostTitle {
+      text-decoration: underline;
+    }
   }
 `;
 
 export const PostTitle = styled.p`
   text-align: left;
   margin-top: 10px;
-  color: #fff;
+  color: #bbb;
   font-size: 1.1em;
+  font-weight: 700;
 `;
 
 export const thumbnail = styled.img`
@@ -85,27 +94,35 @@ export const thumbnail = styled.img`
 export const PostContents = styled.p`
   margin: 10px 0;
   text-align: left;
-  font-size: 0.8em;
+  color: #959595;
+  font-family: Noto Sans Light, sans-serif;
+  font-weight: 100;
 `;
 
-export const InfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 30px;
+export const Box = styled.div`
+  width: 100%;
+  position: absolute;
+  bottom: 15px;
 `;
 
-export const AuthorId = styled.p`
-  margin: 5px 0 0;
-  text-align: left;
-  font-size: 0.9em;
+export const Writter = styled.p`
+  top: 0;
+  bottom: 0;
+  left: 0;
+  float: left;
+  color: #bfbfbf;
+  font-family: Noto Sans Light, sans-serif;
+  font-weight: 500;
 `;
 
-export const CreatedTime = styled.p`
-  margin: 5px 0 0;
-  text-align: left;
-  font-size: 0.8em;
-  color: #888;
+export const ico_by = styled.span`
+  color: #bfbfbf;
+  font-family: Georgia, sans-serif;
+  font-style: italic;
+`;
+
+export const Date = styled.p`
+  right: 0;
 `;
 
 export const ButtonContainer = styled.div`
