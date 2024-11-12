@@ -54,23 +54,6 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   const [songIsLastPage, setSongIsLastPage] = useState(false);
 
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      handlePostSearch();
-    } else {
-      setPostResults([]);
-    }
-  }, [postPage]);
-
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      handleSongSearch();
-    } else {
-      setSongResults([]);
-    }
-  }, [songPage]);
 
   const handleOverlayClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -168,14 +151,8 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
     setSelectedEmotion(emotion);
     setSearchQuery("");
     setSongPage(0);
-    await fetchEmotionSongs(emotion);
+    // await fetchEmotionSongs(emotion);
   };
-
-  useEffect(() => {
-    if (selectedEmotion) {
-      fetchEmotionSongs(selectedEmotion);
-    }
-  }, [selectedEmotion, songFilter, songPage]);
 
   const filteredSongResults =
     songResults.length > 0
@@ -211,6 +188,12 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       setSongResults([]);
     }
   }, [searchQuery, songFilter, songPage]);
+
+  useEffect(() => {
+    if (selectedEmotion) {
+      fetchEmotionSongs(selectedEmotion);
+    }
+  }, [selectedEmotion, songFilter, songPage]);
 
   return (
     <S.PopupOverlay onClick={handleOverlayClick}>

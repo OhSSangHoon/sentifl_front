@@ -237,7 +237,9 @@ const SongResult: React.FC = () => {
     setIsPlaying(!isPlaying);
   };
 
-  useEffect(() => {}, [isDropdownVisible]);
+  useEffect(() => {
+   
+  }, [isDropdownVisible]);
 
   return (
     <S.Wrapper>
