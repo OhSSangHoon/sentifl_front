@@ -54,6 +54,11 @@ const ModifyPage = () => {
               setHashTag(hashtagResponse.data.join(" "));
             }
           }
+        }else{
+          const errorCode = response.data?.errorCode;
+          if(errorCode === "CE1"){
+            console.log("엘라스틱서치 요청 실패");
+          }
         }
       } catch (error) {
         console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
@@ -91,7 +96,7 @@ const ModifyPage = () => {
         // 썸네일이 변경된 경우에만 기존 썸네일을 삭제한다.
         await updateToS3(new File([jsonBlob], "updated_post.json"), post.postUrl, isThumbnailUpdated ? initialThumbnailUrl : null);
 
-        // Update post details
+        // 게시글 수정
         const postResponse = await axiosInstance.put(
             `/api/v1/post/${uid}/${postId}`,
             {
@@ -106,6 +111,8 @@ const ModifyPage = () => {
                 },
             }
         );
+
+        const errorCode = postResponse.data?.errorCode;
 
         if (postResponse.status === 201 || postResponse.status === 204) {
             // Update hashtags
@@ -126,9 +133,15 @@ const ModifyPage = () => {
                 navigate(`/user/${uid}/post/${postId}`);
             } else {
                 alert("해시태그 수정에 실패했습니다.");
+
+                const errorCode = hashtagResponse.data?.errorCode;
+            }if(errorCode === "CE1"){
+              console.log("엘라스틱서치 요청 실패");
             }
         } else {
             alert("게시물 수정에 실패했습니다.");
+        }if(errorCode === "CE1"){
+          console.log("엘라스틱서치 요청 실패");
         }
     } catch (error) {
         console.error("게시물 수정 실패:", error);

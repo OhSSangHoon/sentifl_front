@@ -42,7 +42,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   title,
   setTitle,
   images,
-  thumbnailUrl, // 썸네일 URL을 props로 받음
+  thumbnailUrl,
   onModify,
   isCreatePage,
   hashTag,
@@ -174,19 +174,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
   };
 
-  // Content에서 첫 번째 이미지를 자동으로 썸네일로 설정하는 함수
-  // const setFirstContentImageAsThumbnail = () => {
-  //   const editor = quillRef.current;
-  //   if (editor) {
-  //     const editorHtml = editor.root.innerHTML;
-  //     const imgTagMatch = editorHtml.match(/<img[^>]+src="([^">]+)"/); // 첫 번째 이미지 src 추출
-
-  //     if (imgTagMatch && imgTagMatch[1]) {
-  //       setInternalThumbnailUrl(imgTagMatch[1]);
-  //     }
-  //   }
-  // };
-
   // 임시 저장 핸들러
   const handleTemporarySave = async () => {
     if (!quillRef.current) {
@@ -242,6 +229,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   
       if (response.status === 204) {
         // console.log("Hashtag successfully posted."); // 해시태그 저장
+      }else{
+        const errorCode = response.data?.errorCode;
+        if(errorCode === "CE1"){
+          console.log("엘라스틱서치 요청 실패");
+        }
       }
     } catch (error) {
       console.error("Error posting hashtags:", error);
@@ -268,11 +260,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       alert("로그인이 필요합니다.");
       return;
     }
-
-    // 썸네일 이미지가 없을 경우, content에서 첫 번째 이미지를 썸네일로 사용
-    // if (!internalThumbnailUrl) {
-    //   setFirstContentImageAsThumbnail();
-    // }
 
     const editorHtml = quillRef.current.root.innerHTML;
 
@@ -325,6 +312,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         navigate(`/user/${uid}/blog`);
 
         await postHashtag(response.data.postId);
+      }else {
+        const errorCode = response.data?.errorCode;
+        if(errorCode === "CE1"){
+          console.log("엘라스틱서치 요청 실패");
+        }
       }
       
     } catch (error) {

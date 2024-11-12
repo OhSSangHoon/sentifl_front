@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
 import * as S from "./Styles/SearchPopup.style";
@@ -87,6 +86,11 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
         const postResults = postSearchResponse.data.content;
         setPostResults(postResults);
         setPostIsLastPage(postSearchResponse.data.last);
+      }else {
+        const errorCode = postSearchResponse.data?.errorCode;
+        if(errorCode === "CE1"){
+          console.log("엘라스틱서치 요청 실패");
+        }
       }
     } catch (error) {
       console.error("게시물 검색 에러", error);
