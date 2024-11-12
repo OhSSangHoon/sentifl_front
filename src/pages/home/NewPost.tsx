@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../axiosInterceptor";
 import * as S from "./Styles/NewPost.styles";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 interface Post {
   postId: number;
@@ -11,7 +12,7 @@ interface Post {
   thumbnailUrl: string;
   title: string;
   createdTime: string;
-  authorId: string;
+  uid: string;
 }
 
 function NewPost() {
@@ -37,6 +38,7 @@ function NewPost() {
         params: { size: 15, lastId },
       });
 
+      console.log(response.data.content);
       const postList = response.data.content;
 
       if (postList.length === 0) {
@@ -53,12 +55,15 @@ function NewPost() {
 
             contents = contents.replace(/<[^>]*>/g, "").trim();
 
-            if(contents.length > 50){
+            if (contents.length > 50) {
               contents = contents.substring(0, 50) + "...";
             }
             return { ...post, title, contents };
           } catch (error) {
-            console.error(`Error fetching title for post ${post.postId}:`, error);
+            console.error(
+              `Error fetching title for post ${post.postId}:`,
+              error
+            );
             return { ...post, title: "제목을 불러올 수 없음" };
           }
         })
@@ -67,7 +72,7 @@ function NewPost() {
       setPosts((prev) => [...prev, ...updatedPosts].slice(0, MAX_POSTS));
       setLastId(updatedPosts[updatedPosts.length - 1]?.postId || null);
 
-      if(postList.length < POSTS_PER_PAGE || posts.length >= MAX_POSTS){
+      if (postList.length < POSTS_PER_PAGE || posts.length >= MAX_POSTS) {
         setHasMore(false);
       }
     } catch (error) {
@@ -87,21 +92,20 @@ function NewPost() {
     const endIndex = startIndex + POSTS_PER_PAGE;
     setDisplayedPosts(posts.slice(startIndex, endIndex));
   }, [posts, currentPage]);
-  
 
   const handleNext = async () => {
     if (currentPage + 1 >= MAX_PAGES) {
       setCurrentPage(0); // 마지막 페이지에서 첫 페이지로 이동
       return;
     }
-  
+
     const nextPageIndex = currentPage + 1;
     if (nextPageIndex * POSTS_PER_PAGE >= posts.length && hasMore) {
       await fetchPosts(); // 추가 데이터 로드
     }
     setCurrentPage(nextPageIndex);
   };
-  
+
   const handlePrev = () => {
     if (currentPage === 0) {
       const lastPage = MAX_PAGES - 1; // 마지막 페이지 인덱스
@@ -111,38 +115,51 @@ function NewPost() {
     setCurrentPage((prev) => Math.max(prev - 1, 0));
   };
 
+  const handlePostClick = (uid: string, postId: number) => {
+    navigate(`/user/${uid}/post/${postId}`);
+  };
 
-  const handlePostClick = (authorId: string, postId: number) => {
-      navigate(`/user/${authorId}/post/${postId}`);
+  const formatDate = (dateString: any) => {
+    const date = new Date(dateString);
+    return date
+      .toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\./g, ".");
   };
 
   return (
     <S.Container>
       <S.Title>NEW POST</S.Title>
       <S.HashInt>매일 새로운 이야기를 공유해보세요.</S.HashInt>
-      <S.PostList>
-        {displayedPosts.map((post) => (
-          <S.PostItem key={post.postId} onClick={() => handlePostClick(post.authorId, post.postId)}>
-            {post.thumbnailUrl ? (
-              <S.thumbnail src={post.thumbnailUrl} />
-            ) : null}
-            <S.PostTitle>{post.title}</S.PostTitle>
-            <S.PostContents>{post.contents}</S.PostContents>
-          </S.PostItem>
-        ))}
-      </S.PostList>
-      <S.ButtonContainer>
-        <S.LoadMoreButton
-          onClick={handlePrev}
-        >
-          Prev
-        </S.LoadMoreButton>
-        <S.LoadMoreButton
-          onClick={handleNext}
-        >
-          Next
-        </S.LoadMoreButton>
-      </S.ButtonContainer>
+      <S.Wrapper>
+        <S.LoadMoreButtonLeft onClick={handlePrev}>
+          <FaChevronLeft size={36} />
+        </S.LoadMoreButtonLeft>
+
+        <S.PostList>
+          {displayedPosts.map((post) => (
+            <S.PostItem
+              key={post.postId}
+              onClick={() => handlePostClick(post.uid, post.postId)}
+            >
+              <S.thumbnail src={post.thumbnailUrl || undefined} />
+              <S.PostTitle>{post.title}</S.PostTitle>
+              <S.PostContents>{post.contents}</S.PostContents>
+              <S.InfoContainer>
+                <S.AuthorId>{post.uid}</S.AuthorId>
+                <S.CreatedTime>{formatDate(post.createdTime)}</S.CreatedTime>
+              </S.InfoContainer>
+            </S.PostItem>
+          ))}
+        </S.PostList>
+
+        <S.LoadMoreButtonRight onClick={handleNext}>
+          <FaChevronRight size={36} />
+        </S.LoadMoreButtonRight>
+      </S.Wrapper>
     </S.Container>
   );
 }
