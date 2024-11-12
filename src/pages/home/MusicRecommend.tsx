@@ -93,6 +93,10 @@ function MusicRecommend() {
       } else {
         audioRef.current.pause();
         audioRef.current = new Audio(song.musicUrl);
+        audioRef.current.onended = () => {
+          setIsPlaying(false);
+        };
+
         audioRef.current.onloadeddata = async () => {
           try {
             await audioRef.current!.play();
@@ -105,6 +109,10 @@ function MusicRecommend() {
       }
     } else {
       audioRef.current = new Audio(song.musicUrl);
+      audioRef.current.onended = () => {
+        setIsPlaying(false);
+      };
+
       audioRef.current.onloadeddata = async () => {
         try {
           await audioRef.current!.play();

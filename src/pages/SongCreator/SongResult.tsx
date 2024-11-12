@@ -213,13 +213,14 @@ const SongResult: React.FC = () => {
 
   // 노래가 끝났을 때 실행되는 핸들러
   useEffect(() => {
+    const audio = audioRef.current;
+
     const handleEnded = () => {
       setIsPlaying(false);
+      audio.currentTime = 0;
     };
 
-    const audio = audioRef.current;
     audio.addEventListener("ended", handleEnded);
-
     return () => {
       audio.pause();
       audio.currentTime = 0;
@@ -229,6 +230,9 @@ const SongResult: React.FC = () => {
 
   // 재생 버튼 클릭 핸들러
   const handlePlayPause = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
     if (isPlaying) {
       audioRef.current.pause();
     } else {
@@ -238,8 +242,22 @@ const SongResult: React.FC = () => {
   };
 
   useEffect(() => {
-   
-  }, [isDropdownVisible]);
+    const audio = audioRef.current;
+
+    // 컴포넌트 마운트 시 자동 재생
+    if (audio) {
+      audio.play();
+      setIsPlaying(true);
+    }
+
+    // 컴포넌트 언마운트 시 정리
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, []);
+
+  useEffect(() => {}, [isDropdownVisible]);
 
   return (
     <S.Wrapper>
