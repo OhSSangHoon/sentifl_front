@@ -12,7 +12,7 @@ export const Container = styled.div`
 
 export const Title = styled.h1`
   margin-top: 100px;
-  font-size: 3em;
+  font-size: 55px;
   font-weight: 300;
   text-align: center;
   color: #fff;
@@ -25,7 +25,7 @@ export const HashInt = styled.div`
   margin-top: 5px;
   margin-bottom: 100px;
   text-align: center;
-  font-size: 1.2em;
+  font-size: 14px;
   font-weight: 100;
 `;
 

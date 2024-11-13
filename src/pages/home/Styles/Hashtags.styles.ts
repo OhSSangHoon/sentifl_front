@@ -19,7 +19,7 @@ export const HashtagContainer = styled.div`
 export const HashTitle = styled.div`
   margin: 0 auto;
   margin-top: 100px;
-  font-size: 4.5em;
+  font-size: 55px;
   font-weight: 100;
 `;
 
@@ -30,7 +30,7 @@ export const HashInt = styled.div`
   margin-top: 15px;
   margin-bottom: 100px;
   text-align: center;
-  font-size: 1.2em;
+  font-size: 14px;
   font-weight: 100;
 `;
 

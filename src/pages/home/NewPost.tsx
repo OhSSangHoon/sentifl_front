@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../axiosInterceptor";
 import * as S from "./Styles/NewPost.styles";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 interface Post {
   postId: number;
@@ -47,7 +47,7 @@ function NewPost() {
         params: { size: 15, lastId },
       });
 
-      console.log(response.data.content);
+      // console.log(response.data.content);
       const postList = response.data.content;
 
       if (postList.length === 0) {
@@ -150,7 +150,7 @@ function NewPost() {
                 <S.Writter>
                   <S.ico_by>by</S.ico_by> {post.uid}
                 </S.Writter>
-                <S.Date>{formatDate(post.createdTime)}</S.Date>
+                {/* /<S.Date>{formatDate(post.createdTime)}</S.Date> */}
               </S.Box>
             </S.PostItem>
           ))}

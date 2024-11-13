@@ -16,7 +16,7 @@ function Hashtags() {
           const response = await axiosInstance.get(
             `/api/v1/post/search/hashtags`
           );
-          console.log(response.data);
+          // console.log(response.data);
           setHashtags(response.data);
         } catch (error) {
           console.error("Failed to fetch popular hashtags:", error);
