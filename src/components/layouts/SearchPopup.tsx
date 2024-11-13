@@ -21,6 +21,8 @@ export interface PostInfoResponse {
   createDate: string;
   totalLikes: number;
   thumbnailUrl: string;
+  content: string;
+  hashtag: string;
 }
 
 interface SearchPopupProps {
@@ -99,7 +101,8 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 
   const filteredPostResults =
     postResults.length > 0
-      ? postResults.filter((post) => post.title.includes(searchQuery))
+      ? postResults.filter((post) => post.title.includes(searchQuery)
+      || post.content.includes(searchQuery) || post.hashtag.includes(searchQuery))
       : [];
 
   const handleSongSearch = async () => {
@@ -148,15 +151,26 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   const handleEmotionClick = async (emotion: string) => {
     if (selectedEmotion === emotion) {
       setSelectedEmotion(null);
+      setSearchQuery("");
+      setPostResults([]);
       setSongResults([]);
       return;
     }
-
+  
     setSelectedEmotion(emotion);
-    setSearchQuery("");
+    const hashtagQuery = `${emotion}`;
+    setSearchQuery(hashtagQuery);
+    setPostPage(0);
     setSongPage(0);
-    // await fetchEmotionSongs(emotion);
+  
+    try {
+      await handlePostSearch();
+      await handleSongSearch();
+    } catch (error) {
+      console.error("Emotion-based search error:", error);
+    }
   };
+  
 
   const filteredSongResults =
     songResults.length > 0
