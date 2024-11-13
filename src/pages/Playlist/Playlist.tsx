@@ -278,6 +278,7 @@ function Playlist() {
     setEditedTitle(song.title);
     setEditedHashTag(song.hashTags.join(" "));
   };
+
   const handlePlayPause = async (songId: number, musicUrl: string) => {
     if (audioRef.current) {
       if (currentSongId === songId) {
@@ -325,6 +326,7 @@ function Playlist() {
       audioRef.current.load();
     }
   };
+
   useEffect(() => {
     fetchSongs();
   }, []);
@@ -338,6 +340,15 @@ function Playlist() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.onended = () => {
+        setIsPlaying(false);
+        setCurrentSongId(null);
+      };
+    }
+  }, [audioRef]);
 
   return (
     <S.PlaylistContainer>
