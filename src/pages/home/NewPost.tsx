@@ -78,6 +78,12 @@ function NewPost() {
         })
       );
 
+      if(updatedPosts.length > 0){
+        setLastId(updatedPosts[updatedPosts.length - 1].postId);
+      }else{
+        setLastId(null);
+      }
+
       setPosts((prev) => [...prev, ...updatedPosts].slice(0, MAX_POSTS));
       setLastId(updatedPosts[updatedPosts.length - 1]?.postId || null);
 

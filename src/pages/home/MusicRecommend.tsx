@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { FaChevronLeft, FaChevronRight, FaPause, FaPlay } from "react-icons/fa";
 import axiosInstance from "../../axiosInterceptor";
 import * as S from "./Styles/MusicRecommend.style";
-import { FaPlay, FaPause, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 interface SongInfoResponse {
   musicId: number;
@@ -44,12 +44,15 @@ function MusicRecommend() {
         },
       });
       if (response.status === 200) {
-        setSongResults(response.data.content);
+        setSongResults(response.data.content || []);
         setHasMoreSongs(!response.data.last);
-        console.log(response.data);
+        // console.log(response.data);
+      }else{
+        setSongResults([]);
       }
     } catch (error) {
       console.error("Emotion-based search error:", error);
+      setSongResults([]);
     } finally {
       setLoading(false);
     }
@@ -129,9 +132,13 @@ function MusicRecommend() {
   useEffect(() => {
     return () => {
       if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-        audioRef.current = null;
+        try{
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+          audioRef.current = null;
+        } catch (error){
+          console.error("오디오 정지 중 오류 발생:", error);
+        }
       }
     };
   }, []);
