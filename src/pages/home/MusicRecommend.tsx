@@ -15,7 +15,7 @@ interface SongInfoResponse {
   musicUrl: string;
 }
 
-const emotions = ["행복", "사랑", "불안", "분노", "우울", "슬픔", "중립"];
+const emotions = ["공포", "놀람", "분노", "슬픔", "중립", "행복", "혐오"];
 
 function MusicRecommend() {
   const [selectedEmotion, setSelectedEmotion] = useState<string>("행복");
@@ -47,7 +47,7 @@ function MusicRecommend() {
         setSongResults(response.data.content || []);
         setHasMoreSongs(!response.data.last);
         // console.log(response.data);
-      }else{
+      } else {
         setSongResults([]);
       }
     } catch (error) {
@@ -132,11 +132,11 @@ function MusicRecommend() {
   useEffect(() => {
     return () => {
       if (audioRef.current) {
-        try{
+        try {
           audioRef.current.pause();
           audioRef.current.currentTime = 0;
           audioRef.current = null;
-        } catch (error){
+        } catch (error) {
           console.error("오디오 정지 중 오류 발생:", error);
         }
       }

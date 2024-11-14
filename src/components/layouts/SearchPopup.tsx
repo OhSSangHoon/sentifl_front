@@ -31,7 +31,7 @@ interface SearchPopupProps {
   onClose: () => void;
 }
 
-const emotions = ["행복", "사랑", "불안", "분노", "우울", "슬픔", "중립"];
+const emotions = ["공포", "놀람", "분노", "슬픔", "중립", "행복", "혐오"];
 
 const SearchPopup: React.FC<SearchPopupProps> = ({
   searchQuery,
@@ -88,9 +88,9 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
         const postResults = postSearchResponse.data.content;
         setPostResults(postResults);
         setPostIsLastPage(postSearchResponse.data.last);
-      }else {
+      } else {
         const errorCode = postSearchResponse.data?.errorCode;
-        if(errorCode === "CE1"){
+        if (errorCode === "CE1") {
           console.log("엘라스틱서치 요청 실패");
         }
       }
@@ -101,8 +101,12 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 
   const filteredPostResults =
     postResults.length > 0
-      ? postResults.filter((post) => post.title.includes(searchQuery)
-      || post.content.includes(searchQuery) || post.hashtag.includes(searchQuery))
+      ? postResults.filter(
+          (post) =>
+            post.title.includes(searchQuery) ||
+            post.content.includes(searchQuery) ||
+            post.hashtag.includes(searchQuery)
+        )
       : [];
 
   const handleSongSearch = async () => {
@@ -156,13 +160,13 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       setSongResults([]);
       return;
     }
-  
+
     setSelectedEmotion(emotion);
     const hashtagQuery = `${emotion}`;
     setSearchQuery(hashtagQuery);
     setPostPage(0);
     setSongPage(0);
-  
+
     try {
       await handlePostSearch();
       await handleSongSearch();
@@ -170,7 +174,6 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
       console.error("Emotion-based search error:", error);
     }
   };
-  
 
   const filteredSongResults =
     songResults.length > 0
@@ -180,10 +183,10 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   const getEmotionColorGradient = (emotion: string) => {
     const emotionColors: { [key: string]: string } = {
       행복: "#FFD700",
-      사랑: "#FF1493",
-      불안: "#6A0DAD",
+      놀람: "#FF1493",
+      혐오: "#6A0DAD",
       분노: "#8B0000",
-      우울: "#000080",
+      공포: "#000080",
       슬픔: "#4169E1",
       중립: "#A9A9A9",
     };

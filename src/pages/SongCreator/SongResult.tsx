@@ -363,10 +363,10 @@ export { EmotionDescription };
 
 const emotionVideos: { [key: string]: string } = {
   행복: require("../../assets/videos/행복.mp4"),
-  사랑: require("../../assets/videos/사랑.mp4"),
-  불안: require("../../assets/videos/불안.mp4"),
+  놀람: require("../../assets/videos/사랑.mp4"),
+  혐오: require("../../assets/videos/불안.mp4"),
   분노: require("../../assets/videos/분노.mp4"),
-  우울: require("../../assets/videos/우울.mp4"),
+  공포: require("../../assets/videos/우울.mp4"),
   슬픔: require("../../assets/videos/슬픔.mp4"),
   중립: require("../../assets/videos/중립.mp4"),
 };
@@ -393,20 +393,20 @@ const genres = [
 
 export const emotionColors: { [key: string]: string } = {
   행복: "#FFD700",
-  사랑: "#FF1493",
-  불안: "#6A0DAD",
+  놀람: "#FF1493",
+  혐오: "#6A0DAD",
   분노: "#8B0000",
-  우울: "#000080",
+  공포: "#000080",
   슬픔: "#4169E1",
   중립: "#A9A9A9",
 };
 
 const emotionDescriptions: { [key: string]: string } = {
   행복: "강을 뒤덮은 밝고 노란 꽃밭",
-  사랑: "하늘에서 피어난 커다란 폭죽",
-  불안: "어두운 숲속 안에 고여 있는 연못",
+  놀람: "하늘에서 피어난 커다란 폭죽",
+  혐오: "어두운 숲속 안에 고여 있는 연못",
   분노: "마음속 요동치는 거친파도",
-  우울: "얕게 흐르는 빛물에 꺼져가는 불꽃",
+  공포: "얕게 흐르는 빛물에 꺼져가는 불꽃",
   슬픔: "텅빈 고요한 새벽 한밤중의 빛물",
   중립: "흐린하늘아래 선선한 바람",
 };
