@@ -1,7 +1,7 @@
-// 내 블로그 메인
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../../AuthProvider";
+import axiosInstance from "../../../axiosInterceptor";
 import PostList from "./PostList";
 import Sidebar from "./SideBar";
 import * as S from "./Styles/MyBlog.style";
@@ -16,14 +16,40 @@ export interface SidebarProps {
   toggleFollowingPopup?: () => void;
 }
 
+interface User {
+  uid: string;
+  nickname: string;
+  profileImage: string;
+}
+
 const MyBlog = () => {
   const { uid } = useParams<{ uid: string }>();
   const { uid: loggedInUid, nickname, profileImage } = useAuth();
   const isOwner = uid === loggedInUid;
 
   const [activeTab, setActiveTab] = useState<ActiveTabType>(null);
+  const [followedByList, setFollowedByList] = useState<User[]>([]);
+  const [followingList, setFollowingList] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const openPopup = (tab: "follow" | "following") => setActiveTab(tab);
+  const openPopup = async (tab: "follow" | "following") => {
+    setActiveTab(tab);
+    setLoading(true);
+    try {
+      if (tab === "follow") {
+        const response = await axiosInstance.get(`/api/v1/followedby/${uid}`);
+        setFollowedByList(response.data.content);
+      } else if (tab === "following") {
+        const response = await axiosInstance.get(`/api/v1/follow/${uid}`);
+        setFollowingList(response.data.content);
+      }
+    } catch (error) {
+      console.error(`${tab} 목록 불러오기 실패:`, error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const closePopup = () => setActiveTab(null);
 
   return (
@@ -50,28 +76,40 @@ const MyBlog = () => {
             <S.PopupHeader>
               <S.Tab
                 active={activeTab === "follow"}
-                onClick={() => setActiveTab("follow")}
+                onClick={() => openPopup("follow")}
               >
-                follow
+                Followers
               </S.Tab>
               <S.Tab
                 active={activeTab === "following"}
-                onClick={() => setActiveTab("following")}
+                onClick={() => openPopup("following")}
               >
-                following
+                Following
               </S.Tab>
             </S.PopupHeader>
             <S.PopupContent>
-              {activeTab === "follow" ? (
-                <S.FollowItem>
-                  <S.FollowProfile />
-                  <S.Nickname>닉네임</S.Nickname>
-                </S.FollowItem>
+              {loading ? (
+                <span>Loading...</span>
+              ) : activeTab === "follow" ? (
+                followedByList.map((user) => (
+                  <S.FollowItem key={user.uid}>
+                    <S.FollowProfile
+                      src={user.profileImage || "/default-profile.png"}
+                      alt={`${user.nickname}`}
+                    />
+                    <S.Nickname>{user.nickname}</S.Nickname>
+                  </S.FollowItem>
+                ))
               ) : (
-                <S.FollowingItem>
-                  <S.Nickname>닉네임</S.Nickname>
-                  <S.FollowProfile />
-                </S.FollowingItem>
+                followingList.map((user) => (
+                  <S.FollowingItem key={user.uid}>
+                    <S.FollowProfile
+                      src={user.profileImage || "/default-profile.png"}
+                      alt={`${user.nickname}`}
+                    />
+                    <S.Nickname>{user.nickname}</S.Nickname>
+                  </S.FollowingItem>
+                ))
               )}
             </S.PopupContent>
           </S.Popup>
