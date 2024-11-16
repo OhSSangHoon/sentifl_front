@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FiSettings, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
@@ -6,10 +6,7 @@ import axiosInstance from "../../axiosInterceptor";
 import { uploadProfileToS3 } from "../../services/s3Service";
 import * as S from "./Styles/UserPanel.style";
 
-// import UserProfile from "./UserProfile";
-
 import Character from "../../assets/characters/Login_character.png";
-
 
 interface UserInfoResponse {
   id: number;
@@ -26,15 +23,11 @@ interface UserPanelProps {
 
 const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
   const { nickname, uid, isLoggedIn } = useAuth();
+  const [profileImage, setProfileImage] = useState(Character);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [profileImage, setProfileImage] = useState(
-    localStorage.getItem("profileImage") || Character
-  );
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-
-
-  const [followCount, setFollowCount] = useState<number>(0);
-  const [followingCount, setFollowingCount] = useState<number>(0);
+  const [followCount, setFollowCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,28 +35,37 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
 
   const navigate = useNavigate();
 
+  // 프로필 이미지 및 팔로우 정보 가져오기
   useEffect(() => {
-    // 팔로우 및 팔로잉 정보 불러오기
-    const fetchFollowInfo = async () => {
+    const fetchUserInfo = async () => {
+      if (!uid) return;
+
       try {
-        const followedByResponse = await axiosInstance.get(
-          `/api/v1/followedby/${uid}`
-        );
+        // 프로필 이미지 가져오기
+        const profileResponse = await axiosInstance.get("/api/v1/auth/user/search", {
+          params: { keyword: uid, lastId: 0 },
+        });
+
+        if (profileResponse.data.length > 0) {
+          const user = profileResponse.data[0];
+          setProfileImage(user.profile || Character);
+        }
+
+        // 팔로우 및 팔로잉 수 가져오기
+        const followedByResponse = await axiosInstance.get(`/api/v1/followedby/${uid}`);
         setFollowCount(followedByResponse.data.content.length);
 
-        const followingResponse = await axiosInstance.get(
-          `/api/v1/follow/${uid}`
-        );
+        const followingResponse = await axiosInstance.get(`/api/v1/follow/${uid}`);
         setFollowingCount(followingResponse.data.content.length);
       } catch (error) {
-        console.error("팔로우 정보 불러오기에 실패했습니다.", error);
+        console.error("사용자 정보 불러오기 실패:", error);
       }
     };
 
-    fetchFollowInfo();
+    fetchUserInfo();
   }, [uid]);
 
-  // 사용자 검색 API 호출
+  // 유저 검색
   const handleUserSearch = async (query: string) => {
     try {
       const response = await axiosInstance.get("/api/v1/auth/user/search", {
@@ -90,7 +92,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
         setSearchResults(results);
       }
     } catch (error) {
-      console.error("Error searching users:", error);
+      console.error("유저 검색 실패:", error);
     }
   };
 
@@ -102,15 +104,14 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
       } else {
         await axiosInstance.post("/api/v1/follow", { uid: userUid });
       }
+
       setSearchResults((prevResults) =>
         prevResults.map((user) =>
-          user.uid === userUid
-            ? { ...user, isFollowing: !isFollowing }
-            : user
+          user.uid === userUid ? { ...user, isFollowing: !isFollowing } : user
         )
       );
     } catch (error) {
-      console.error("Error toggling follow:", error);
+      console.error("팔로우 토글 실패:", error);
     }
   };
 
@@ -122,39 +123,41 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
     }
   }, [searchQuery]);
 
+  // 파일 업로드
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) {
-          alert("파일을 선택해주세요.");
-          return;
+    const file = e.target.files?.[0];
+    if (!file) {
+      alert("파일을 선택해주세요.");
+      return;
+    }
+
+    try {
+      const s3Key = await uploadProfileToS3(file, uid, profileImage);
+      const response = await axiosInstance.put("/api/v1/auth/profile", {
+        profileUrl: s3Key,
+      });
+
+      if (response.status === 204) {
+        alert("프로필 이미지가 성공적으로 저장되었습니다.");
+        setProfileImage(s3Key);
+        localStorage.setItem("profileImage", s3Key);
       }
-  
-      try {
-          const s3Key = await uploadProfileToS3(file, uid, profileImage);
-          const response = await axiosInstance.put("/api/v1/auth/profile", {
-              profileUrl: s3Key,
-          });
-  
-          if (response.status === 204) {
-              alert("프로필 이미지가 성공적으로 저장되었습니다.");
-              setProfileImage(s3Key);
-              localStorage.setItem("profileImage", s3Key);
-          }
-      } catch (error) {
-          console.error("프로필 이미지 처리 실패:", error);
-          alert("프로필 이미지 처리에 실패했습니다.");
-      }
+    } catch (error) {
+      console.error("프로필 이미지 처리 실패:", error);
+      alert("프로필 이미지 처리에 실패했습니다.");
+    }
   };
-  
+
   const handleSettingsClick = () => {
     fileInputRef.current?.click();
   };
 
-
   return (
-    <S.PopupOverlay onClick={(e) => {
-      if(e.currentTarget === e.target) onClose();
-    }}>
+    <S.PopupOverlay
+      onClick={(e) => {
+        if (e.currentTarget === e.target) onClose();
+      }}
+    >
       <S.PopupContainer>
         <S.CloseButton onClick={onClose}>
           <FiX size={24} />
@@ -163,7 +166,12 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
           <S.UserInfo>
             <S.UserNameAndPlaylist>
               <S.UserName>{nickname || "닉네임"}</S.UserName>
-              <S.UserPlaylist onClick={() => {navigate(`/user/${uid}/playlist`); onClose();}}>
+              <S.UserPlaylist
+                onClick={() => {
+                  navigate(`/user/${uid}/playlist`);
+                  onClose();
+                }}
+              >
                 My Playlist
               </S.UserPlaylist>
             </S.UserNameAndPlaylist>
@@ -189,9 +197,18 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
           </S.ProfileImageContainer>
         </S.UserProfile>
         <S.Tabs>
-          <S.TabItem onClick={() => {navigate(`/user/${uid}/blog`); onClose();}} >My Blog</S.TabItem>
+          <S.TabItem
+            onClick={() => {
+              navigate(`/user/${uid}/blog`);
+              onClose();
+            }}
+          >
+            My Blog
+          </S.TabItem>
           <S.Divider />
-          <S.TabItem onClick={() => setIsSearchMode(!isSearchMode)}>유저 찾기</S.TabItem>
+          <S.TabItem onClick={() => setIsSearchMode(!isSearchMode)}>
+            유저 찾기
+          </S.TabItem>
         </S.Tabs>
         {isSearchMode && (
           <S.SearchContainer>
@@ -209,13 +226,19 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
                     <img
                       src={user.profile || Character}
                       alt={user.nickName}
-                      style={{ width: "30px", height: "30px", borderRadius: "50%" }}
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "50%",
+                      }}
                     />
                     <span>{user.nickName}</span>
                   </S.UserLink>
                   <S.FollowButton
                     isFollowing={user.isFollowing}
-                    onClick={() => handleFollowToggle(user.uid, user.isFollowing)}
+                    onClick={() =>
+                      handleFollowToggle(user.uid, user.isFollowing)
+                    }
                   >
                     {user.isFollowing ? "Following" : "Follow"}
                   </S.FollowButton>
@@ -228,12 +251,12 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
       </S.PopupContainer>
 
       <input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          accept="image/*"
-          onChange={handleFileChange}
-        />
+        type="file"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        accept="image/*"
+        onChange={handleFileChange}
+      />
     </S.PopupOverlay>
   );
 };
