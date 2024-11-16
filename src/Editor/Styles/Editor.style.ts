@@ -46,10 +46,6 @@ export const TitleInput = styled.input<{ hasThumbnail: boolean }>`
 
 `;
 
-export const HashTagInput = styled.input`
-    border:1px solid red;
-`
-
 
 export const ThumbnailWrapper = styled.div`
     position: absolute;
@@ -151,6 +147,20 @@ export const Editor = styled.div.attrs({
         display: none;
     }
 `;
+
+
+export const HashTagInput = styled.input`
+    width: 100%;
+    height: 50px;
+    background: #111;
+    border: none;
+    color: #fff;
+    font-size: 1.5em;
+    padding:50px 170px;
+    position: fixed;
+    bottom: 0;
+    // z-index: 1;
+`
 
 
 export const SaveBtn = styled.div`

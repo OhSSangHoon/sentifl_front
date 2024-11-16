@@ -217,7 +217,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/v1/post/${postId}/hashtag`,
+        `/api/v1/post/${postId}/hashtag`,
         { hashTag: hashtagsString }, // 단일 문자열로 전송
         {
           headers: {
