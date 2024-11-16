@@ -1,8 +1,6 @@
-FROM node
+FROM node:20.11
 WORKDIR /frontend
-COPY package.json package-lock.json ./
-RUN npm install
-COPY ./ ./
 RUN npm install -g serve
+COPY ./build ./build
 EXPOSE 3000
-CMD [ "serve", "-s", "build" ]
+CMD [ "serve", "-s", "build", "-l", "3000"]
