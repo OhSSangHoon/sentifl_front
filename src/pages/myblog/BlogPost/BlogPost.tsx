@@ -447,7 +447,7 @@ function BlogPost() {
   const increasePostView = async () => {
     try {
       await axiosInstance.post(
-        `http://localhost:8080/api/v1/post/view/${postId}`
+        `/api/v1/post/view/${postId}`
       );
     } catch (error: any) {
       const errorCode = error.response?.data?.errorCode;
