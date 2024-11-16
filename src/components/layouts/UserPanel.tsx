@@ -140,6 +140,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ onClose, onLogout }) => {
       if (response.status === 204) {
         alert("프로필 이미지가 성공적으로 저장되었습니다.");
         setProfileImage(s3Key);
+        navigate('/');
         localStorage.setItem("profileImage", s3Key);
       }
     } catch (error) {

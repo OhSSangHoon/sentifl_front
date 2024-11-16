@@ -280,7 +280,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
               filteredPostResults.map((post) => (
                 <S.SearchResultItem key={post.id}>
                   <S.PostLink
-                    to={`/user/${uid}/post/${post.id}`}
+                    to={`/user/${post.uid}/post/${post.id}`}
                     onClick={handleClose}
                   >
                     <span>{post.title}</span>
