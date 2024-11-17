@@ -15,13 +15,13 @@ const AddInfo = () => {
   const [step, setStep] = useState(1);
   const [nicknameError, setNicknameError] = useState("");
   const location = useLocation();
+  
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const accessToken = query.get("accessToken");
     const refreshToken = query.get("refreshToken");
-    const userProfile =
-      "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
+    const userProfile = profile;
     setProfile(userProfile);
 
     // 토큰을 로컬스토리지와 쿠키에 저장
