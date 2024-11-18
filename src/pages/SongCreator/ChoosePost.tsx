@@ -1,7 +1,7 @@
 // 글 선택하여 노래 제작하는 페이지
 
 import { useEffect, useState } from "react";
-import { FaPlay, FaMusic, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaMusic, FaPlay } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
