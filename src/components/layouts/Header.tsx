@@ -8,7 +8,6 @@ import UserPanel from "./UserPanel";
 
 import Character from "../../assets/characters/Login_character.png";
 
-
 function Header() {
   const { isLoggedIn, nickname, logout, uid } = useAuth();
   const [profileImage, setProfileImage] = useState(Character);
@@ -21,17 +20,17 @@ function Header() {
       if (!isLoggedIn || !uid) return;
 
       try {
-        const response = await axiosInstance.get(`/api/v1/auth/user/search`,{
-          params: {keyword: uid, lastId: 0},
+        const response = await axiosInstance.get(`/api/v1/auth/user/search`, {
+          params: { keyword: uid, lastId: 0 },
         });
 
         console.log("User Profile Response: ", response.data);
 
-        if(response.data.length > 0){
+        if (response.data.length > 0) {
           const user = response.data[0];
           setProfileImage(user.profile || Character);
         }
-      } catch (error){
+      } catch (error) {
         console.log("프로필 정보를 가져오지 못했습니다.", error);
       }
     };
@@ -76,7 +75,11 @@ function Header() {
       {isLoggedIn ? (
         <S.ProfileLink onClick={togglePopup}>
           <img
-            src={profileImage && !profileImage.includes("default_profile") ? profileImage : Character}
+            src={
+              profileImage && !profileImage.includes("default_profile")
+                ? profileImage
+                : Character
+            }
             alt={nickname}
             style={{ width: "40px", height: "40px", borderRadius: "50%" }}
           />

@@ -9,7 +9,7 @@ import Character from "../../assets/characters/Login_character.png";
 const AddInfo = () => {
   const [uid, setUid] = useState("");
   const [nickname, setNickname] = useState("");
-  const [profile, setProfile] = useState<string | null>(null);
+  const [profile, setProfile] = useState(Character);
   const [step, setStep] = useState(1);
   const [nicknameError, setNicknameError] = useState("");
   const location = useLocation();
@@ -19,6 +19,10 @@ const AddInfo = () => {
     const accessToken = query.get("accessToken");
     const refreshToken = query.get("refreshToken");
     const userProfile = query.get("profile");
+
+    if (userProfile) {
+      setProfile(userProfile);
+    }
 
     // 토큰을 로컬스토리지와 쿠키에 저장
     if (accessToken) {
@@ -45,20 +49,23 @@ const AddInfo = () => {
         return;
       }
 
+      const currentProfile = profile || Character;
+
       // uid와 nickname을 백엔드로 전송
       axiosInstance
-        .post("/api/v1/auth/add-info", { uid, nickName: nickname, profile })
-        .then((response) => {
+        .post("/api/v1/auth/add-info", {
+          uid,
+          nickName: nickname,
+          profile: currentProfile,
+        })
+        .then(() => {
           alert("추가 정보가 성공적으로 입력되었습니다.");
 
-          const updatedProfile = response.data.profile || "";
-          setProfile(updatedProfile);
-
-          const encodedProfile = encodeURIComponent(updatedProfile);
+          const encodedProfile = encodeURIComponent(currentProfile);
           const encodedNickname = encodeURIComponent(nickname);
 
           // 리디렉션을 프론트엔드에서 수행
-          window.location.href = `/auth/success?uid=${uid}&nickName=${encodedNickname}&profile=${Character}`;
+          window.location.href = `/auth/success?uid=${uid}&nickName=${encodedNickname}&profile=${encodedProfile}`;
         })
         .catch((error: unknown) => {
           if (axios.isAxiosError(error)) {
