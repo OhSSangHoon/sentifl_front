@@ -167,6 +167,7 @@ const ChoosePost = () => {
             Authorization: `Bearer ${accessToken}`,
           },
           baseURL: process.env.REACT_APP_FASTAPI_BASE_URL, // 여기서 baseURL을 덮어씌움
+          withCredentials: true,
         }
       );
 
