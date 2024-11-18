@@ -19,7 +19,7 @@ const SuccessPage = () => {
   useEffect(() => {
     const params = queryString.parse(window.location.search);
 
-    console.log("Profile:", params.profile);
+    // console.log("Profile:", params.profile);
 
     const accessToken = Array.isArray(params.accessToken)
       ? params.accessToken[0]

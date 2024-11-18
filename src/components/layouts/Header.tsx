@@ -24,7 +24,7 @@ function Header() {
           params: { keyword: uid, lastId: 0 },
         });
 
-        console.log("User Profile Response: ", response.data);
+        // console.log("User Profile Response: ", response.data);
 
         if (response.data.length > 0) {
           const user = response.data[0];
