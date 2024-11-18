@@ -19,7 +19,6 @@ const AddInfo = () => {
     const accessToken = query.get("accessToken");
     const refreshToken = query.get("refreshToken");
     const userProfile = query.get("profile");
-    setProfile(userProfile);
 
     // 토큰을 로컬스토리지와 쿠키에 저장
     if (accessToken) {
@@ -49,14 +48,17 @@ const AddInfo = () => {
       // uid와 nickname을 백엔드로 전송
       axiosInstance
         .post("/api/v1/auth/add-info", { uid, nickName: nickname, profile })
-        .then(() => {
+        .then((response) => {
           alert("추가 정보가 성공적으로 입력되었습니다.");
 
-          const encodedProfile = encodeURIComponent(profile || "");
+          const updatedProfile = response.data.profile || "";
+          setProfile(updatedProfile);
+
+          const encodedProfile = encodeURIComponent(updatedProfile);
           const encodedNickname = encodeURIComponent(nickname);
 
           // 리디렉션을 프론트엔드에서 수행
-          window.location.href = `/auth/success?uid=${uid}&nickName=${encodedNickname}&profile=${encodedProfile}`;
+          window.location.href = `/auth/success?uid=${uid}&nickName=${encodedNickname}&profile=${Character}`;
         })
         .catch((error: unknown) => {
           if (axios.isAxiosError(error)) {

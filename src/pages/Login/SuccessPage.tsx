@@ -3,6 +3,9 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 
+import Character from "../../assets/characters/Login_character.png";
+
+
 const SuccessPage = () => {
   const navigate = useNavigate();
   const {
@@ -15,6 +18,8 @@ const SuccessPage = () => {
 
   useEffect(() => {
     const params = queryString.parse(window.location.search);
+
+    console.log("Profile:", params.profile);
 
     const accessToken = Array.isArray(params.accessToken)
       ? params.accessToken[0]
@@ -39,14 +44,15 @@ const SuccessPage = () => {
       document.cookie = `Authorization-Refresh=${refreshToken}; path=/; SameSite=Strict;`; // 쿠키에 저장
     }
 
-    if (uid && nickName && profile) {
+    if (uid && nickName) {
       setIsLoggedIn(true);
       setUid(uid);
       setNickname(nickName);
-      setProfileImage(profile);
+      setProfileImage(profile || Character);
       navigate("/"); // 리디렉션
     } else {
-      console.error("Missing parameters");
+      navigate("/"); // 리디렉션
+      // console.error("Missing parameters");
     }
   }, [navigate, setIsLoggedIn, setAccessToken, setNickname, setUid, setProfileImage]);
 
