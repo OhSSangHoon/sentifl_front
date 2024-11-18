@@ -103,11 +103,21 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
     postResults.length > 0
       ? postResults.filter(
           (post) =>
-            post.title.includes(searchQuery) ||
-            post.content.includes(searchQuery) ||
-            post.hashtag.includes(searchQuery)
+            post.title?.includes(searchQuery) ||
+            post.content?.includes(searchQuery) ||
+            post.hashtag?.includes(searchQuery)
         )
       : [];
+
+  // const filteredPostResults =
+  //   postResults.length > 0
+  //     ? postResults.filter(
+  //         (post) =>
+  //           post.title.includes(searchQuery) ||
+  //           post.content.includes(searchQuery) ||
+  //           post.hashtag.includes(searchQuery)
+  //       )
+  //     : [];
 
   const handleSongSearch = async () => {
     try {
@@ -177,8 +187,13 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 
   const filteredSongResults =
     songResults.length > 0
-      ? songResults.filter((song) => song.title.includes(searchQuery))
+      ? songResults.filter((song) => song.title?.includes(searchQuery))
       : [];
+
+  // const filteredSongResults =
+  //   songResults.length > 0
+  //     ? songResults.filter((song) => song.title.includes(searchQuery))
+  //     : [];
 
   const getEmotionColorGradient = (emotion: string) => {
     const emotionColors: { [key: string]: string } = {
