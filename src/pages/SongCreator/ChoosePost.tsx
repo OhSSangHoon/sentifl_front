@@ -1,7 +1,7 @@
 // 글 선택하여 노래 제작하는 페이지
 
 import { useEffect, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaMusic, FaPlay } from "react-icons/fa";
+import { FaPlay, FaMusic, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import axiosInstance from "../../axiosInterceptor";
@@ -150,8 +150,9 @@ const ChoosePost = () => {
     accessToken: string
   ): Promise<{
     musicUrl: string;
-    emotion1: string;
-    emotion2: string;
+    emotion: string;
+    // emotion1: string;
+    // emotion2: string;
     title: string;
   } | null> => {
     try {
@@ -167,14 +168,14 @@ const ChoosePost = () => {
             Authorization: `Bearer ${accessToken}`,
           },
           baseURL: process.env.REACT_APP_FASTAPI_BASE_URL, // 여기서 baseURL을 덮어씌움
-          withCredentials: true,
         }
       );
 
       if (response.status === 200) {
-        const { url: musicUrl, emotion1, emotion2, title } = response.data;
+        // const { url: musicUrl, emotion1, emotion2, title } = response.data;
+        const { url: musicUrl, emotion, title } = response.data;
         console.log("FastAPI 응답:", response.data);
-        return { musicUrl, emotion1, emotion2, title };
+        return { musicUrl, emotion, title };
       } else {
         console.error("FastAPI 응답 실패:", response.status, response.data);
         return null;
@@ -211,13 +212,14 @@ const ChoosePost = () => {
         );
 
         if (fastAPIResponse) {
-          const { musicUrl, emotion1, emotion2, title } = fastAPIResponse;
+          const { musicUrl, emotion, title } = fastAPIResponse;
 
           navigate("/song-result", {
             state: {
               title,
-              emotion1: emotion1,
-              emotion2: emotion2,
+              // emotion1: emotion1,
+              // emotion2: emotion2,
+              emotion: emotion,
               musicUrl,
               postId: post.postId,
             },

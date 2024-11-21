@@ -13,8 +13,9 @@ interface Song {
   title: string;
   hashTags: string[];
   totalLikes: number;
-  emotion1: string;
-  emotion2: string;
+  emotion: string;
+  // emotion1: string;
+  // emotion2: string;
   isLiked: boolean;
 }
 
@@ -217,8 +218,9 @@ function Playlist() {
         {
           musicUrl: song.musicUrl,
           title: editedTitle,
-          emotion1: song.emotion1,
-          emotion2: song.emotion2,
+          emotion: song.emotion,
+          // emotion: song.emotion1,
+          // emotion2: song.emotion2,
         },
         {
           headers: {
@@ -360,11 +362,13 @@ function Playlist() {
           ) : songs.length > 0 ? (
             <S.SongList>
               {songs.map((song) => (
-                <S.SongItem key={song.musicId} emotion={song.emotion1}>
+                // <S.SongItem key={song.musicId} emotion={song.emotion1}>
+                <S.SongItem key={song.musicId} emotion={song.emotion}>
                   <S.PlayIcon
                     onClick={() => handlePlayPause(song.musicId, song.musicUrl)}
-                    emotion1={song.emotion1}
-                    emotion2={song.emotion2}
+                    emotion={song.emotion}
+                    // emotion1={song.emotion1}
+                    // emotion2={song.emotion2}
                   >
                     {currentSongId === song.musicId && isPlaying ? (
                       <FaPause size={14} color="#fff" />

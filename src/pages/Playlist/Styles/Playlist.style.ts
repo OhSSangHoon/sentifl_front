@@ -136,16 +136,26 @@ const getEmotionBorderColor = (emotion: string) => {
   )}, ${parseInt(color.slice(5, 7), 16)}, 0.5)`;
 };
 
-function getEmotionGradient(emotion1: string, emotion2: string) {
-  const color1 = emotionColors[emotion1] || "#A9A9A9";
-  const color2 = emotionColors[emotion2] || "#A9A9A9";
+function getEmotionGradient(emotion: string) {
+  const color = emotionColors[emotion] || "#A9A9A9";
 
   return `linear-gradient(
     270deg,
-    ${hexToRgba(color1, 0.5)},
-    ${hexToRgba(color2, 0.5)}
+    ${hexToRgba(color, 0.5)},  ${hexToRgba(color, 0.2)}
+  
   )`;
 }
+
+// function getEmotionGradient(emotion1: string, emotion2: string) {
+//   const color1 = emotionColors[emotion1] || "#A9A9A9";
+//   const color2 = emotionColors[emotion2] || "#A9A9A9";
+
+//   return `linear-gradient(
+//     270deg,
+//     ${hexToRgba(color1, 0.5)},
+//     ${hexToRgba(color2, 0.5)}
+//   )`;
+// }
 
 function hexToRgba(hex: string, alpha: number) {
   const r = parseInt(hex.slice(1, 3), 16) || 0;
@@ -154,7 +164,8 @@ function hexToRgba(hex: string, alpha: number) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-export const PlayIcon = styled.div<{ emotion1: string; emotion2: string }>`
+// export const PlayIcon = styled.div<{ emotion1: string; emotion2: string }>`
+export const PlayIcon = styled.div<{ emotion: string }>`
   width: 80px;
   height: 80px;
   position: relative;
@@ -182,8 +193,7 @@ export const PlayIcon = styled.div<{ emotion1: string; emotion2: string }>`
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: ${({ emotion1, emotion2 }) =>
-      getEmotionGradient(emotion1, emotion2)};
+    background: ${({ emotion }) => getEmotionGradient(emotion)};
     background-size: 800% 800%;
     animation: ${gradientAnimation} 5s ease infinite;
     filter: blur(10px);
@@ -196,6 +206,8 @@ export const PlayIcon = styled.div<{ emotion1: string; emotion2: string }>`
     color: #fff;
   }
 `;
+// background: ${({ emotion1, emotion2 }) =>
+//   getEmotionGradient(emotion1, emotion2)};
 
 export const SongDetails = styled.div`
   display: flex;

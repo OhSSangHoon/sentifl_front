@@ -6,8 +6,9 @@ import * as S from "./Styles/MusicRecommend.style";
 interface SongInfoResponse {
   musicId: number;
   title: string;
-  emotion1: string;
-  emotion2: string;
+  emotion: string;
+  // emotion1: string;
+  // emotion2: string;
   totalLikes: number;
   uid: string;
   userNickname: string;
@@ -193,8 +194,9 @@ function MusicRecommend() {
                     <S.SongCard key={songKey}>
                       <S.PlayIconWrapper
                         onClick={() => handlePlayPause(song, songKey)}
-                        emotion1={song.emotion1}
-                        emotion2={song.emotion2}
+                        emotion={song.emotion}
+                        // emotion1={song.emotion1}
+                        // emotion2={song.emotion2}
                       >
                         <S.PlayIconCircle>
                           {currentSongKey === songKey && isPlaying ? (
@@ -215,7 +217,8 @@ function MusicRecommend() {
                 <>
                   {[...Array(3)].map((_, index) => (
                     <S.EmptySongCard key={index}>
-                      <S.PlayIconWrapper emotion1="중립" emotion2="중립">
+                      <S.PlayIconWrapper emotion="중립">
+                        {/* <S.PlayIconWrapper emotion1="중립" emotion2="중립"> */}
                         <S.PlayIconCircle>
                           <FaPlay />
                         </S.PlayIconCircle>

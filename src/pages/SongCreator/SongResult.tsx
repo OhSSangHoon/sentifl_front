@@ -12,7 +12,9 @@ const SongResult: React.FC = () => {
   const location = useLocation();
 
   // navigate로 전달된 데이터 받기
-  const { title, emotion1, emotion2, musicUrl } = location.state || {};
+  const { title, emotion, musicUrl } = location.state || {};
+  // const { title, emotion1, emotion2, musicUrl } = location.state || {};
+
   const [musicId, setMusicId] = useState<number | null>(null);
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -21,7 +23,8 @@ const SongResult: React.FC = () => {
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title || "");
 
-  const videoUrl = emotionVideos[emotion1] || emotionVideos["중립"];
+  const videoUrl = emotionVideos[emotion] || emotionVideos["중립"];
+  // const videoUrl = emotionVideos[emotion1] || emotionVideos["중립"];
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -77,8 +80,9 @@ const SongResult: React.FC = () => {
           {
             musicUrl: musicUrl,
             title: editedTitle,
-            emotion1: emotion1,
-            emotion2: emotion2,
+            emotion: emotion,
+            // emotion1: emotion1,
+            // emotion2: emotion2,
           },
           {
             headers: {
@@ -175,8 +179,9 @@ const SongResult: React.FC = () => {
         {
           musicUrl: musicUrl,
           title: title,
-          emotion1: emotion1,
-          emotion2: emotion2,
+          emotion: emotion,
+          // emotion1: emotion1,
+          // emotion2: emotion2,
         },
         {
           headers: {
@@ -269,8 +274,9 @@ const SongResult: React.FC = () => {
           보았어요.
         </S.BottomCenterText>
 
-        <EmotionDescription emotion={emotion1} />
-        <EmotionDescription emotion={emotion2} />
+        <EmotionDescription emotion={emotion} />
+        {/* <EmotionDescription emotion={emotion1} />
+        <EmotionDescription emotion={emotion2} /> */}
       </S.TopLeftInfo>
 
       <S.PlayButtonWrapper>

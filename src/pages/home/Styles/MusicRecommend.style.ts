@@ -10,8 +10,9 @@ interface EmotionCircleProps {
 }
 
 interface PlayIconWrapperProps {
-  emotion1: string;
-  emotion2: string;
+  // emotion1: string;
+  // emotion2: string;
+  emotion: string;
 }
 
 interface SongListProps {
@@ -183,8 +184,7 @@ export const PlayIconWrapper = styled.div<PlayIconWrapperProps>`
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: ${({ emotion1, emotion2 }) =>
-      getEmotionGradient(emotion1, emotion2)};
+    background: ${({ emotion }) => getEmotionGradient(emotion)};
     background-size: 800% 800%;
     animation: ${gradientAnimation} 10s ease infinite;
     filter: blur(20px);
@@ -194,6 +194,8 @@ export const PlayIconWrapper = styled.div<PlayIconWrapperProps>`
     opacity: 0.8;
   }
 `;
+// background: ${({ emotion1, emotion2 }) =>
+//   getEmotionGradient(emotion1, emotion2)};
 
 export const PlayIconCircle = styled.div`
   width: 80px;
@@ -214,7 +216,7 @@ export const PlayIconCircle = styled.div`
   }
 `;
 
-function getEmotionGradient(emotion1: string, emotion2: string) {
+function getEmotionGradient(emotion: string) {
   const emotionColors: { [key: string]: string } = {
     행복: "#FFD700",
     놀람: "#FF1493",
@@ -225,15 +227,35 @@ function getEmotionGradient(emotion1: string, emotion2: string) {
     중립: "#A9A9A9",
   };
 
-  const color1 = emotionColors[emotion1] || "#A9A9A9";
-  const color2 = emotionColors[emotion2] || "#A9A9A9";
+  const color = emotionColors[emotion] || "#A9A9A9";
 
   return `linear-gradient(
     270deg,
-    ${hexToRgba(color1, 0.5)},
-    ${hexToRgba(color2, 0.5)}
+    ${hexToRgba(color, 0.5)}, ${hexToRgba(color, 0.2)}
+
   )`;
 }
+
+// function getEmotionGradient(emotion1: string, emotion2: string) {
+//   const emotionColors: { [key: string]: string } = {
+//     행복: "#FFD700",
+//     놀람: "#FF1493",
+//     혐오: "#6A0DAD",
+//     분노: "#8B0000",
+//     공포: "#000080",
+//     슬픔: "#4169E1",
+//     중립: "#A9A9A9",
+//   };
+
+//   const color1 = emotionColors[emotion1] || "#A9A9A9";
+//   const color2 = emotionColors[emotion2] || "#A9A9A9";
+
+//   return `linear-gradient(
+//     270deg,
+//     ${hexToRgba(color1, 0.5)},
+//     ${hexToRgba(color2, 0.5)}
+//   )`;
+// }
 
 function hexToRgba(hex: string, alpha: number) {
   const r = parseInt(hex.slice(1, 3), 16) || 0;

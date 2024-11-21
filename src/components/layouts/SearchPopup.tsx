@@ -6,8 +6,9 @@ import * as S from "./Styles/SearchPopup.style";
 interface SongInfoResponse {
   musicId: number;
   title: string;
-  emotion1: string;
-  emotion2: string;
+  emotion: string;
+  // emotion1: string;
+  // emotion2: string;
   totalLikes: number;
   uid: string;
   userNickname: string;
@@ -334,7 +335,8 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                     }}
                   >
                     <S.EmotionCircle
-                      color={getEmotionColorGradient(song.emotion1)}
+                      color={getEmotionColorGradient(song.emotion)}
+                      // color={getEmotionColorGradient(song.emotion1)}
                     />
                     <span>{song.title}</span>
                   </S.UserLink>
