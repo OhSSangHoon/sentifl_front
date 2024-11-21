@@ -17,16 +17,6 @@ export const Container = styled.div`
   }
 `;
 
-// export const SidebarWrapper = styled.div`
-//   width: 100%;
-//   background: #1e1e1e;
-//   padding: 20px;
-//   border-radius: 10px;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   margin-bottom: 20px;
-// `;
 
 export const SidebarWrapper = styled.div<{ isOwner: boolean }>`
   width: ${(props) => (props.isOwner ? "25%" : "100%")};
@@ -61,13 +51,6 @@ export const MainContent = styled.div<{ isOwner: boolean }>`
   max-width: 100%;
 `;
 
-// export const MainContent = styled.div`
-//   display: flex;
-//   flex-grow: 1;
-//   overflow-y: auto;
-//   padding-bottom: 80px;
-//   max-width: 100%;
-// `;
 
 export const Overlay = styled.div`
   position: fixed;
@@ -147,7 +130,7 @@ export const FollowingItem = styled.div`
   }
 `;
 
-export const FollowProfile = styled.div`
+export const FollowProfile = styled.img`
   width: 50px;
   height: 50px;
   background-color: #ccc;

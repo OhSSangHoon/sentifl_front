@@ -16,13 +16,13 @@ interface Post {
 }
 
 // createdTime 형식 변경
-function formatDate(isoString: string): string {
-  const date = new Date(isoString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}.${month}.${day}`;
-}
+// function formatDate(isoString: string): string {
+//   const date = new Date(isoString);
+//   const year = date.getFullYear();
+//   const month = String(date.getMonth() + 1).padStart(2, "0");
+//   const day = String(date.getDate()).padStart(2, "0");
+//   return `${year}.${month}.${day}`;
+// }
 
 function NewPost() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -149,7 +149,7 @@ function NewPost() {
               key={post.postId}
               onClick={() => handlePostClick(post.uid, post.postId)}
             >
-              <S.thumbnail src={post.thumbnailUrl || undefined} />
+              <S.thumbnail src={post.thumbnailUrl} />
               <S.PostTitle>{post.title}</S.PostTitle>
               <S.PostContents>{post.contents}</S.PostContents>
               <S.Box>

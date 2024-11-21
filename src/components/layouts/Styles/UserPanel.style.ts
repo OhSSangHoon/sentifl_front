@@ -17,18 +17,18 @@ export const PopupOverlay = styled.div`
 export const PopupContainer = styled.div`
   position: absolute;
   display: flex;
+  flex-direction: column;
   right: 100px;
   top: 100px;
-  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   width: 360px;
-  height: auto;
+  max-height: 80vh; /* 화면의 최대 높이 제한 */
   background: rgba(0, 0, 0, 0.7);
   border-radius: 10px;
   padding: 20px;
   color: white;
-  overflow: hidden;
+  overflow-y: auto; /* 내부 콘텐츠가 넘칠 경우 스크롤 활성화 */
   z-index: 1000;
 `;
 
@@ -255,26 +255,23 @@ export const LogoutButton = styled.button`
 
 export const SearchContainer = styled.div`
   width: 100%;
-  max-height: 200px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   position: relative;
 `;
 
 export const SearchInputWrapper = styled.div`
-  position: relative;
   width: 100%;
-  height: 100px;
-  overflow: hidden;
+  height: 100%;
 `;
 
 export const SearchInput = styled.input`
   width: 100%;
-  height: 50px;
-  padding: 20px 30px;
-  margin: 25px 0;
-  border-radius: 30px;
-  background: #3a3a3c;
+  padding: 17px 50px;
+  margin: 5px 0;
+  border-radius: 5px;
+  background: #000;
   border: none;
   color: #fff;
   outline: none;
@@ -286,35 +283,54 @@ export const SearchInput = styled.input`
 `;
 
 export const SearchResults = styled.div`
-  position: fixed;
-  top: 250px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40%;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 10;
+  width: 100%;
+  background: #111;
+  max-height: 50vh;
   border-radius: 5px;
-  cursor: pointer;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 4px;
+  }
 `;
 
 export const SearchResultItem = styled.div`
-  padding: 20px;
+  padding: 15px 10px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  position: relative;
+  background: #fff;
   transition: background-color 0.3s;
-  border-radius: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #D9D9D9;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #D9D9D9;
+  }
 
   span {
+    margin-left: 20px;
     max-width: 150px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: #666;
+
   }
 `;
+
 
 export const UserLink = styled(Link)`
   display: flex;
@@ -332,6 +348,8 @@ export const UserLink = styled(Link)`
 `;
 
 export const FollowButton = styled.button<{ isFollowing: boolean }>`
+  position: absolute;
+  right: 10px;
   background-color: ${(props) => (props.isFollowing ? "#cccccc" : "#007bff")};
   color: ${(props) => (props.isFollowing ? "#666666" : "white")};
   border: none;
