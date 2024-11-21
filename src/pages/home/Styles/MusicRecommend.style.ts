@@ -54,13 +54,20 @@ export const EmotionButton = styled.button<EmotionButtonProps>`
   background-color: ${({ isSelected, emotion }) =>
     isSelected
       ? {
-          행복: "#FFD700",
-          놀람: "#FF1493",
-          혐오: "#6A0DAD",
+          기쁨: "#FFD700",
+          당황: "#FF1493",
+          상처: "#6A0DAD",
           분노: "#8B0000",
-          공포: "#000080",
+          불안: "#000080",
           슬픔: "#4169E1",
           중립: "#A9A9A9",
+          // 행복: "#FFD700",
+          // 놀람: "#FF1493",
+          // 혐오: "#6A0DAD",
+          // 분노: "#8B0000",
+          // 공포: "#000080",
+          // 슬픔: "#4169E1",
+          // 중립: "#A9A9A9",
         }[emotion]
       : "#3a3a3c"};
   color: #fff;
@@ -218,13 +225,20 @@ export const PlayIconCircle = styled.div`
 
 function getEmotionGradient(emotion: string) {
   const emotionColors: { [key: string]: string } = {
-    행복: "#FFD700",
-    놀람: "#FF1493",
-    혐오: "#6A0DAD",
+    기쁨: "#FFD700",
+    당황: "#FF1493",
+    상처: "#6A0DAD",
     분노: "#8B0000",
-    공포: "#000080",
+    불안: "#000080",
     슬픔: "#4169E1",
     중립: "#A9A9A9",
+    // 행복: "#FFD700",
+    // 놀람: "#FF1493",
+    // 혐오: "#6A0DAD",
+    // 분노: "#8B0000",
+    // 공포: "#000080",
+    // 슬픔: "#4169E1",
+    // 중립: "#A9A9A9",
   };
 
   const color = emotionColors[emotion] || "#A9A9A9";

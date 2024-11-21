@@ -16,7 +16,8 @@ interface SongInfoResponse {
   musicUrl: string;
 }
 
-const emotions = ["공포", "놀람", "분노", "슬픔", "중립", "행복", "혐오"];
+const emotions = ["기쁨", "당황", "분노", "불안", "상처", "슬픔", "중립"];
+// const emotions = ["공포", "놀람", "분노", "슬픔", "중립", "행복", "혐오"];
 
 function MusicRecommend() {
   const [selectedEmotion, setSelectedEmotion] = useState<string>("행복");

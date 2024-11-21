@@ -32,7 +32,8 @@ interface SearchPopupProps {
   onClose: () => void;
 }
 
-const emotions = ["공포", "놀람", "분노", "슬픔", "중립", "행복", "혐오"];
+const emotions = ["기쁨", "당황", "분노", "불안", "상처", "슬픔", "중립"];
+// const emotions = ["공포", "놀람", "분노", "슬픔", "중립", "행복", "혐오"];
 
 const SearchPopup: React.FC<SearchPopupProps> = ({
   searchQuery,
@@ -183,13 +184,20 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 
   const getEmotionColorGradient = (emotion: string) => {
     const emotionColors: { [key: string]: string } = {
-      행복: "#FFD700",
-      놀람: "#FF1493",
-      혐오: "#6A0DAD",
+      기쁨: "#FFD700",
+      당황: "#FF1493",
+      상처: "#6A0DAD",
       분노: "#8B0000",
-      공포: "#000080",
+      불안: "#000080",
       슬픔: "#4169E1",
       중립: "#A9A9A9",
+      // 행복: "#FFD700",
+      // 놀람: "#FF1493",
+      // 혐오: "#6A0DAD",
+      // 분노: "#8B0000",
+      // 공포: "#000080",
+      // 슬픔: "#4169E1",
+      // 중립: "#A9A9A9",
     };
     const color = emotionColors[emotion] || "#A9A9A9";
     return `linear-gradient(to bottom, ${color} 0%, #000000 100%)`;

@@ -368,13 +368,20 @@ export default SongResult;
 export { EmotionDescription };
 
 const emotionVideos: { [key: string]: string } = {
-  행복: require("../../assets/videos/행복.mp4"),
-  놀람: require("../../assets/videos/사랑.mp4"),
-  혐오: require("../../assets/videos/불안.mp4"),
+  기쁨: require("../../assets/videos/행복.mp4"),
+  당황: require("../../assets/videos/사랑.mp4"),
+  상처: require("../../assets/videos/불안.mp4"),
   분노: require("../../assets/videos/분노.mp4"),
-  공포: require("../../assets/videos/우울.mp4"),
+  불안: require("../../assets/videos/우울.mp4"),
   슬픔: require("../../assets/videos/슬픔.mp4"),
   중립: require("../../assets/videos/중립.mp4"),
+  // 행복: require("../../assets/videos/행복.mp4"),
+  // 놀람: require("../../assets/videos/사랑.mp4"),
+  // 혐오: require("../../assets/videos/불안.mp4"),
+  // 분노: require("../../assets/videos/분노.mp4"),
+  // 공포: require("../../assets/videos/우울.mp4"),
+  // 슬픔: require("../../assets/videos/슬픔.mp4"),
+  // 중립: require("../../assets/videos/중립.mp4"),
 };
 
 const genres = [
@@ -398,23 +405,37 @@ const genres = [
 ];
 
 export const emotionColors: { [key: string]: string } = {
-  행복: "#FFD700",
-  놀람: "#FF1493",
-  혐오: "#6A0DAD",
+  기쁨: "#FFD700",
+  당황: "#FF1493",
+  상처: "#6A0DAD",
   분노: "#8B0000",
-  공포: "#000080",
+  불안: "#000080",
   슬픔: "#4169E1",
   중립: "#A9A9A9",
+  // 행복: "#FFD700",
+  // 놀람: "#FF1493",
+  // 혐오: "#6A0DAD",
+  // 분노: "#8B0000",
+  // 공포: "#000080",
+  // 슬픔: "#4169E1",
+  // 중립: "#A9A9A9",
 };
 
 const emotionDescriptions: { [key: string]: string } = {
-  행복: "강을 뒤덮은 밝고 노란 꽃밭",
-  놀람: "하늘에서 피어난 커다란 폭죽",
-  혐오: "어두운 숲속 안에 고여 있는 연못",
+  기쁨: "강을 뒤덮은 밝고 노란 꽃밭",
+  당황: "하늘에서 피어난 커다란 폭죽",
+  상처: "어두운 숲속 안에 고여 있는 연못",
   분노: "마음속 요동치는 거친파도",
-  공포: "얕게 흐르는 빛물에 꺼져가는 불꽃",
+  불안: "얕게 흐르는 빛물에 꺼져가는 불꽃",
   슬픔: "텅빈 고요한 새벽 한밤중의 빛물",
   중립: "흐린하늘아래 선선한 바람",
+  // 행복: "강을 뒤덮은 밝고 노란 꽃밭",
+  // 놀람: "하늘에서 피어난 커다란 폭죽",
+  // 혐오: "어두운 숲속 안에 고여 있는 연못",
+  // 분노: "마음속 요동치는 거친파도",
+  // 공포: "얕게 흐르는 빛물에 꺼져가는 불꽃",
+  // 슬픔: "텅빈 고요한 새벽 한밤중의 빛물",
+  // 중립: "흐린하늘아래 선선한 바람",
 };
 
 const EmotionDescription: React.FC<{ emotion: string }> = ({ emotion }) => (
